@@ -1,0 +1,20 @@
+{
+  "name": "natours-2025",
+  "version": "1.0.0",
+  "description": "Learning node, express and mongoDB",
+  "homepage": "https://github.com/TVATDCI/natours-2025#readme",
+  "bugs": {
+    "url": "https://github.com/TVATDCI/natours-2025/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TVATDCI/natours-2025.git"
+  },
+  "license": "ISC",
+  "author": "Tuanthong Vaidyanond",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
