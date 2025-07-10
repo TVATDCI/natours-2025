@@ -261,7 +261,7 @@ For example:
 
 ---
 
-### Example:
+#### Example:
 
 Clients often send authentication info (like a token) **with every request** instead of logging in once and keeping a session.
 
@@ -270,12 +270,14 @@ GET /api/v1/users
 Authorization: Bearer <token>
 ```
 
+### IMPORTANT!
+
 #### A stateless RESTful API:
 
-- Does not track sessions or history
+- **Does not track sessions or history**
 
-- Treats every request as a brand new interaction
+- **Treats every request as a brand new interaction**
 
-- Requires clients to be self-contained in every call
+- **Requires clients to be self-contained in every call**
 
 ---
