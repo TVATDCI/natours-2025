@@ -39,3 +39,13 @@ For example, in this project:
 These routes are examples of **API endpoints**—each one performs a specific task and responds to specific types of requests.
 
 > Simply put: An API is like a waiter in a restaurant. You (the client) tell the waiter what you want (a request), and the waiter brings it from the kitchen (the server) to you (the response).
+
+### POST `/` Route
+
+This route handles **HTTP POST requests** to the root URL (`/`):
+
+```js
+app.post('/', (req, res) => {
+  res.send('Sending msg using post method endpoint...');
+});
+```
