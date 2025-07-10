@@ -19,6 +19,7 @@ const tours = JSON.parse(
 app.get('/api/v1/tours', (reg, res) => {
   res.status(200).json({
     status: 'success',
+    results: tours.length, // add .length to specify tours(arr with multiple objects)
     data: {
       tours: tours,
     },
