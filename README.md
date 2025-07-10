@@ -23,7 +23,7 @@ Once the course is complete, we plan to
 - Modernize the codebase for production-readines
   This approach gives us both a **solid foundation** and a **modern development path**.
 
-  ## What is an API?
+## What is an API?
 
 **API** stands for **Application Programming Interface**.
 
@@ -40,7 +40,7 @@ These routes are examples of **API endpoints**—each one performs a specific ta
 
 > Simply put: An API is like a waiter in a restaurant. You (the client) tell the waiter what you want (a request), and the waiter brings it from the kitchen (the server) to you (the response).
 
-### POST `/` Route
+#### POST `/` Route
 
 This route handles **HTTP POST requests** to the root URL (`/`):
 
@@ -49,3 +49,69 @@ app.post('/', (req, res) => {
   res.send('Sending msg using post method endpoint...');
 });
 ```
+
+---
+
+## REST Architecture and CRUD Operations
+
+### What is REST?
+
+**REST** stands for **Representational State Transfer**.  
+It is a software architectural style used for building **web services and APIs**. REST relies on **standard HTTP methods** to enable communication between clients (like browsers, mobile apps) and servers.
+
+RESTful APIs are:
+
+- Stateless: each request is independent and self-contained
+- Resource-based: data is treated as resources (like users, tours, products)
+- Accessible via standard HTTP methods
+
+---
+
+### CRUD Operations in REST
+
+REST uses HTTP methods to implement **CRUD operations**:
+
+| Operation | Description             | HTTP Method      | Example Endpoint           |
+| --------- | ----------------------- | ---------------- | -------------------------- |
+| Create    | Add a new resource      | `POST`           | `POST /api/v1/tours`       |
+| Read      | Retrieve one or many    | `GET`            | `GET /api/v1/tours`        |
+| Read      | Retrieve a single item  | `GET`            | `GET /api/v1/tours/:id`    |
+| Update    | Modify an existing item | `PATCH` or `PUT` | `PATCH /api/v1/tours/:id`  |
+| Delete    | Remove a resource       | `DELETE`         | `DELETE /api/v1/tours/:id` |
+
+---
+
+### Resources in REST
+
+A **resource** is any piece of data the API manages:
+
+- `/users` → users resource
+- `/tours` → tours resource
+- `/bookings` → bookings resource
+
+Resources are usually returned in **JSON format**, and identified by **URLs** (called _endpoints_).
+
+---
+
+### Example: Tour API
+
+If we were building a tour-related REST API, it might look like:
+
+- `GET /api/v1/tours` → Get all tours
+- `GET /api/v1/tours/:id` → Get a specific tour
+- `POST /api/v1/tours` → Add a new tour
+- `PATCH /api/v1/tours/:id` → Update a tour
+- `DELETE /api/v1/tours/:id` → Delete a tour
+
+---
+
+### REST Best Practices
+
+- Use **nouns**, not verbs, in endpoints: `/users`, not `/getUsers`
+- Use **plural names** for resources: `/tours`, not `/tour`
+- Keep APIs **stateless**: No user sessions should be stored on the server
+- Return proper **HTTP status codes** (e.g., 200 OK, 404 Not Found, 201 Created)
+
+---
+
+REST makes it easy to build scalable, predictable APIs that follow standard web conventions.
