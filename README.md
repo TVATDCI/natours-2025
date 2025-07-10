@@ -97,15 +97,18 @@ Resources are usually returned in **JSON format**, and identified by **URLs** (c
 
 If we were building a tour-related REST API, it might look like:
 
-- `GET /api/v1/tours` → Get all tours
-- `GET /api/v1/tours/:id` → Get a specific tour
-- `POST /api/v1/tours` → Add a new tour
+- `POST /api/v1/tours` → Add a new tour **C**reate
+- `GET /api/v1/tours` → Get all tours **R**ead
+- `GET /api/v1/tours/:id` → Get a specific tour READ:id
+- `PUT /api/v1/tours` → **U**pdate a tour
 - `PATCH /api/v1/tours/:id` → Update a tour
-- `DELETE /api/v1/tours/:id` → Delete a tour
+- `DELETE /api/v1/tours/:id` → **D**elete a tour
+
+**CRUD** Operation!
 
 ---
 
-### REST Best Practices
+#### REST Best Practices
 
 - Use **nouns**, not verbs, in endpoints: `/users`, not `/getUsers`
 - Use **plural names** for resources: `/tours`, not `/tour`
@@ -114,4 +117,4 @@ If we were building a tour-related REST API, it might look like:
 
 ---
 
-REST makes it easy to build scalable, predictable APIs that follow standard web conventions.
+**REST** makes it easy to build scalable, predictable APIs that follow standard web conventions.
