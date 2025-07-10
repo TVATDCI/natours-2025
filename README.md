@@ -104,7 +104,7 @@ If we were building a tour-related REST API, it might look like:
 - `PATCH /api/v1/tours/:id` → Update a tour
 - `DELETE /api/v1/tours/:id` → **D**elete a tour
 
-**CRUD** Operation!
+**CRUD** Operations!
 
 ---
 
@@ -118,3 +118,26 @@ If we were building a tour-related REST API, it might look like:
 ---
 
 **REST** makes it easy to build scalable, predictable APIs that follow standard web conventions.
+
+**JSON data format is usually used for both side the server <--> the client**
+
+#### What is JSON?
+
+**JSON** stands for **JavaScript Object Notation**.
+
+It is a lightweight, human-readable format used to **store and exchange data**—especially between a **client** and a **server**.
+
+In REST APIs, JSON is the most common format for:
+
+- Sending data from the client to the server (e.g. via POST)
+- Receiving data from the server (e.g. via GET)
+
+##### Example JSON:
+
+```json
+{
+  "name": "Natours",
+  "rating": 4.8,
+  "location": "Worldwide"
+}
+```
