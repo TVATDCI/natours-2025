@@ -95,7 +95,7 @@ Resources are usually returned in **JSON format**, and identified by **URLs** (c
 
 ### Example: Tour API
 
-If we were building a tour-related REST API, it might look like:
+If we were building a tour-related REST API, with **HTTP Methods**. **POST-GET-PUT-PATCH-DELETE**
 
 - `POST /api/v1/tours` → Add a new tour **C**reate
 - `GET /api/v1/tours` → Get all tours **R**ead
@@ -136,8 +136,20 @@ In REST APIs, JSON is the most common format for:
 
 ```json
 {
+  "id": "0",
   "name": "Natours",
+  "tourName": "The Park Camper",
   "rating": 4.8,
+  "guides": [
+    {
+      "name": "John Doe",
+      "role": "Lead Guide"
+    },
+    {
+      "name": "Jane Doe",
+      "role": "Guide"
+    }
+  ],
   "location": "Worldwide"
 }
 ```
