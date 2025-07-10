@@ -3,6 +3,8 @@ const express = require('express');
 
 const app = express();
 
+app.use(express.json());
+
 // app.get('/', (req, res) => {
 //   res
 //     .status(200)
@@ -24,6 +26,12 @@ app.get('/api/v1/tours', (reg, res) => {
       tours: tours,
     },
   });
+});
+
+// Post Route
+app.post('/api/v1/tours', (reg, res) => {
+  console.log(reg.body);
+  res.send('data sent');
 });
 
 // Start server
