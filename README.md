@@ -166,3 +166,65 @@ In REST APIs, JSON is the most common format for:
   "location": "Worldwide"
 }
 ```
+
+#### What about JSend?
+
+**JSend** is a convention for formatting JSON responses in a clean, predictable structure. It helps clients understand what happened—whether the request was successful, failed, or errored.
+
+#### Basic JSend Structure:
+
+```json
+// On success
+{
+"status": "success",
+"data": { ... }
+}
+
+// On failure (e.g., invalid input)
+{
+"status": "fail",
+"data": { ... }
+}
+
+// On error (e.g., server crashed)
+{
+"status": "error",
+"message": "Something went wrong."
+}
+
+```
+
+#### Example using tour data (Success response)
+
+```json
+{
+  "status": "success",
+  "data": {
+    "tour": {
+      "id": "0",
+      "name": "Natours",
+      "tourName": "The Park Camper",
+      "rating": 4.8,
+      "location": "Worldwide",
+      "guides": [
+        {
+          "name": "John Doe",
+          "role": "Lead Guide"
+        },
+        {
+          "name": "Jane Doe",
+          "role": "Guide"
+        }
+      ]
+    }
+  }
+}
+```
+
+#### Why Use JSend?
+
+- Encourages consistency across endpoints
+
+- Makes error handling easier on the frontend
+
+- Separates transport logic (status, message) from business data
