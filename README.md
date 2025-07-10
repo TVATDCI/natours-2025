@@ -132,7 +132,20 @@ In REST APIs, JSON is the most common format for:
 - Sending data from the client to the server (e.g. via POST)
 - Receiving data from the server (e.g. via GET)
 
-##### Example JSON:
+#### JSON Structure:
+
+- JSON looks like a **JavaScript object**.
+- Data is organized in **key-value pairs**.
+- **Strings must use double quotes ("")**, not single quotes.
+- JSON supports values like:
+  - Strings
+  - Numbers
+  - Booleans (`true`, `false`)
+  - `null`
+  - **Arrays** (lists)
+  - **Objects** (nested structures)
+
+##### Example JSON with an Array:
 
 ```json
 {
