@@ -9,6 +9,7 @@ app.get('/', (req, res) => {
     .json({ message: 'Welcome to Natours API server side', app: 'Natours' });
 });
 
+// post route
 app.post('/', (req, res) => {
   res.send('Sending msg using post method endpoint...');
 });
