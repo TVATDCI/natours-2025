@@ -9,6 +9,10 @@ app.get('/', (req, res) => {
     .json({ message: 'Welcome to Natours API server side', app: 'Natours' });
 });
 
+app.post('/', (req, res) => {
+  res.send('Sending msg using post method endpoint...');
+});
+
 // Start server
 const port = 3000;
 app.listen(port, () => {
