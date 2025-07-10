@@ -4,7 +4,9 @@ const app = express();
 
 // Root route
 app.get('/', (req, res) => {
-  res.status(200).send('Welcome to Natours API server...');
+  res
+    .status(200)
+    .json({ message: 'Welcome to Natours API server side', app: 'Natours' });
 });
 
 // Start server
