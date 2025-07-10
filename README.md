@@ -22,3 +22,20 @@ Once the course is complete, we plan to
 - Update build tools and dependencies as needed
 - Modernize the codebase for production-readines
   This approach gives us both a **solid foundation** and a **modern development path**.
+
+  ## What is an API?
+
+**API** stands for **Application Programming Interface**.
+
+An API is a piece of software that allows different applications to **communicate with each other**. It defines a set of rules and protocols that one piece of software can use to access the features or data of another.
+
+In web development, when we talk about APIs, we're usually referring to **web APIs**—specifically, APIs that use the **HTTP protocol** to send and receive data between a **client (like a browser or mobile app)** and a **server**.
+
+For example, in this project:
+
+- The `GET /` route returns a JSON message when someone accesses the root URL.
+- The `POST /` route simulates how we might accept data from a client.
+
+These routes are examples of **API endpoints**—each one performs a specific task and responds to specific types of requests.
+
+> Simply put: An API is like a waiter in a restaurant. You (the client) tell the waiter what you want (a request), and the waiter brings it from the kitchen (the server) to you (the response).
