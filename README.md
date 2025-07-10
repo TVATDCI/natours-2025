@@ -228,3 +228,54 @@ In REST APIs, JSON is the most common format for:
 - Makes error handling easier on the frontend
 
 - Separates transport logic (status, message) from business data
+
+---
+
+### Stateless RESTful APIs
+
+One of the **core principles of REST** is that it must be **stateless**.
+
+#### What Does "Stateless" Mean?
+
+In a **stateless API**, the **server does not store any information** about the client's previous requests.  
+Each request is **independent** and must contain **all the information** the server needs to understand and respond.
+
+> The server does **not remember** who you are between requests.
+
+---
+
+#### What It Looks Like:
+
+For example:
+
+- If a client sends a request to `GET /api/v1/tours`, it must include **everything** the server needs (like authentication, filters, etc.).
+- The server processes it and sends a response, but **does not store any session data**.
+
+---
+
+### Why Stateless?
+
+- **Scalability**: Easier to scale horizontally (across multiple servers)
+- **Reliability**: Each request can be retried without depending on past state
+- **Security**: Less risk of leaking session data
+
+---
+
+### Example:
+
+Clients often send authentication info (like a token) **with every request** instead of logging in once and keeping a session.
+
+```http
+GET /api/v1/users
+Authorization: Bearer <token>
+```
+
+#### A stateless RESTful API:
+
+- Does not track sessions or history
+
+- Treats every request as a brand new interaction
+
+- Requires clients to be self-contained in every call
+
+---
