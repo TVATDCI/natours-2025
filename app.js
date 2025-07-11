@@ -30,21 +30,33 @@ app.get('/api/v1/tours', (reg, res) => {
 });
 
 // Post Route
-app.post('/api/v1/tours', (reg, res) => {
-  // console.log(reg.body);
+app.post('/api/v1/tours', (req, res) => {
+  // console.log(req.body); // Uncomment to inspect incoming data
 
-  // Create newId for successfully posted data
+  // using POST route to add a new tour
+  // Create a new ID by incrementing the last tour's ID
   const newId = tours[tours.length - 1].id + 1;
-  const newTour = Object.assign({ id: newId }, reg.body);
 
-  // uUse .push to create a newTour to the tours data (tours-simple.json)
+  // Merge the new ID with the incoming request body to create a new tour object
+  const newTour = Object.assign({ id: newId }, req.body);
+
+  // Use .push to add the new tour to the in-memory tours array
   tours.push(newTour);
 
-  // Write file directly inside the event loop and stringify it as soon as it written!
+  // Persist the updated tours array to the JSON file
   fs.writeFile(
     `${__dirname}/dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
+      // Handle potential file write errors
+      if (err) {
+        return res.status(500).json({
+          status: 'error',
+          message: 'Failed to write to file',
+        });
+      }
+
+      // Respond with success and the newly added tour
       res.status(201).json({
         status: 'success',
         data: {
