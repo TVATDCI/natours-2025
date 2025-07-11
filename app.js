@@ -29,7 +29,7 @@ app.get('/api/v1/tours', (reg, res) => {
   });
 });
 
-// GET route to find a specific element by its ID
+// GET route to find a specific element by its ID in URL
 app.get('/api/v1/tours/:id', (req, res) => {
   console.log(req.params); // Logs the dynamic ID received from the URL
 
@@ -95,6 +95,34 @@ app.post('/api/v1/tours', (req, res) => {
       });
     }
   );
+});
+
+// PATCH route to update a specific tour (for practice only)
+app.patch('/api/v1/tours/:id', (req, res) => {
+  // Convert id from string to number
+  const id = req.params.id * 1;
+
+  // Find the tour by ID
+  const tour = tours.find((el) => el.id === id);
+
+  // Return 404 if not found
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  // Simulate an update: override existing tour with data from req.body
+  Object.assign(tour, req.body);
+
+  // Send back the updated tour
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: tour,
+    },
+  });
 });
 
 // Start server
