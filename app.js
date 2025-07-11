@@ -3,6 +3,7 @@ const express = require('express');
 
 const app = express();
 
+// express middleware
 app.use(express.json());
 
 // app.get('/', (req, res) => {
@@ -30,8 +31,28 @@ app.get('/api/v1/tours', (reg, res) => {
 
 // Post Route
 app.post('/api/v1/tours', (reg, res) => {
-  console.log(reg.body);
-  res.send('data sent');
+  // console.log(reg.body);
+
+  // Create newId for successfully posted data
+  const newId = tours[tours.length - 1].id + 1;
+  const newTour = Object.assign({ id: newId }, reg.body);
+
+  // uUse .push to create a newTour to the tours data (tours-simple.json)
+  tours.push(newTour);
+
+  // Write file directly inside the event loop and stringify it as soon as it written!
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(tours),
+    (err) => {
+      res.status(201).json({
+        status: 'success',
+        data: {
+          tour: newTour,
+        },
+      });
+    }
+  );
 });
 
 // Start server
