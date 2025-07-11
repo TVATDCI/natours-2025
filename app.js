@@ -29,6 +29,22 @@ app.get('/api/v1/tours', (reg, res) => {
   });
 });
 
+// GET route to find a specific tour by its ID
+app.get('/api/v1/tours/:id', (req, res) => {
+  console.log(req.params);
+
+  // converting string "number" into number by using * (multiply)
+  const id = req.params.id * 1;
+  const tour = tours.find((element) => element.id === id);
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tours: tour,
+    },
+  });
+});
+
 // Post Route
 app.post('/api/v1/tours', (req, res) => {
   // console.log(req.body); // Uncomment to inspect incoming data
