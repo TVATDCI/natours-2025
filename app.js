@@ -29,18 +29,29 @@ app.get('/api/v1/tours', (reg, res) => {
   });
 });
 
-// GET route to find a specific tour by its ID
+// GET route to find a specific element by its ID
 app.get('/api/v1/tours/:id', (req, res) => {
-  console.log(req.params);
+  console.log(req.params); // Logs the dynamic ID received from the URL
 
-  // converting string "number" into number by using * (multiply)
+  // Convert the string ID from the URL into a number using *1
   const id = req.params.id * 1;
+
+  // Use Array.prototype.find() to locate the tour with the matching ID
   const tour = tours.find((element) => element.id === id);
 
+  // err handler 404 error
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  // If found, respond with status(200)
   res.status(200).json({
     status: 'success',
     data: {
-      tours: tour,
+      tour: tour, // They use just `tour` in modern JS
     },
   });
 });
