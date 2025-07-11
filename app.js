@@ -39,11 +39,14 @@ app.get('/api/v1/tours/:id', (req, res) => {
   // Use Array.prototype.find() to locate the tour with the matching ID
   const tour = tours.find((element) => element.id === id);
 
-  // err handler 404 error
+  // If no matching tour is found, respond with a 404 error
+  // NOTE: You could also check `if (id > tours.length)`,
+  //       but that approach assumes tour IDs are perfectly sequential,
+  //       which may not be true and could lead to incorrect behavior.
   if (!tour) {
     return res.status(404).json({
       status: 'fail',
-      message: 'Invalid ID',
+      message: 'Meeb! Invalid ID',
     });
   }
 
