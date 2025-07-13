@@ -52,12 +52,8 @@ const getTour = (req, res) => {
   });
 };
 
-app.get('/api/v1/tours', getAllTours);
-// GET route to find a specific element by its ID in URL
-app.get('/api/v1/tours/:id', getTour);
-
-// Post Route
-app.post('/api/v1/tours', (req, res) => {
+// #: createTour
+const createTour = (req, res) => {
   // console.log(req.body); // Uncomment to inspect incoming data
 
   // using POST route to add a new tour
@@ -92,10 +88,10 @@ app.post('/api/v1/tours', (req, res) => {
       });
     }
   );
-});
+};
 
-// PATCH route to update a specific tour (for practice only)
-app.patch('/api/v1/tours/:id', (req, res) => {
+// #: updateTour
+const updateTour (req, res) => {
   // Convert id from string to number
   const id = req.params.id * 1;
 
@@ -120,7 +116,12 @@ app.patch('/api/v1/tours/:id', (req, res) => {
       tour: tour,
     },
   });
-});
+};
+
+app.get('/api/v1/tours', getAllTours);
+app.get('/api/v1/tours/:id', getTour); // GET route to find a specific element by its ID in URL
+app.post('/api/v1/tours', createTour); // Post Route to crate tour
+app.patch('/api/v1/tours/:id', updateTour); // PATCH route to update a specific tour (for practice only)
 
 // DELETE route to remove a specific tour (for practice only)
 app.delete('/api/v1/tours/:id', (req, res) => {
