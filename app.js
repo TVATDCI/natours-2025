@@ -21,10 +21,9 @@ const getAllTours = (reg, res) => {
     },
   });
 };
-app.get('/api/v1/tours', getAllTours);
 
-// GET route to find a specific element by its ID in URL
-app.get('/api/v1/tours/:id', (req, res) => {
+// #: getTour
+const getTour = (req, res) => {
   console.log(req.params); // Logs the dynamic ID received from the URL
 
   // Convert the string ID from the URL into a number using *1
@@ -51,7 +50,11 @@ app.get('/api/v1/tours/:id', (req, res) => {
       tour: tour, // They use just `tour` in modern JS
     },
   });
-});
+};
+
+app.get('/api/v1/tours', getAllTours);
+// GET route to find a specific element by its ID in URL
+app.get('/api/v1/tours/:id', getTour);
 
 // Post Route
 app.post('/api/v1/tours', (req, res) => {
