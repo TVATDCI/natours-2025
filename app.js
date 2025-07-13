@@ -6,20 +6,13 @@ const app = express();
 // express middleware
 app.use(express.json());
 
-// app.get('/', (req, res) => {
-//   res
-//     .status(200)
-//     .json({ message: 'Welcome to Natours API server side', app: 'Natours' });
-// });
-// app.post('/', (req, res) => {
-//   res.send('Sending msg using post method endpoint...');
-// });
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
 // Route handler
-app.get('/api/v1/tours', (reg, res) => {
+// #: getAllTours route
+const getAllTours = (reg, res) => {
   res.status(200).json({
     status: 'success',
     results: tours.length, // add .length to specify tours(arr with multiple objects)
@@ -27,7 +20,8 @@ app.get('/api/v1/tours', (reg, res) => {
       tours: tours,
     },
   });
-});
+};
+app.get('/api/v1/tours', getAllTours);
 
 // GET route to find a specific element by its ID in URL
 app.get('/api/v1/tours/:id', (req, res) => {
