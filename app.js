@@ -91,7 +91,7 @@ const createTour = (req, res) => {
 };
 
 // #: updateTour
-const updateTour (req, res) => {
+const updateTour = (req, res) => {
   // Convert id from string to number
   const id = req.params.id * 1;
 
@@ -118,13 +118,8 @@ const updateTour (req, res) => {
   });
 };
 
-app.get('/api/v1/tours', getAllTours);
-app.get('/api/v1/tours/:id', getTour); // GET route to find a specific element by its ID in URL
-app.post('/api/v1/tours', createTour); // Post Route to crate tour
-app.patch('/api/v1/tours/:id', updateTour); // PATCH route to update a specific tour (for practice only)
-
-// DELETE route to remove a specific tour (for practice only)
-app.delete('/api/v1/tours/:id', (req, res) => {
+// #: deleteTour
+const deleteTour = (req, res) => {
   const id = req.params.id * 1;
 
   const tourIndex = tours.findIndex((el) => el.id === id);
@@ -144,7 +139,7 @@ app.delete('/api/v1/tours/:id', (req, res) => {
     status: 'success',
     data: null,
   });
-});
+};
 
 // NOTE:OR Use 200 + message for debugging or want to inform the client about what was deleted.
 //   res.status(200).json({
@@ -152,6 +147,11 @@ app.delete('/api/v1/tours/:id', (req, res) => {
 //     message: `Tour with ID ${id} deleted successfully.`,
 //   });
 // });
+
+app.get('/api/v1/tours', getAllTours);
+app.get('/api/v1/tours/:id', getTour); // GET route to find a specific element by its ID in URLapp.post('/api/v1/tours', createTour); // Post Route to crate tour
+app.patch('/api/v1/tours/:id', updateTour); // PATCH route to update a specific tour (for practice only)
+app.delete('/api/v1/tours/:id', deleteTour); // DELETE route to remove a specific tour (for practice only)
 
 // Start server
 const port = 3000;
