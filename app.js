@@ -37,7 +37,7 @@ app.get('/api/v1/tours/:id', (req, res) => {
   const id = req.params.id * 1;
 
   // Use Array.prototype.find() to locate the tour with the matching ID
-  const tour = tours.find((element) => element.id === id);
+  const tour = tours.find((el) => el.id === id);
 
   // If no matching tour is found, respond with a 404 error
   // NOTE: You could also check `if (id > tours.length)`,
@@ -124,6 +124,36 @@ app.patch('/api/v1/tours/:id', (req, res) => {
     },
   });
 });
+
+// DELETE route to remove a specific tour (for practice only)
+app.delete('/api/v1/tours/:id', (req, res) => {
+  const id = req.params.id * 1;
+
+  const tourIndex = tours.findIndex((el) => el.id === id);
+
+  if (tourIndex === -1) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  tours.splice(tourIndex, 1);
+
+  // 204 means No Content – don't return a body at all
+  // NOTE: Use 204 when not returning any data — it's cleaner and more RESTful for DELETE actions.
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
+// NOTE:OR Use 200 + message for debugging or want to inform the client about what was deleted.
+//   res.status(200).json({
+//     status: 'success',
+//     message: `Tour with ID ${id} deleted successfully.`,
+//   });
+// });
 
 // Start server
 const port = 3000;
