@@ -281,3 +281,49 @@ Authorization: Bearer <token>
 - **Requires clients to be self-contained in every call**
 
 ---
+
+### MVC: Model – View – Controller
+
+It’s a design pattern used to organize your code, especially in server-side apps like those built with Node.js and Express.
+
+| Component      | Purpose                                                                                                               | Example in this project                                                                           |
+| -------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Model**      | Handles **data and business logic** (e.g., reading/writing to JSON or a database)                                     | when the project moves from `tours-simple.json` to MongoDB or another DB                          |
+| **View**       | Handles **UI** (what the user sees)                                                                                   | It is usually not used in current API-only setup, but would be used if the project had HTML pages |
+| **Controller** | Handles **requests and responses** — all the logic to process input, interact with the model, and return the response | For example: `getAllTours`, `createTour`, etc. functions are **controllers**                      |
+
+#### What Each Part Does:
+
+```pgsql
+project/
+├── controllers/
+│   └── tourController.js     ← logic (controllers)
+├── routes/
+│   └── tourRoutes.js         ← routes definitions
+├── models/
+│   └── tourModel.js          ← data logic (MongoDB/Mongoose)
+├── app.js                    ← sets up server, middleware, routes
+└── server.js                 ← starts the server
+```
+
+#### (API-only project):
+
+It is often called a **"RESTful API (MVC-light)"** — where **V (View)** is not needed, and you mainly have:
+
+- **Model** – (you’ll use this when working with MongoDB later)
+
+- **Controller** – (you already started separating route logic into controller functions!)
+
+- **Route** – (defines the endpoint + method, e.g., `GET /api/v1/tours`)
+
+```pgsql
+project/
+├── controllers/
+│   └── tourController.js     ← logic (controllers)
+├── routes/
+│   └── tourRoutes.js         ← routes definitions
+├── models/
+│   └── tourModel.js          ← data logic (MongoDB/Mongoose)
+├── app.js                    ← sets up server, middleware, routes
+└── server.js                 ← starts the server
+```
