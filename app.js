@@ -7,7 +7,12 @@ const app = express();
 app.use(express.json());
 
 app.use((req, res, next) => {
-  console.log('Hello from the middleware');
+  console.log('Hello from the middleware line: 10');
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
   next();
 });
 
@@ -17,9 +22,12 @@ const tours = JSON.parse(
 
 // Route handler
 // #: getAllTours route
-const getAllTours = (reg, res) => {
+const getAllTours = (req, res) => {
+  console.log(`Time requested at the top of getAllTours ${req.requestTime}`);
+
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime, // <-- It will also appear inside respond body
     results: tours.length, // add .length to specify tours(arr with multiple objects)
     data: {
       tours: tours,
