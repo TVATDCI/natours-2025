@@ -351,3 +351,7 @@ project/
 ├── app.js                    ← sets up server, middleware, routes
 └── server.js                 ← starts the server
 ```
+
+---
+
+[Back to the top](#natours-2025)
