@@ -148,12 +148,24 @@ const deleteTour = (req, res) => {
 //   });
 // });
 
-app.get('/api/v1/tours', getAllTours);
-app.get('/api/v1/tours/:id', getTour); // GET route to find a specific element by its ID in URLapp.post('/api/v1/tours', createTour); // Post Route to crate tour
-app.patch('/api/v1/tours/:id', updateTour); // PATCH route to update a specific tour (for practice only)
-app.delete('/api/v1/tours/:id', deleteTour); // DELETE route to remove a specific tour (for practice only)
+// app.get('/api/v1/tours', getAllTours);
+// app.get('/api/v1/tours/:id', getTour); // GET route to find a specific element by its ID in URLapp.post('/api/v1/tours', createTour); // Post Route to crate tour
+// app.patch('/api/v1/tours/:id', updateTour); // PATCH route to update a specific tour (for practice only)
+// app.delete('/api/v1/tours/:id', deleteTour); // DELETE route to remove a specific tour (for practice only)
 
-// Start server
+// Use Express's dynamic route chaining to define multiple handlers on the same path
+app
+  .route('/api/v1/tours')
+  .get(getAllTours) // Get all tours
+  .post(createTour); // Create a new tour
+
+app
+  .route('/api/v1/tours/:id')
+  .get(getTour) // Get a single tour by ID
+  .patch(updateTour) // Update a specific tour
+  .delete(deleteTour); // Delete a specific tour
+
+// #: Start server
 const port = 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}...`);
