@@ -33,6 +33,8 @@ This project follows the [Natours Node.js course](https://www.udemy.com/course/n
    - [What Each Part Does](#what-each-part-does)
    - [MVC in API-Only Projects](#api-only-project)
    - [Suggested Project Structure](#project-structure)
+8. [The Request–Response Cycle in Express](#the-requestresponse-cycle-in-express)
+   - [Express Middleware Flow](#express-middleware-flow)
 
 ---
 
@@ -358,6 +360,84 @@ project/
 │   └── tourModel.js          ← data logic (MongoDB/Mongoose)
 ├── app.js                    ← sets up server, middleware, routes
 └── server.js                 ← starts the server
+```
+
+---
+
+### The Request–Response Cycle in Express
+
+In **Express** (and web development in general), the **request–response cycle** is the **fundamental** flow of how **data moves between a client** (like a browser or app) and the server (**Node.js/Express app**).
+
+1. **Client Sends a Request**
+
+- The client sends an **HTTP request** (e.g. `GET /api/v1/tours`)
+- This request contains:
+  - The **HTTP method** (GET, POST, etc.)
+  - A **URL**
+  - Optional data (like query parameters, body data)
+
+2. **Express Matches a Route**
+
+- Express checks your route definitions (e.g. `app.get(...)`) to find a match.
+- If matched, Express runs the appropriate **route handler** (a function).
+
+3. **Middleware and Processing**
+
+- Any **middleware functions** (e.g. `express.json()`, custom logging, auth) run before the route handler.
+- The handler processes the request, fetches or manipulates data, etc.
+
+4. **Server Sends a Response**
+
+- The handler sends back a response using `res`:
+
+  - A **status code** (e.g. 200 OK, 404 Not Found)
+  - A **JSON** object or other content
+
+- The connection ends.
+
+#### Express Middleware Flow
+
+When a request comes in, Express processes it through a chain of middleware functions before sending a response:
+
+The **client makes a request**, Express **handles and processes it**, and the **server responds**.
+
+```yaml
+Client Request
+↓
+[ Middleware 1 ] — next() →
+↓
+[ Middleware 2 ] — next() →
+↓
+[ Middleware 3 ] — next() →
+↓
+[ Final Middleware (sends response with res.send/res.json) ]
+↓
+Client Response
+
+Each middleware can:
+
+- Modify the `req` and `res` objects
+- End the request–response cycle (using `res.send()`, `res.json()`, etc.)
+- Or call `next()` to pass control to the next middleware in the stack
+```
+
+#### Example:
+
+```js
+app.use((req, res, next) => {
+  console.log('Middleware 1');
+  req.requestTime = Date.now();
+  next();
+});
+
+app.use((req, res, next) => {
+  console.log('Middleware 2');
+  next();
+});
+
+app.get('/', (req, res) => {
+  res.send(`Hello! Request received at: ${req.requestTime}`);
+});
 ```
 
 ---
