@@ -84,6 +84,10 @@ app.post('/', (req, res) => {
 
 ---
 
+[Back to the top](#natours-2025)
+
+---
+
 ## REST Architecture and CRUD Operations
 
 ### What is REST?
@@ -311,6 +315,10 @@ Authorization: Bearer <token>
 - **Treats every request as a brand new interaction**
 
 - **Requires clients to be self-contained in every call**
+
+---
+
+[Back to the top](#natours-2025)
 
 ---
 
