@@ -4,7 +4,39 @@
 
 This project follows the [Natours Node.js course](https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/) by Jonas Schmedtmann.
 
-To stay aligned with the course content and maximize learning, we're starting the development using **CommonJS module syntax** (`require`, `module.exports`). Here's why:
+---
+
+### Table of Contents
+
+1. [Project Setup: CommonJS First, ES Modules Later](#project-setup-commonjs-first-es-modules-later)
+2. [What is an API?](#what-is-an-api)
+   - [POST `/` Route Example](#post-route)
+3. [REST Architecture and CRUD Operations](#rest-architecture-and-crud-operations)
+   - [What is REST?](#what-is-rest)
+   - [CRUD Operations in REST](#crud-operations-in-rest)
+   - [Resources in REST](#resources-in-rest)
+   - [Tour API Example](#example-tour-api)
+   - [REST Best Practices](#rest-best-practices)
+4. [What is JSON?](#what-is-json)
+   - [JSON Structure](#json-structure)
+   - [Example JSON](#example-json-with-an-array)
+5. [What is JSend?](#what-about-jsend)
+   - [JSend Structure](#basic-jsend-structure)
+   - [Example Tour JSend Response](#example-using-tour-data-success-response)
+   - [Why Use JSend?](#why-use-jsend)
+6. [Stateless RESTful APIs](#stateless-restful-apis)
+   - [What Does Stateless Mean?](#what-does-stateless-mean)
+   - [Why Stateless?](#why-stateless)
+   - [Example with Token Auth](#example)
+   - [Summary of Stateless APIs](#important)
+7. [MVC: Model – View – Controller](#mvc-model--view--controller)
+   - [What Each Part Does](#what-each-part-does)
+   - [MVC in API-Only Projects](#api-only-project)
+   - [Suggested Project Structure](#project-structure)
+
+---
+
+To stay aligned with the course content and maximize learning, I am starting the development using **CommonJS module syntax** (`require`, `module.exports`).
 
 ### Why CommonJS for Now?
 
