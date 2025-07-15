@@ -1,9 +1,13 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
 
-// express middleware
+// #: 1) MIDDLEWARES
+
+app.use(morgan('dev'));
+
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -20,7 +24,8 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
-// Route handler
+// #: 2) ROUTE HANDLERS
+
 // #: getAllTours route
 const getAllTours = (req, res) => {
   console.log(`Time requested at the top of getAllTours ${req.requestTime}`);
@@ -52,7 +57,7 @@ const getTour = (req, res) => {
   if (!tour) {
     return res.status(404).json({
       status: 'fail',
-      message: 'Meeb! Invalid ID',
+      message: 'Invalid ID',
     });
   }
 
@@ -167,6 +172,8 @@ const deleteTour = (req, res) => {
 // app.delete('/api/v1/tours/:id', deleteTour); // DELETE route to remove a specific tour (for practice only)
 
 // Use Express's dynamic route chaining to define multiple handlers on the same path
+
+// #: 3) ROUTES
 app
   .route('/api/v1/tours')
   .get(getAllTours) // Get all tours
@@ -178,7 +185,7 @@ app
   .patch(updateTour) // Update a specific tour
   .delete(deleteTour); // Delete a specific tour
 
-// #: Start server
+// #: 4) START SERVER
 const port = 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}...`);
