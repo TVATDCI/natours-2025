@@ -458,6 +458,8 @@ As a HTTP request logger middleware for Node.js and Express. It logs details of 
 - Confirms status codes sent (e.g. 200 OK, 404 Not Found)
 
 ```bash
+GET /api/v1/tours 200 2.275 ms - 9277
+{ id: '11' }
 GET /api/v1/tours/11 200 0.982 ms - 208
 { id: '111' }
 GET /api/v1/tours/111 404 0.628 ms - 46
