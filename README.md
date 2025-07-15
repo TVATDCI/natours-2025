@@ -447,7 +447,7 @@ app.get('/', (req, res) => {
 
 As a HTTP request logger middleware for Node.js and Express. It logs details of incoming requests in a readable format, which is especially useful during development.
 
-**such as**
+**Morgan shows:**
 
 - HTTP method and URL
 - Status code (color-coded)
@@ -456,6 +456,14 @@ As a HTTP request logger middleware for Node.js and Express. It logs details of 
 - Helps track incoming requests
 - Debugs which routes are hit and how long they take
 - Confirms status codes sent (e.g. 200 OK, 404 Not Found)
+
+```bash
+GET /api/v1/tours/11 200 0.982 ms - 208
+{ id: '111' }
+GET /api/v1/tours/111 404 0.628 ms - 46
+{ id: '7' }
+GET /api/v1/tours/7 200 0.569 ms - 885
+```
 
 **Use environment variables to switch modes:**
 
@@ -472,8 +480,8 @@ if (process.env.NODE_ENV === 'development') {
 ```
 
 **More details!**
-[`Package morgan`](https://www.npmjs.com/package/morgan)
-[`expressJs morgan`](https://github.com/expressjs/morgan)
+[`Package: morgan`](https://www.npmjs.com/package/morgan)
+[`expressjs/morgan`](https://github.com/expressjs/morgan)
 
 ---
 
