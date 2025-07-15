@@ -442,4 +442,38 @@ app.get('/', (req, res) => {
 
 ---
 
+#### Using Morgan in Development
+
+As a HTTP request logger middleware for Node.js and Express. It logs details of incoming requests in a readable format, which is especially useful during development.
+
+**such as**
+
+- HTTP method and URL
+- Status code (color-coded)
+- Response time
+- Response size in bytes
+- Helps track incoming requests
+- Debugs which routes are hit and how long they take
+- Confirms status codes sent (e.g. 200 OK, 404 Not Found)
+
+**Use environment variables to switch modes:**
+
+```bash
+NODE_ENV=development nodemon app.js
+```
+
+```js
+const morgan = require('morgan');
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+
+**More details!**
+[`Package morgan`](https://www.npmjs.com/package/morgan)
+[`expressJs morgan`](https://github.com/expressjs/morgan)
+
+---
+
 [Back to the top](#natours-2025)
+```
