@@ -213,25 +213,32 @@ const deleteUser = (req, res) => {
 // Use Express's dynamic route chaining to define multiple handlers on the same path
 
 // #: 3) ROUTES
-app
-  .route('/api/v1/tours')
+// declare and define the Routers before mounting!
+// logic: create routers for all routes and turn them into mini Express apps then mount them into the ROUTER below!
+const tourRouter = express.Router(); // modular router
+const userRouter = express.Router();
+
+tourRouter
+  .route('/') // root(/api/v1/tours)
   .get(getAllTours) // Get all tours
   .post(createTour); // Create a new tour
 
-app
-  .route('/api/v1/tours/:id')
+tourRouter
+  .route('/:id')
   .get(getTour) // Get a single tour by ID
   .patch(updateTour) // Update a specific tour
   .delete(deleteTour); // Delete a specific tour
 
 // #: Users Routes
-app.route('/api/v1/users').get(getAllUsers).post(createUser);
+userRouter.route('/').get(getAllUsers).post(createUser);
 
-app
-  .route('/api/v1/users/:id')
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser);
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+
+// NOTE:The router must be declared and configured before using app.use() to mount them.
+
+// #: Mounted Routers to the base path
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 // #: 4) START SERVER
 const port = 3000;
