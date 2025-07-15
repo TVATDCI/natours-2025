@@ -443,7 +443,7 @@ app.get('/', (req, res) => {
 
 ---
 
-#### Using Morgan in Development
+### Using Morgan in Development
 
 As a HTTP request logger middleware for Node.js and Express. It logs details of incoming requests in a readable format, which is especially useful during development.
 
