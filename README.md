@@ -469,6 +469,7 @@ const morgan = require('morgan');
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+```
 
 **More details!**
 [`Package morgan`](https://www.npmjs.com/package/morgan)
@@ -477,4 +478,7 @@ if (process.env.NODE_ENV === 'development') {
 ---
 
 [Back to the top](#natours-2025)
+
+```
+
 ```
