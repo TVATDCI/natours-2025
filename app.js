@@ -186,7 +186,7 @@ const getUser = (req, res) => {
 const createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-    message: 'The route is in progress',
+    message: 'The route createUser is in progress',
   });
 };
 
@@ -194,7 +194,7 @@ const createUser = (req, res) => {
 const updateUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-    message: 'The route createUser is in progress',
+    message: 'The route updateUser is in progress',
   });
 };
 
