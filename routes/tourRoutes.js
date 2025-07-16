@@ -1,4 +1,3 @@
-const fs = require('fs');
 const express = require('express');
 
 // declare and define the Routers before mounting!
