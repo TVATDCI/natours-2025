@@ -5,8 +5,6 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
-// #: 2) ROUTE HANDLERS
-
 // #: getAllTours route
 const getAllTours = (req, res) => {
   console.log(`Time requested at the top of getAllTours ${req.requestTime}`);
