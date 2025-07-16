@@ -487,6 +487,70 @@ if (process.env.NODE_ENV === 'development') {
 
 ---
 
+### Param Middleware in Express
+
+Param middleware is a special type of middleware in Express that **runs automatically whenever a specific route URL parameter is present** (like `:id`).
+
+It allows you to:
+
+- Run validation logic
+
+- Preprocess parameters (e.g., lookup resources, format data)
+
+- Abort early if the param is invalid
+
+- Attach useful data to req for later middleware or route handlers
+
+##### Syntax
+
+```js
+app.param('paramName', callback);
+```
+
+#### Example paramName = `id`
+
+**1. param in middleware**
+
+```js
+// It runs whenever a route with `:id` is matched
+router.param('id', (req, res, next, val) => {
+  console.log(`Tour ID received: ${val}`);
+
+  // Example: basic numeric validation
+  if (!Number.isInteger(+val)) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Invalid ID format',
+    });
+  }
+
+  next();
+});
+
+// After next, any routes with trigger it:
+router.route('/:id').get(getTour).patch(updateTour).delete(deleteTour);
+```
+
+**It usually happens in route file (e.g. `routes/tourRoutes.js`) just after defining `router`:**
+
+```js
+const router = express.Router();
+
+// Param middleware must be added before routes that use :id
+router.param('id', (req, res, next, val) => {
+  console.log(`Param Middleware: ID = ${val}`);
+  next();
+});
+```
+
+**REASON**
+
+- **DRY** principle: avoid repeating validation in every route handler
+
+- **Centralized** logic for parameter processing
+
+- **Improves readability** and structure
+
 [Back to the top](#natours-2025)
 
 ```
