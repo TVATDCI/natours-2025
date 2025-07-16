@@ -487,6 +487,20 @@ if (process.env.NODE_ENV === 'development') {
 
 ---
 
+### What is Param Middleware in Express
+
+Param middleware is a special type of middleware in Express that **runs automatically whenever a specific route URL parameter is present** (like `:id`).
+
+It allows you to:
+
+- Run validation logic
+
+- Preprocess parameters (e.g., lookup resources, format data)
+
+- Abort early if the param is invalid
+
+- Attach useful data to req for later middleware or route handlers
+
 [Back to the top](#natours-2025)
 
 ```
