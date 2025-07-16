@@ -5,6 +5,13 @@ const tourController = require('../controllers/tourController');
 // logic: create routers for all routes and turn them into mini Express apps then mount them into the ROUTER below!
 const router = express.Router(); // modular router
 
+// Param MIDDLEWARES
+router.param('id', (req, res, next, val) => {
+  // val will keep the value of the id
+  console.log(`Param Middleware tour:ID is: ${val}`);
+  next();
+});
+
 router
   .route('/') // root(/api/v1/tours)
   .get(tourController.getAllTours) // Get all tours
