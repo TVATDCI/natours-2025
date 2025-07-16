@@ -36,6 +36,7 @@ This project follows the [Natours Node.js course](https://www.udemy.com/course/n
 8. [The Request–Response Cycle in Express](#the-requestresponse-cycle-in-express)
    - [Express Middleware Flow](#express-middleware-flow)
 9. [Express Morgan in Development](#using-morgan-in-development)
+10. [Param Middleware in Express](#param-middleware-in-express)
 
 ---
 
