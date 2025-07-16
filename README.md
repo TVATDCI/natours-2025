@@ -38,6 +38,8 @@ This project follows the [Natours Node.js course](https://www.udemy.com/course/n
 9. [Express Morgan in Development](#using-morgan-in-development)
 10. [Param Middleware in Express](#param-middleware-in-express)
 
+- [Additions For Learning & Scaling](#additions-for-learning-&-scaling)
+
 ---
 
 To stay aligned with the course content and maximize learning, I am starting the development using **CommonJS module syntax** (`require`, `module.exports`).
@@ -551,6 +553,49 @@ router.param('id', (req, res, next, val) => {
 - **Centralized** logic for parameter processing
 
 - **Improves readability** and structure
+
+#### Additions (For Learning & Scaling):
+
+**1. Validate the ID**
+
+To make the param middleware more useful, you could validate that id is a number or even pre-fetch tour data:
+
+```js
+router.param('id', (req, res, next, val) => {
+  if (!/^\d+$/.test(val)) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Invalid ID format',
+    });
+  }
+
+  console.log(`Param Middleware tour:ID is: ${val}`);
+  next();
+});
+```
+
+**2. Attach data** to `req` (optional pattern for preloading)
+
+In more advanced APIs, you can preload data and attach it to `req`:
+
+```js
+router.param('id', (req, res, next, val) => {
+  const id = +val;
+  const tour = tours.find((t) => t.id === id);
+
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Tour not found',
+    });
+  }
+
+  req.tour = tour; // Attach tour object to req
+  next();
+});
+```
+
+Then in `getTour`, you can use `req.tour` instead of searching again.
 
 [Back to the top](#natours-2025)
 
