@@ -1,5 +1,5 @@
 const express = require('express');
-const tourController = require('./../controllers/tourController');
+const tourController = require('../controllers/tourController');
 
 // declare and define the Routers before mounting!
 // logic: create routers for all routes and turn them into mini Express apps then mount them into the ROUTER below!
