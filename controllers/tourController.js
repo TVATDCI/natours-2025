@@ -4,6 +4,25 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+// #: CheckID Middleware
+// This middleware intercepts routes with :id and handles the 404 check before the final handler runs.
+// NOTE: It is also important to register param middleware (checkID) in tourRouter!
+exports.checkID = (req, res, next, val) => {
+  const id = val * 1;
+  const tour = tours.find((el) => el.id === id);
+
+  console.log(`Param Middleware tour:ID is: ${val}`); // CHECK CHECK!
+
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  next();
+};
+
 // #: getAllTours route
 exports.getAllTours = (req, res) => {
   console.log(`Time requested at the top of getAllTours ${req.requestTime}`);
@@ -32,12 +51,12 @@ exports.getTour = (req, res) => {
   // NOTE: You could also check `if (id > tours.length)`,
   //       but that approach assumes tour IDs are perfectly sequential,
   //       which may not be true and could lead to incorrect behavior.
-  if (!tour) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
+  //   if (!tour) {
+  //     return res.status(404).json({
+  //       status: 'fail',
+  //       message: 'Invalid ID',
+  //     });
+  //   }
 
   // If found, respond with status(200)
   res.status(200).json({
@@ -95,12 +114,12 @@ exports.updateTour = (req, res) => {
   const tour = tours.find((el) => el.id === id);
 
   // Return 404 if not found
-  if (!tour) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
+  //   if (!tour) {
+  //     return res.status(404).json({
+  //       status: 'fail',
+  //       message: 'Invalid ID',
+  //     });
+  //   }
 
   // Simulate an update: override existing tour with data from req.body
   Object.assign(tour, req.body);
