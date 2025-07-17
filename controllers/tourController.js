@@ -39,30 +39,14 @@ exports.getAllTours = (req, res) => {
 
 // #: getTour
 exports.getTour = (req, res) => {
-  console.log(req.params); // Logs the dynamic ID received from the URL
-
-  // Convert the string ID from the URL into a number using *1
   const id = req.params.id * 1;
-
-  // Use Array.prototype.find() to locate the tour with the matching ID
   const tour = tours.find((el) => el.id === id);
 
-  // If no matching tour is found, respond with a 404 error
-  // NOTE: You could also check `if (id > tours.length)`,
-  //       but that approach assumes tour IDs are perfectly sequential,
-  //       which may not be true and could lead to incorrect behavior.
-  //   if (!tour) {
-  //     return res.status(404).json({
-  //       status: 'fail',
-  //       message: 'Invalid ID',
-  //     });
-  //   }
-
-  // If found, respond with status(200)
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     data: {
-      tour: tour, // They use just `tour` in modern JS
+      tour,
     },
   });
 };
@@ -97,6 +81,7 @@ exports.createTour = (req, res) => {
       // Respond with success and the newly added tour
       res.status(201).json({
         status: 'success',
+        requestedAt: req.requestTime,
         data: {
           tour: newTour,
         },
@@ -107,28 +92,15 @@ exports.createTour = (req, res) => {
 
 // #: updateTour
 exports.updateTour = (req, res) => {
-  // Convert id from string to number
   const id = req.params.id * 1;
-
-  // Find the tour by ID
   const tour = tours.find((el) => el.id === id);
 
-  // Return 404 if not found
-  //   if (!tour) {
-  //     return res.status(404).json({
-  //       status: 'fail',
-  //       message: 'Invalid ID',
-  //     });
-  //   }
-
-  // Simulate an update: override existing tour with data from req.body
   Object.assign(tour, req.body);
 
-  // Send back the updated tour
   res.status(200).json({
     status: 'success',
     data: {
-      tour: tour,
+      tour,
     },
   });
 };
@@ -136,20 +108,10 @@ exports.updateTour = (req, res) => {
 // #: deleteTour
 exports.deleteTour = (req, res) => {
   const id = req.params.id * 1;
+  const index = tours.findIndex((el) => el.id === id);
 
-  const tourIndex = tours.findIndex((el) => el.id === id);
+  tours.splice(index, 1);
 
-  if (tourIndex === -1) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
-  tours.splice(tourIndex, 1);
-
-  // 204 means No Content – don't return a body at all
-  // NOTE: Use 204 when not returning any data — it's cleaner and more RESTful for DELETE actions.
   res.status(204).json({
     status: 'success',
     data: null,
