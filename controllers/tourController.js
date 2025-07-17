@@ -11,7 +11,7 @@ exports.checkID = (req, res, next, val) => {
   const id = val * 1;
   const tour = tours.find((el) => el.id === id);
 
-  console.log(`Param Middleware tour:ID is: ${val}`); // CHECK CHECK!
+  console.log(`Param Middleware tour:ID is: ${val}`); // DEBUG:
 
   if (!tour) {
     return res.status(404).json({
@@ -23,13 +23,33 @@ exports.checkID = (req, res, next, val) => {
   next();
 };
 
+// #: checkBody Middleware
+// This middleware checks if the request body contains required fields (name and price) before creating a new tour
+exports.checkBody = (req, res, next) => {
+  // create variable for object destructuring method
+  // 1. not to repeat req.body.property(in the object arr)
+  // 2. Easier to validate multiple properties!
+  const { name, price } = req.body;
+
+  console.log(`Validation passed: name = ${name}, price = ${price}`); // DEBUG:
+
+  if (!name || !price) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Missing name or price in request body',
+    });
+  }
+
+  next();
+};
+
 // #: getAllTours route
 exports.getAllTours = (req, res) => {
-  console.log(`Time requested at the top of getAllTours ${req.requestTime}`);
+  console.log(`Time requested at the top of getAllTours ${req.requestTime}`); // DEBUG:
 
   res.status(200).json({
     status: 'success',
-    requestedAt: req.requestTime, // <-- It will also appear inside respond body
+    requestedAt: req.requestTime, // DEBUG: It will also appear inside respond body
     results: tours.length, // add .length to specify tours(arr with multiple objects)
     data: {
       tours: tours,
