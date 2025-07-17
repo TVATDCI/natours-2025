@@ -39,6 +39,7 @@ This project follows the [Natours Node.js course](https://www.udemy.com/course/n
 10. [Param Middleware in Express](#param-middleware-in-express)
 
 - [Additions For Learning & Scaling](#additions-for-learning-&-scaling)
+- [Param Middleware for ID Validation](#param-middleware-for-id-validation)
 
 ---
 
@@ -596,6 +597,36 @@ router.param('id', (req, res, next, val) => {
 ```
 
 Then in `getTour`, you can use `req.tour` instead of searching again.
+
+#### Param Middleware for ID Validation
+
+To **avoid repeating** with **DRY Method**
+
+`if (!tour)` in every route handler, ID can be extract and check into a **custom param middleware** called `checkID`.
+
+In `tourController.js`:
+
+```js
+exports.checkID = (req, res, next, val) => {
+  const id = val * 1;
+  const tour = tours.find((el) => el.id === id);
+
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  next();
+};
+```
+
+Then register router.param('paramName', callback) to, in this case, `tourRouters.js`
+
+```js
+router.param('id', tourController.checkID);
+```
 
 [Back to the top](#natours-2025)
 
