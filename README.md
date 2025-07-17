@@ -37,9 +37,9 @@ This project follows the [Natours Node.js course](https://www.udemy.com/course/n
    - [Express Middleware Flow](#express-middleware-flow)
 9. [Express Morgan in Development](#using-morgan-in-development)
 10. [Param Middleware in Express](#param-middleware-in-express)
-
-- [Additions For Learning & Scaling](#additions-for-learning-&-scaling)
-- [Param Middleware for ID Validation](#param-middleware-for-id-validation)
+    - [Additions For Learning & Scaling](#additions-for-learning--scaling)
+    - [Param Middleware for ID Validation](#param-middleware-for-id-validation)
+11. [Serving Static Files in Express](#serving-static-files-in-express)
 
 ---
 
@@ -627,6 +627,50 @@ Then register router.param('paramName', callback) to, in this case, `tourRouters
 ```js
 router.param('id', tourController.checkID);
 ```
+
+### Serving static files in Express
+
+#### `express.static()`
+
+[`express.static`](https://expressjs.com/en/starter/static-files.html) is built-in middleware function in Express to serve static files like:
+
+- HTML (e.g. overview.html, tour.html)
+- CSS
+- JavaScript (frontend)
+- Images
+- Fonts
+
+**The function signature is:**
+
+```js
+express.static(root, [options]);
+```
+
+The root argument specifies the root directory from which to serve static assets. For more information on the options argument.
+
+For example in this project:
+
+```js
+app.use(express.static(`${__dirname}/public`));
+```
+
+Now, you can load the files that are in the public directory, which is in root `__dirname`
+
+Or,
+
+```js
+app.use(express.static('public'));
+```
+
+```bash
+http://localhost:3000/static/images/kitten.jpg
+http://localhost:3000/static/css/style.css
+http://localhost:3000/static/js/app.js
+http://localhost:3000/static/images/bg.png
+http://localhost:3000/static/hello.html
+```
+
+This works without writing custom routes for each file — Express handles it for you automatically! see [express.static](https://expressjs.com/en/starter/static-files.html)
 
 [Back to the top](#natours-2025)
 
