@@ -188,19 +188,36 @@
   },
   {
     "id": 12,
-    "name": "Test tour",
-    "tourName": "Route chaining check",
-    "rating": 5,
+    "name": "updated",
+    "tourName": "updated",
+    "rating": 10,
     "guides": [
       {
-        "name": "Cregory",
-        "role": "Lead Guide"
+        "name": "updated",
+        "role": "updated"
       },
       {
-        "name": "Babsi",
-        "role": "Guide"
+        "name": "updated",
+        "role": "updated"
       }
     ],
-    "location": "App.js"
+    "location": "updated"
+  },
+  {
+    "id": 13,
+    "name": "updated",
+    "tourName": "updated",
+    "rating": 10,
+    "guides": [
+      {
+        "name": "updated",
+        "role": "updated"
+      },
+      {
+        "name": "updated",
+        "role": "updated"
+      }
+    ],
+    "location": "updated"
   }
 ]

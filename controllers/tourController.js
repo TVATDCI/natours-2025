@@ -67,7 +67,7 @@ exports.createTour = (req, res) => {
 
   // Persist the updated tours array to the JSON file
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
       // Handle potential file write errors
@@ -93,16 +93,41 @@ exports.createTour = (req, res) => {
 // #: updateTour
 exports.updateTour = (req, res) => {
   const id = req.params.id * 1;
-  const tour = tours.find((el) => el.id === id);
 
-  Object.assign(tour, req.body);
+  // Find index of the tour
+  const tourIndex = tours.findIndex((el) => el.id === id);
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
+  // No need for 404 check here — checkID already handled it!
+  //   if (tourIndex === -1) {
+  //     return res.status(404).json({
+  //       status: 'fail',
+  //       message: 'Invalid ID',
+  //     });
+  //   }
+
+  // Update the tour data at that index
+  tours[tourIndex] = { ...tours[tourIndex], ...req.body };
+
+  // Write updated data to file
+  fs.writeFile(
+    `${__dirname}/../dev-data/data/tours-simple.json`,
+    JSON.stringify(tours),
+    (err) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'error',
+          message: 'Failed to write updated tour to file',
+        });
+      }
+
+      res.status(200).json({
+        status: 'success',
+        data: {
+          tour: tours[tourIndex],
+        },
+      });
+    }
+  );
 };
 
 // #: deleteTour
