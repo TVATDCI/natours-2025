@@ -52,12 +52,21 @@ exports.getTour = (req, res) => {
 };
 
 // #: createTour
+// using POST route to add a new tour
 exports.createTour = (req, res) => {
   // console.log(req.body); // Uncomment to inspect incoming data
 
-  // using POST route to add a new tour
-  // Create a new ID by incrementing the last tour's ID
-  const newId = tours[tours.length - 1].id + 1;
+  // Create a new ID by incrementing the last tour's ID method
+  // Assuming the last tour in the array has the highest ID, which may not be true.
+  // For example, if the last tour is ID 11 but ID 13 was deleted, this will reuse ID 12 incorrectly.
+  // const newId = tours[tours.length - 1].id + 1;
+
+  // Find the max ID manually
+  // Dynamically find the highest current ID in case some tours were deleted
+  // This ensures that IDs stay unique even if they are not sequential
+
+  const maxId = tours.reduce((max, tour) => Math.max(max, tour.id), 0);
+  const newId = maxId + 1;
 
   // Merge the new ID with the incoming request body to create a new tour object
   const newTour = Object.assign({ id: newId }, req.body);
@@ -97,18 +106,19 @@ exports.updateTour = (req, res) => {
   // Find index of the tour
   const tourIndex = tours.findIndex((el) => el.id === id);
 
-  // No need for 404 check here — checkID already handled it!
-  //   if (tourIndex === -1) {
-  //     return res.status(404).json({
-  //       status: 'fail',
-  //       message: 'Invalid ID',
-  //     });
-  //   }
+  // const updatedTour = Object.assign({}, tours[tourIndex], req.body);
+  // tours[tourIndex] = updatedTour;
+
+  // NOTE: Switch merging method to "spread operator"
+  // NOTE: object spread for shallow merging
+  //Keeps old data safe if nothing is changed
+  //Updates only what was sent in req.body
+  //Avoids mutating the original object directly
 
   // Update the tour data at that index
   tours[tourIndex] = { ...tours[tourIndex], ...req.body };
 
-  // Write updated data to file
+  // Write updated data to the origin file
   fs.writeFile(
     `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
