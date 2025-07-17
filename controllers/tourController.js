@@ -133,14 +133,31 @@ exports.updateTour = (req, res) => {
 // #: deleteTour
 exports.deleteTour = (req, res) => {
   const id = req.params.id * 1;
+
+  // Find index of tour to delete (checkID already guaranteed it exists)
   const index = tours.findIndex((el) => el.id === id);
 
+  // Remove from the in-memory array
   tours.splice(index, 1);
 
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
+  // Write updated data back to file
+  fs.writeFile(
+    `${__dirname}/../dev-data/data/tours-simple.json`,
+    JSON.stringify(tours),
+    (err) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'error',
+          message: 'Failed to write deletion to file',
+        });
+      }
+
+      res.status(204).json({
+        status: 'success',
+        data: null,
+      });
+    }
+  );
 };
 
 // NOTE:OR Use 200 + message for debugging or want to inform the client about what was deleted.
