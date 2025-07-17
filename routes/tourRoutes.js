@@ -12,7 +12,7 @@ router.param('id', tourController.checkID);
 router
   .route('/') // root(/api/v1/tours)
   .get(tourController.getAllTours) // Get all tours
-  .post(tourController.createTour); // Create a new tour
+  .post(tourController.checkBody, tourController.createTour); //checkBody and Create a new tour
 
 router
   .route('/:id')
