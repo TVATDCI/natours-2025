@@ -491,6 +491,8 @@ if (process.env.NODE_ENV === 'development') {
 
 ---
 
+[Back to the top](#natours-2025)
+
 ### Param Middleware in Express
 
 Param middleware is a special type of middleware in Express that **runs automatically whenever a specific route URL parameter is present** (like `:id`).
@@ -627,6 +629,8 @@ Then register router.param('paramName', callback) to, in this case, `tourRouters
 ```js
 router.param('id', tourController.checkID);
 ```
+
+[Back to the top](#natours-2025)
 
 ### Serving static files in Express
 
