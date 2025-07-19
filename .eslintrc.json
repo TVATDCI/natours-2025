@@ -4,7 +4,7 @@
   "rules": {
     "prettier/prettier": "error",
     "spaced-comment": "off",
-    "no-console": "off", // Turn the warning on to debug and clean up console.log in production
+    "no-console": "warn", // Turn the warning on to debug and clean up console.log in production
     "consistent-return": "off",
     "func-names": "off",
     "object-shorthand": "off",
