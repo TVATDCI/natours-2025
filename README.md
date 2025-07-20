@@ -1,8 +1,55 @@
 # natours-2025
 
-## Project Setup: CommonJS First, ES Modules Later
+## Project Overview – Natours API
 
-This project follows the [Natours Node.js course](https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/) by Jonas Schmedtmann.
+This project follows the [Natours Node.js course](https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/) by [Jonas Schmedtmann](https://codingheroes.io/).
+. It is a complete Node.js backend application built during my study of the "Node.js, Express, MongoDB & More" course on Udemy. It covers all essential concepts to master full-stack backend development using modern technologies.
+
+### Learning curve
+
+- **Master the entire modern backend stack**  
+  Node.js, Express, MongoDB, and Mongoose (MongoDB JS driver)
+
+- **Real-world application from start to finish**  
+  Build a complete, beautiful, and production-ready application — including a RESTful API and server-rendered website
+
+- **Build a fast, scalable, feature-rich RESTful API**  
+  Includes filtering, sorting, pagination, and much more
+
+- **Deep understanding of Node.js internals**  
+  Learn how Node works behind the scenes (event loop, non-blocking vs blocking, streams, CommonJS modules, etc.)
+
+- **Perform CRUD operations**  
+  Using MongoDB and Mongoose
+
+- **Advanced Mongoose techniques**  
+  Dive into all the powerful features Mongoose offers
+
+- **Handle complex NoSQL data**  
+  Including geospatial data and querying
+
+- **Authentication & Authorization**  
+  Implement JWT-based login, password encryption, and password reset functionality
+
+- **Harden your app with security best practices**  
+  Including data sanitization, rate limiting, and HTTP headers
+
+- **Server-side rendering with Pug**  
+  Create dynamic views for users using Pug template engine
+
+- **Credit card payments integration**  
+  Use Stripe for processing payments securely
+
+- **File uploads and emails**  
+  Implement file upload and email sending capabilities
+
+- **Deployment to production**  
+  Learn how to deploy your app to live environments (plus a Git crash-course)
+
+- **Bonus**  
+  Includes downloadable videos, starter/finished code, and design assets
+
+---
 
 ---
 
@@ -394,7 +441,6 @@ In **Express** (and web development in general), the **request–response cycle*
 4. **Server Sends a Response**
 
 - The handler sends back a response using `res`:
-
   - A **status code** (e.g. 200 OK, 404 Not Found)
   - A **JSON** object or other content
 
