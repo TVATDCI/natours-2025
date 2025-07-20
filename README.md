@@ -90,6 +90,70 @@ This project follows the [Natours Node.js course](https://www.udemy.com/course/n
 
 ---
 
+## Folder Structure
+
+```markdown
+project-root/
+├── base/
+│ ├── appX.js
+│ ├── tourRoutesX.js
+│ └── userRoutesX.js
+├── config/
+│ └── db.js
+├── dev-data/
+│ ├── data/
+│ │ ├── reviews.json
+│ │ ├── tour5.js
+│ │ ├── tours-simple.json
+│ │ ├── tours.json
+│ │ └── users.json
+│ ├── img/
+│ │ ├── arrav.jpg
+│ │ ├── leo.jpg
+│ │ ├── monica.jpg
+│ │ ├── new-tour-1.jpg
+│ │ ├── new-tour-2.jpg
+│ │ ├── new-tour-3.jpg
+│ │ └── new-tour-4.jpg
+│ └── templates/
+│ ├── accountTemplate.pug
+│ ├── emailTemplate.pug
+│ ├── errorTemplate.pug
+│ ├── loginTemplate.pug
+│ ├── tourCardTemplate.pug
+│ └── tourTemplate.pug
+├── public/
+│ ├── css/
+│ │ └── style.css
+│ ├── img/
+│ │ ├── tours/
+│ │ ├── users/
+│ │ ├── favicon.png
+│ │ ├── icon.svg
+│ │ ├── logo-green-round.png
+│ │ ├── logo-green-small.png
+│ │ ├── logo-green.png
+│ │ ├── log-white.png
+│ │ └── pin.png
+│ ├── overview.html
+│ └── tour.html
+├── routes/
+│ ├── tourRoutes.js
+│ └── userRoutes.js
+├── .eslintrc.json
+├── .gitignore
+├── .prettierrc
+├── app.js
+├── config.env
+├── index.html
+├── package.json
+├── package-lock.json
+├── README.md
+└── server.js
+```
+
+---
+
 To stay aligned with the course content and maximize learning, I am starting the development using **CommonJS module syntax** (`require`, `module.exports`).
 
 ### Why CommonJS for Now?
