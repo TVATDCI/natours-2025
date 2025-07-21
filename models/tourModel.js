@@ -6,6 +6,9 @@ const tourSchema = new mongoose.Schema({
     required: [true, 'A tour must have a name'],
     unique: true,
   },
+  tourName: {
+    type: String,
+  },
   rating: {
     type: Number,
     default: 4.5,
