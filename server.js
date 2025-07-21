@@ -2,14 +2,13 @@ const dotenv = require('dotenv');
 
 const mongoose = require('mongoose');
 
-dotenv.config({ path: './config.env' });
-
 const connectDB = require('./config/db');
+const app = require('./app');
+
+dotenv.config({ path: './config.env' });
 
 // Call the function to connect
 connectDB();
-
-const app = require('./app');
 
 const tourSchema = new mongoose.Schema({
   name: {
