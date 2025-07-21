@@ -7,7 +7,7 @@ const router = express.Router(); // modular router
 
 // Param MIDDLEWARES to check the id
 // Register param middleware from tourController
-router.param('id', tourController.checkID);
+// router.param('id', tourController.checkID);
 
 router
   .route('/') // root(/api/v1/tours)
