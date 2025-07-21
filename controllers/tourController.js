@@ -1,37 +1,8 @@
-const Tour = require('./../models/tourModel');
+const Tour = require('../models/tourModel');
 
-// const tours = JSON.parse(
-//   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`),
-// );
-
-// #: CheckID Middleware
-// This middleware intercepts routes with :id and handles the 404 check before the final handler runs.
-// NOTE: It is also important to register param middleware (checkID) in tourRouter!
-// exports.checkID = (req, res, next, val) => {
-//   const id = val * 1;
-//   const tour = tours.find((el) => el.id === id);
-
-//   console.log(`Param Middleware tour:ID is: ${val}`); // DEBUG:
-
-//   if (!tour) {
-//     return res.status(404).json({
-//       status: 'fail',
-//       message: 'Invalid ID',
-//     });
-//   }
-
-//   next();
-// };
-
-// #: checkBody Middleware
-// This middleware checks if the request body contains required fields (name and price) before creating a new tour
+// #: Middleware: Check that request body has required fields (used only for dev/testing)
 exports.checkBody = (req, res, next) => {
-  // create variable for object destructuring method
-  // 1. not to repeat req.body.property(in the object arr)
-  // 2. Easier to validate multiple properties!
   const { name, price } = req.body;
-
-  console.log(`Validation passed: name = ${name}, price = ${price}`); // DEBUG:
 
   if (!name || !price) {
     return res.status(400).json({
@@ -43,117 +14,127 @@ exports.checkBody = (req, res, next) => {
   next();
 };
 
-// #: getAllTours route
-exports.getAllTours = (req, res) => {
-  console.log(`Time requested at the top of getAllTours ${req.requestTime}`); // DEBUG:
+// #: GET /api/v1/tours - Get all tours
+exports.getAllTours = async (req, res) => {
+  try {
+    const tours = await Tour.find();
 
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime, // DEBUG: It will also appear inside respond body
-    // results: tours.length, // add .length to specify tours(arr with multiple objects)
-    // data: {
-    //   tours: tours,
-    // },
-  });
-};
-
-// #: getTour
-exports.getTour = (req, res) => {
-  const id = req.params.id * 1;
-  //const tour = tours.find((el) => el.id === id);
-
-  //   res.status(200).json({
-  //     status: 'success',
-  //     requestedAt: req.requestTime,
-  //     data: {
-  //       tour,
-  //     },
-  //   });
-};
-
-// #: createTour
-// using POST route to add a new tour
-exports.createTour = (req, res) => {
-  // Respond with success and the newly added tour
-  res.status(201).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    // data: {
-    //   tour: newTour,
-    // },
-  });
-};
-
-// #: updateTour
-exports.updateTour = (req, res) => {
-  // const id = req.params.id * 1;
-
-  // Find index of the tour
-  // const tourIndex = tours.findIndex((el) => el.id === id);
-
-  // const updatedTour = Object.assign({}, tours[tourIndex], req.body);
-  // tours[tourIndex] = updatedTour;
-
-  // NOTE: Switch merging method to "spread operator"
-  // NOTE: object spread for shallow merging
-  //Keeps old data safe if nothing is changed
-  //Updates only what was sent in req.body
-  //Avoids mutating the original object directly
-
-  // Update the tour data at that index
-  // tours[tourIndex] = { ...tours[tourIndex], ...req.body };
-
-  // Write updated data to the origin file
-  // fs.writeFile
-//   (`${__dirname}/../dev-data/data/tours-simple.json`,
-//     JSON.stringify(tours),
-//     (err) => {
-//       if (err) {
-//         return res.status(500).json({
-//           status: 'error',
-//           message: 'Failed to write updated tour to file',
-//         });
-//       }
-
-      res.status(200).json({
-        status: 'success',
-        data: {
-          tour: '<Updated tour...>'
-      }
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      results: tours.length,
+      data: {
+        tours,
+      },
     });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
 };
 
-// #: deleteTour
-exports.deleteTour = (req, res) => {
-  //const id = req.params.id * 1;
+// #: GET /api/v1/tours/:id - Get a specific tour by ID
+exports.getTour = async (req, res) => {
+  try {
+    const tour = await Tour.findById(req.params.id);
 
-  // Find index of tour to delete (checkID already guaranteed it exists)
-  //const index = tours.findIndex((el) => el.id === id);
-
-  // Remove from the in-memory array
-  //tours.splice(index, 1);
-
-  // Write updated data back to file
-//   fs.writeFile(
-//     `${__dirname}/../dev-data/data/tours-simple.json`,
-//     JSON.stringify(tours),
-//     (err) => {
-//       if (err) {
-//         return res.status(500).json({
-//           status: 'error',
-//           message: 'Failed to write deletion to file',
-//         });
-//       }
-
-      res.status(204).json({
-        status: 'success',
-        data: null,
+    if (!tour) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Tour not found',
       });
-    },
+    }
 
-// NOTE:OR Use 200 + message for debugging or want to inform the client about what was deleted.
-//   res.status(200).json({
-//     status: 'success',
-//     message: `Tour with ID ${id} deleted successfully.`,
-//   });
-// });
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid ID format or error fetching tour',
+    });
+  }
+};
+
+// #: POST /api/v1/tours - Create a new tour
+exports.createTour = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body);
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+// #: PATCH /api/v1/tours/:id - Update an existing tour
+exports.updateTour = async (req, res) => {
+  try {
+    const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, // return updated document
+      runValidators: true, // validate update against schema
+    });
+
+    if (!updatedTour) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Tour not found',
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour: updatedTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+// #: DELETE /api/v1/tours/:id - Delete a tour
+exports.deleteTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndDelete(req.params.id);
+
+    if (!tour) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Tour not found',
+      });
+    }
+    // DEBUG: dev-testing with status(200)
+    // res.status(200).json({
+    //   status: 'success',
+    //   message: 'Tour deleted successfully',
+    // });
+
+    // NOTE: HTTP status(204) = "Request was successful, but there's no content to send back"
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
