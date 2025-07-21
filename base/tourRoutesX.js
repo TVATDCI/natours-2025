@@ -2,7 +2,7 @@ const fs = require('fs');
 const express = require('express');
 
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
+  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`),
 );
 
 // #: getAllTours route
@@ -58,7 +58,7 @@ const createTour = (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
 
   // Merge the new ID with the incoming request body to create a new tour object
-  const newTour = Object.assign({ id: newId }, req.body);
+  const newTour = { id: newId, ...req.body };
 
   // Use .push to add the new tour to the in-memory tours array
   tours.push(newTour);
@@ -83,7 +83,7 @@ const createTour = (req, res) => {
           tour: newTour,
         },
       });
-    }
+    },
   );
 };
 
