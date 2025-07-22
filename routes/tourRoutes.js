@@ -12,7 +12,7 @@ const router = express.Router(); // modular router
 router
   .route('/') // root(/api/v1/tours)
   .get(tourController.getAllTours) // Get all tours
-  .post(tourController.checkBody, tourController.createTour); //checkBody and Create a new tour
+  .post(tourController.createTour); // Create a new tour. checkBody is removed!
 
 router
   .route('/:id')

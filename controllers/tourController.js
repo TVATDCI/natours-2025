@@ -1,18 +1,8 @@
 const Tour = require('../models/tourModel');
 
 // #: Middleware: Check that request body has required fields (used only for dev/testing)
-exports.checkBody = (req, res, next) => {
-  const { name, price } = req.body;
-
-  if (!name || !price) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Missing name or price in request body',
-    });
-  }
-
-  next();
-};
+// NOTE: deleted after setting up tourModel.js
+// tourController.checkBody in tourRoutes.js must be removed as well!
 
 // #: GET /api/v1/tours - Get all tours
 exports.getAllTours = async (req, res) => {
@@ -66,6 +56,15 @@ exports.createTour = async (req, res) => {
   try {
     const newTour = await Tour.create(req.body);
 
+    // DEBUG: in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Created tour:', {
+        name: newTour.name,
+        _id: newTour._id,
+        price: newTour.price,
+      });
+    }
+
     res.status(201).json({
       status: 'success',
       data: {
@@ -92,6 +91,15 @@ exports.updateTour = async (req, res) => {
       return res.status(404).json({
         status: 'fail',
         message: 'Tour not found',
+      });
+    }
+
+    // DEBUG: in developemnt
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Updated tour:', {
+        id: updatedTour._id,
+        name: updatedTour.name,
+        price: updatedTour.price,
       });
     }
 
