@@ -56,6 +56,25 @@ exports.getTour = async (req, res) => {
 // #: POST /api/v1/tours - Create a new tour
 exports.createTour = async (req, res) => {
   try {
+    // NOTE: core concept in JavaScript and Mongoose
+    // const newTour = new Tour({})
+    // newTour.save()
+    /**
+     * Two ways to create and save a Mongoose document:
+     *
+     * 1. Manual: Instantiate and then save
+     *    const newTour = new Tour(req.body);
+     *    await newTour.save();
+     *
+     * 2. Shortcut: .create() does both in one step
+     *    const newTour = await Tour.create(req.body);
+     *
+     * Both return the saved document.
+     * Are asynchronous and should be awaited.
+     * Will trigger schema validation before writing to MongoDB.
+     */
+
+    // Shorthand using Model.create()
     const newTour = await Tour.create(req.body);
 
     // DEBUG: in development
