@@ -29,6 +29,7 @@ exports.getAllTours = async (req, res) => {
 exports.getTour = async (req, res) => {
   try {
     const tour = await Tour.findById(req.params.id);
+    // Tour.findOne({_id req.params.id})
 
     if (!tour) {
       return res.status(404).json({
@@ -37,6 +38,7 @@ exports.getTour = async (req, res) => {
       });
     }
 
+    // NOTE: request succeeds and the server returns content (usually JSON).
     res.status(200).json({
       status: 'success',
       data: {
@@ -65,12 +67,15 @@ exports.createTour = async (req, res) => {
       });
     }
 
+    // NOTE: a new resource is successfully created on the server.
     res.status(201).json({
       status: 'success',
       data: {
         tour: newTour,
       },
     });
+
+    // NOTE: The server cannot process the request because it's malformed, invalid, or logically incorrect.
   } catch (err) {
     res.status(400).json({
       status: 'fail',
@@ -88,6 +93,7 @@ exports.updateTour = async (req, res) => {
     });
 
     if (!updatedTour) {
+      // NOTE: 404 Not Found. The request was properly formed, but the resource does not exist.
       return res.status(404).json({
         status: 'fail',
         message: 'Tour not found',
@@ -109,6 +115,8 @@ exports.updateTour = async (req, res) => {
         tour: updatedTour,
       },
     });
+
+    // NOTE: The server cannot process the request because it's malformed, invalid, or logically incorrect.
   } catch (err) {
     res.status(400).json({
       status: 'fail',
