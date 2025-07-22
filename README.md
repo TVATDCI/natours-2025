@@ -89,7 +89,7 @@ This project follows the [Natours Node.js course](https://www.udemy.com/course/n
 11. [Serving Static Files in Express](#serving-static-files-in-express)
 12. [Mongoose Query Methods](#mongoose-query-methods)
     - [Chaining Queries](#chaining-queries)
-    - [Creating Documents with Mongoose](#creating-documents-ith-mongoose)
+    - [Creating Documents with Mongoose](#creating-documents-with-mongoose)
 
 ---
 
