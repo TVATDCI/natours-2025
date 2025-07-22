@@ -161,7 +161,9 @@ exports.deleteTour = async (req, res) => {
     //   message: 'Tour deleted successfully',
     // });
 
-    // NOTE: HTTP status(204) = "Request was successful, but there's no content to send back"
+    // NOTE: HTTP status(204) = No content. In RESTFUL API no data is sent back to the client in DELETE operation!
+    // #: 204 = "Request was successful, but there's no content to send back"
+    //
     res.status(204).json({
       status: 'success',
       data: null,
