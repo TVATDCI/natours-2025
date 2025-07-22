@@ -87,6 +87,8 @@ This project follows the [Natours Node.js course](https://www.udemy.com/course/n
     - [Additions For Learning & Scaling](#additions-for-learning--scaling)
     - [Param Middleware for ID Validation](#param-middleware-for-id-validation)
 11. [Serving Static Files in Express](#serving-static-files-in-express)
+12. [Mongoose Query Methods](#mongoose-query-methods)
+    - [Chaining Queries](#chaining-queries)
 
 ---
 
@@ -785,6 +787,38 @@ http://localhost:3000/static/hello.html
 ```
 
 This works without writing custom routes for each file — Express handles it for you automatically! see [express.static](https://expressjs.com/en/starter/static-files.html)
+
+---
+
+### Mongoose Query Methods
+
+Mongoose provides powerful query methods to interact with MongoDB documents. Some common examples include:
+
+- `Model.find()`
+- `Model.findById()`
+- `Model.findOne()`
+- `Model.findByIdAndUpdate()`
+- `Model.findByIdAndDelete()`
+
+These methods allow you to perform CRUD operations efficiently and are commonly used in controllers.
+
+These methods are async and return query objects you can chain with additional helpers like `sort()`, `limit()`, and `select()`.
+
+#### Chaining Queries
+
+**example:**
+
+```js
+// Get top 5 cheapest tours
+const topCheapTours = await Tour.find()
+  .sort('price') // Sort by ascending price
+  .limit(5) // Only return 5 documents
+  .select('name price rating'); // Return only these fields
+
+console.log(topCheapTours);
+```
+
+**Learn more:** [Mongoose Query Documentation](https://mongoosejs.com/docs/queries.html)
 
 [Back to the top](#natours-2025)
 
