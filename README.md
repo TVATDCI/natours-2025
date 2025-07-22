@@ -818,6 +818,57 @@ const topCheapTours = await Tour.find()
 console.log(topCheapTours);
 ```
 
+#### Creating Documents with Mongoose
+
+**Core concept in JavaScript and Mongoose**
+The fundamentals of how it breaks down and how it's related to JavaScript and Mongoose query methods:
+
+```js
+// This approach (Instantiate and Save Manually) reflects core JavaScript OOP principles (like creating an instance of a class).
+// It gives a full control over the document before saving.
+const newTour = new Tour(req.body);
+await newTour.save();
+
+// Shorthand using Model.create()
+// This is syntactic sugar for creating and saving in one line.
+// It's clean, concise, and recommended for most use cases.
+const newTour = await Tour.create(req.body);
+```
+
+#### NOTE:
+
+1. **JavaScript Object Instantiation**
+
+- `new Tour(req.body)` is creating a new instance of the `Tour` model (like instantiating a class in JS).
+
+- It's a good way to understand object-oriented programming in JS and how models in Mongoose map to documents in MongoDB.
+
+2. **Method Chaining and Async**
+
+- `.save()` is a method available on a document instance. It returns a Promise, which is why you're using await.
+- `Tour.create()` is a shortcut that combines both `new Tour()` and `.save()` internally. It’s cleaner and more concise.
+
+3. **Mongoose Abstraction Layer**
+
+- Mongoose abstracts the low-level MongoDB driver calls (like `db.collection.insertOne(...)`) into these high-level, chainable, JavaScript-friendly methods.
+
+```js
+/**
+ * Two ways to create and save a Mongoose document:
+ *
+ * 1. Manual: Instantiate and then save
+ *    const newTour = new Tour(req.body);
+ *    await newTour.save();
+ *
+ * 2. Shortcut: .create() does both in one step
+ *    const newTour = await Tour.create(req.body);
+ *
+ * Both return the saved document.
+ * Are asynchronous and should be awaited.
+ * Will trigger schema validation before writing to MongoDB.
+ */
+```
+
 **Learn more:** [Mongoose Query Documentation](https://mongoosejs.com/docs/queries.html)
 
 [Back to the top](#natours-2025)
