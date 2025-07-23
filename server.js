@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 // const mongoose = require('mongoose');
+dotenv.config({ path: './config.env' }); // Load env vars FIRST
 const connectDB = require('./config/db');
 const app = require('./app');
 
