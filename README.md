@@ -2,10 +2,14 @@
 
 ## Project Overview – Natours API
 
-This project follows the [Natours Node.js course](https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/) by [Jonas Schmedtmann](https://codingheroes.io/).
-. It is a complete Node.js backend application built during my study of the "Node.js, Express, MongoDB & More" course on Udemy. It covers all essential concepts to master full-stack backend development using modern technologies.
+[Natours Node.js course](https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/) by [Jonas Schmedtmann](https://codingheroes.io/).
+I value this project as a deep dive into building a **real-world, production-ready Node.js application** using **modern backend tools** like **Express, MongoDB,** and **Mongoose**. Along the way, including, clean API architect, powerful, and ready to scale.. It covers all essential concepts to master full-stack backend development using modern technologies.
 
-### Learning curve
+**Natours** isn't a brand new project around. However, it also has the approach and introduces me to **enterprise-level structure**. Its core feature gives an Opportunity to develop it into a modern real world app. It gives me that feels like: **practical, grounded, and developer-focused**
+
+**What am i doing?**
+
+#### Recap & Develop!
 
 - **Master the entire modern backend stack**  
   Node.js, Express, MongoDB, and Mongoose (MongoDB JS driver)
@@ -14,13 +18,19 @@ This project follows the [Natours Node.js course](https://www.udemy.com/course/n
   Build a complete, beautiful, and production-ready application — including a RESTful API and server-rendered website
 
 - **Build a fast, scalable, feature-rich RESTful API**  
-  Includes filtering, sorting, pagination, and much more
+  Create a modular, well-structured API for tours, users, reviews, and bookings. Includes Middleware chaining, Model validation.
+
+- **Advanced Query Handling**
+  Add filtering, sorting, pagination, and field limiting using query string manipulation and Mongoose features.
+
+- **Robust Error Handling**
+  Implement centralized error management using custom error classes and Express middleware.
 
 - **Deep understanding of Node.js internals**  
   Learn how Node works behind the scenes (event loop, non-blocking vs blocking, streams, CommonJS modules, etc.)
 
-- **Perform CRUD operations**  
-  Using MongoDB and Mongoose
+- **CRUD Operations with Mongoose**  
+  Perform full create, read, update, and delete logic with MongoDB through Mongoose models.
 
 - **Advanced Mongoose techniques**  
   Dive into all the powerful features Mongoose offers
@@ -29,13 +39,13 @@ This project follows the [Natours Node.js course](https://www.udemy.com/course/n
   Including geospatial data and querying
 
 - **Authentication & Authorization**  
-  Implement JWT-based login, password encryption, and password reset functionality
+  Implement JWT-based login, password encryption, password reset functionality and access control for protected routes.
 
-- **Harden your app with security best practices**  
-  Including data sanitization, rate limiting, and HTTP headers
+- **Securing the app with security best practices**  
+  Including data sanitization, add protections such as rate limiting, HTTP headers, NoSQL injection protection.
 
 - **Server-side rendering with Pug**  
-  Create dynamic views for users using Pug template engine
+  Create & Build dynamic HTML pages from templates using Express and Pug template engine
 
 - **Credit card payments integration**  
   Use Stripe for processing payments securely
@@ -44,12 +54,19 @@ This project follows the [Natours Node.js course](https://www.udemy.com/course/n
   Implement file upload and email sending capabilities
 
 - **Deployment to production**  
-  Learn how to deploy your app to live environments (plus a Git crash-course)
-
-- **Bonus**  
-  Includes downloadable videos, starter/finished code, and design assets
+  Deploy your Node.js app to production using tools like Render, and configure environment variables securely.
 
 ---
+
+#### Technologies Used
+
+- **Node.js** – Backend JavaScript runtime
+- **Express** – Web framework for routing and middleware
+- **MongoDB** & Mongoose – NoSQL database and ODM
+- **Pug** – Template engine for server-side rendering
+- **Stripe API** – Payment processing (optional)
+- **JWT & bcrypt** – Authentication and password hashing
+- **Postman** – API testing
 
 ---
 
@@ -159,13 +176,13 @@ project-root/
 
 To stay aligned with the course content and maximize learning, I am starting the development using **CommonJS module syntax** (`require`, `module.exports`).
 
-### Why CommonJS for Now?
+#### Why CommonJS for Now?
 
 - **Beginner-Friendly:** Easier to grasp while learning core Node.js concepts like routing, middleware, and MVC structure.
 - **Matches the Course:** Staying consistent with the instructor helps avoid unnecessary friction or confusion.
 - **Stable Ecosystem Support:** CommonJS is mature and well-supported across the Node.js ecosystem.
 
-### Plan Going Forward
+#### Plan Going Forward
 
 We’re developing in the `commonJs` branch, step-by-step with the course. After completing each section, we’ll open a pull request into `main`.
 
@@ -176,7 +193,7 @@ Once the course is complete, we plan to
 - Modernize the codebase for production-readines
   This approach gives us both a **solid foundation** and a **modern development path**.
 
-## What is an API?
+### What is an API?
 
 **API** stands for **Application Programming Interface**.
 
@@ -250,7 +267,7 @@ Resources are usually returned in **JSON format**, and identified by **URLs** (c
 
 ---
 
-### Example: Tour API
+#### Example: Tour API
 
 If we were building a tour-related REST API, with **HTTP Methods**. **POST-GET-PUT-PATCH-DELETE**
 
@@ -410,7 +427,7 @@ For example:
 
 ---
 
-### Why Stateless?
+#### Why Stateless?
 
 - **Scalability**: Easier to scale horizontally (across multiple servers)
 - **Reliability**: Each request can be retried without depending on past state
