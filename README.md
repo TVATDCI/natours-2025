@@ -459,6 +459,18 @@ It’s a design pattern used to organize your code, especially in server-side ap
 
 ---
 
+Typical **MVC-style flow** (Model–View–Controller)
+
+```scss
+Client (Postman/browser)
+   ↓
+Express Route (app.js → tourRoutes.js)
+   ↓
+Controller (tourController.js)
+   ↓
+Model (tourModel.js → MongoDB via Mongoose)
+```
+
 #### (API-only project):
 
 It is often called a **"RESTful API (MVC-light)"** — where **V (View)** is not needed, and you mainly have:
@@ -560,7 +572,7 @@ app.get('/', (req, res) => {
 
 ---
 
-### Using Morgan in Development
+#### Using Morgan in Development
 
 As a HTTP request logger middleware for Node.js and Express. It logs details of incoming requests in a readable format, which is especially useful during development.
 
