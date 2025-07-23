@@ -10,8 +10,11 @@ exports.getAllTours = async (req, res) => {
     // TEST: req.query
     console.log(req.query);
 
-    // TEST: { duration: 7, difficulty: 'medium' }
-    const tours = await Tour.find({ duration: 7, difficulty: 'medium' });
+    // TEST: use the query string directly with queryObj
+    const queryObj = { ...req.query }; // make a shallow copy
+    console.log('Filtering with:', queryObj);
+
+    const tours = await Tour.find(queryObj);
 
     res.status(200).json({
       status: 'success',
