@@ -1,4 +1,4 @@
-// sample-query-sanitization
+// query-sanitization
 
 // module.exports = (req, res, next) => {
 //   Object.entries(req.query).forEach(([key, value]) => {
