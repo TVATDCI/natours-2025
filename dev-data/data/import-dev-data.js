@@ -9,45 +9,52 @@ dotenv.config({ path: './config.env' });
 const connectDB = async () => {
   try {
     const DB = await mongoose.connect(process.env.MONGO_URL);
-    console.log(`mongoDB connected ${DB.connection.host}`);
+    console.log(`MongoDB connected: ${DB.connection.host}`);
   } catch (error) {
     console.error(`MongoDB connection error: ${error.message}`);
     process.exit(1);
   }
 };
 
-// READ JSON FILE
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'),
-);
+let tours = [];
+try {
+  tours = JSON.parse(
+    fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'),
+  );
+} catch (err) {
+  console.error('Failed to read or parse tours JSON:', err.message);
+  process.exit(1);
+}
 
-// IMPORT DATA INTO DB
-const importData = async (req, res) => {
+const importData = async () => {
   try {
     await Tour.create(tours);
     console.log('Data loaded successfully');
   } catch (err) {
-    console.log(err);
+    console.error('Failed to import data:', err.message);
   }
 };
 
-// DELETE DATA FROM COLLECTION
-const deleteData = async (req, res) => {
+const deleteData = async () => {
   try {
     await Tour.deleteMany();
     console.log('Data deleted successfully');
   } catch (err) {
-    console.log(err);
+    console.error('Failed to delete data:', err.message);
   }
 };
 
 const seeder = async () => {
   await connectDB();
 
-  if (process.argv[2] === '--import') {
+  const command = process.argv[2];
+
+  if (command === '--import') {
     await importData();
-  } else if (process.argv[2] === '--delete') {
+  } else if (command === '--delete') {
     await deleteData();
+  } else {
+    console.log('\nPlease use --import or --delete as a command\n');
   }
 
   process.exit();
