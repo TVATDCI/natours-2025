@@ -3,6 +3,7 @@
 ## Project Overview – Natours API
 
 [Natours Node.js course](https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/) by [Jonas Schmedtmann](https://codingheroes.io/).
+
 I value this project as a deep dive into building a **real-world, production-ready Node.js application** using **modern backend tools** like **Express, MongoDB,** and **Mongoose**. Along the way, including, clean API architect, powerful, and ready to scale.. It covers all essential concepts to master full-stack backend development using modern technologies.
 
 **Natours** isn't a brand new project around. However, it also has the approach and introduces me to **enterprise-level structure**. Its core feature gives an Opportunity to develop it into a modern real world app. It gives me that feels like: **practical, grounded, and developer-focused**
