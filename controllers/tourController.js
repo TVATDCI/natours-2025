@@ -7,9 +7,11 @@ const Tour = require('../models/tourModel');
 // #: GET /api/v1/tours - Get all tours
 exports.getAllTours = async (req, res) => {
   try {
+    // TEST: req.query
     console.log(req.query);
 
-    const tours = await Tour.find();
+    // TEST: { duration: 7, difficulty: 'medium' }
+    const tours = await Tour.find({ duration: 7, difficulty: 'medium' });
 
     res.status(200).json({
       status: 'success',
