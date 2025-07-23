@@ -47,6 +47,10 @@ const deleteData = async () => {
 const seeder = async () => {
   await connectDB();
 
+  // DEBUG: logs here
+  console.log('Full argv array:', process.argv);
+  console.log('Your command was:', process.argv[2]);
+
   const command = process.argv[2];
 
   if (command === '--import') {
