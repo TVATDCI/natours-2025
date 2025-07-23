@@ -1,6 +1,6 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
-const sanitizeQuery = require('../middleware/sanitizeQuery');
+// const sanitizeQuery = require('../middleware/sanitizeQuery'); // clean query parameters in routes level!
 
 // declare and define the Routers before mounting!
 // logic: create routers for all routes and turn them into mini Express apps then mount them into the ROUTER below!
@@ -12,7 +12,7 @@ const router = express.Router(); // modular router
 
 router
   .route('/') // root(/api/v1/tours)
-  .get(sanitizeQuery, tourController.getAllTours) // Get all tours
+  .get(tourController.getAllTours) // Get all tours. sanitizeQuery, removed for now
   .post(tourController.createTour); // Create a new tour. checkBody is removed!
 
 router
@@ -25,7 +25,7 @@ module.exports = router;
 
 /**
  * Avoiding repeating tourController by destructuring Object method! DRY 
- * I would!
+ * 
  * const express = require('express');
 const {
   getAllTours,

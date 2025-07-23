@@ -2,7 +2,7 @@ const express = require('express');
 
 const morgan = require('morgan');
 
-const sanitizeQuery = require('./middleware/sanitizeQuery');
+// const sanitizeQuery = require('./middleware/sanitizeQuery'); // clean query parameters in G scope
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json());
-app.use(sanitizeQuery);
+// app.use(sanitizeQuery);
 app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
