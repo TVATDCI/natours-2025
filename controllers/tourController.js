@@ -7,13 +7,20 @@ const Tour = require('../models/tourModel');
 // #: GET /api/v1/tours - Get all tours
 exports.getAllTours = async (req, res) => {
   try {
-    // TEST: req.query
-    console.log(req.query);
+    // Use destructuring (spread opt) to create a shallow copy of req.query so we can modify it safely
+    const queryObj = { ...req.query };
 
-    // TEST: dynamic query with queryObj based on user req!
-    const queryObj = { ...req.query }; // make a shallow copy of user request
+    // Define fields to exclude from filtering (used later for pagination, sorting and more)
+    const excludeFields = ['page', 'sort', 'limit', 'fields'];
+
+    // Remove those excluded fields from queryObj
+    excludeFields.forEach((field) => delete queryObj[field]);
+
+    // DEBUG: Log incoming query and the filtered query object
+    console.log('Raw query:', req.query);
     console.log('Filtering with queryObj:', queryObj);
 
+    // Perform the database query using only valid filter fields
     const tours = await Tour.find(queryObj);
 
     // NOTE: or as usual.
