@@ -902,6 +902,91 @@ const newTour = await Tour.create(req.body);
 
 **Learn more:** [Mongoose Query Documentation](https://mongoosejs.com/docs/queries.html)
 
+### Dynamic Filtering with `queryObj`
+
+In the `getAllTours` controller, implementing **dynamic filtering** based on the query parameters provided by the user via the URL. This allows for a flexible API that users can customize.
+
+**example:**
+
+```bash
+GET /api/v1/tours?duration=5&difficulty=easy
+```
+
+#### The flow of dynamic filtering
+
+Clone the request query object with spread opt:
+
+```js
+const queryObj = { ...req.query };
+```
+
+This creates a **shallow copy** of the query so we can manipulate it without affecting the original `req.query`.
+
+Next, Define fields by destructuring the obj to variable(excludeFields) to exclude **not used for filtering**, such as pagination or sorting:
+
+```js
+const excludeFields = ['page', 'sort', 'limit', 'fields'];
+```
+
+Then remove those fields from the `queryObj`:
+
+```js
+excludeFields.forEach((el) => delete queryObj[el]);
+```
+
+Finally, pass the cleaned `queryObj` into the Mongoose `find()` method:
+
+```js
+const tours = await Tour.find(queryObj);
+```
+
+This ensures only the relevant fields (like `difficulty` or `duration`) are used to query the database.
+
+---
+
+**Example**
+
+**Request:**
+
+```bash
+GET /api/v1/tours?difficulty=easy&page=2&sort=1&limit=10
+```
+
+**Logs:**
+
+```js
+req.query: {
+  difficulty: 'easy',
+  page: '2',
+  sort: '1',
+  limit: '10'
+}
+
+queryObj: {
+  difficulty: 'easy'
+}
+```
+
+Only `difficulty` is used for filtering, while `page`, `sort`, and `limit` are handled by other features in the pipeline (like pagination and sorting).
+
+---
+
+#### What it does!
+
+This pattern ensures:
+
+- Clean and secure database queries
+- Better separation of concerns between filtering and other query features
+- More control over how users can interact with the API
+
+**Importantly it lays the foundation for additional features later.**
+
+such as:
+
+- Sorting
+- Pagination
+- Field limiting
+
 [Back to the top](#natours-2025)
 
 ```
