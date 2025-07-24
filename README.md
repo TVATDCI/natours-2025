@@ -108,6 +108,8 @@ I value this project as a deep dive into building a **real-world, production-rea
 12. [Mongoose Query Methods](#mongoose-query-methods)
     - [Chaining Queries](#chaining-queries)
     - [Creating Documents with Mongoose](#creating-documents-with-mongoose)
+13. [Dynamic Filtering with queryObj](#dynamic-filtering-with-queryobj)
+    - [The flow of dynamic filtering](#the-flow-of-dynamic-filtering)
 
 ---
 
