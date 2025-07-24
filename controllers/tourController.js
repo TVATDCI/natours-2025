@@ -10,16 +10,27 @@ exports.getAllTours = async (req, res) => {
     // TEST: req.query
     console.log(req.query);
 
-    // TEST: use the query string directly with queryObj
-    // const queryObj = { ...req.query }; // make a shallow copy
-    // console.log('Filtering with:', queryObj);
+    // TEST: dynamic query with queryObj based on user req!
+    const queryObj = { ...req.query }; // make a shallow copy of user request
+    console.log('Filtering with queryObj:', queryObj);
 
-    // const tours = await Tour.find(queryObj);
-    // NOTE: Hard coded MongoDB query
-    const tours = await Tour.find({
-      duration: 7,
-      difficulty: 'medium',
-    });
+    const tours = await Tour.find(queryObj);
+
+    // NOTE: or as usual.
+    // const tours = await Tour.find(req.query);
+
+    // TEST: Hard coded MongoDB query
+    // const tours = await Tour.find({
+    //   duration: 7,
+    //   difficulty: 'medium',
+    // });
+
+    // TEST: Special mongoose query chaining!?!
+    // const tours = await Tour.find()
+    //   .where('duration')
+    //   .equals(5)
+    //   .where('difficulty')
+    //   .equals('easy');
 
     res.status(200).json({
       status: 'success',
