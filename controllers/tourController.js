@@ -11,24 +11,22 @@ exports.getAllTours = async (req, res) => {
     // ======================================
     // NOTE: BUILD QUERY
     // ======================================
-    // LEARN: 1A) — Basic Filtering
-    // Use (spread opt) to clone the request query to allow safe modification
+    // STEP 1A: Basic Filtering
+    // Create a shallow copy of req.query to safely modify it
     const queryObj = { ...req.query };
 
-    // Define fields by destructuring the obj to variable(excludeFields)to exclude from filtering (used later for pagination, sorting and more)
+    // Define fields to exclude from filtering (used for other features like pagination, sorting, etc.)
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
-
-    // Remove those excluded fields from queryObj
     excludeFields.forEach((field) => delete queryObj[field]);
 
-    // LEARN: 1B) - Advanced Filtering (e.g., gte, lte) MongoDB syntax
-    // Convert queryObj to a string with .stringify
+    // STEP 1B: Advanced Filtering
+    // Convert queryObj to a JSON string
     let queryStr = JSON.stringify(queryObj);
 
-    // Replace advanced filter operators with MongoDB syntax ($gte, $lt, etc.)
+    // Replace MongoDB operators (gte, gt, lte, lt) with $ prefix (e.g., $gte)
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-    // Parse the modified string back into an object and call it advancedFilter
+    // Parse back into an object
     const advancedFilter = JSON.parse(queryStr);
     console.log('Parsed filter:', advancedFilter);
 
@@ -46,12 +44,19 @@ exports.getAllTours = async (req, res) => {
 
     // const query = Tour.find(queryObj);
     // put the obj into back into query - ready for the execution!
-    // Change constant (const) to let - for sorting(.sort)
+
+    // STEP 1C: Create Mongoose Query Object
+    // Use `let` to allow chaining methods like `.sort()`, `.limit()` later
     let query = Tour.find(advancedFilter); // has been parsed on line: 32
 
-    // LEARN: 2) sorting
+    // ======================================
+    // STEP 2: SORTING
+    // ======================================
     if (req.query.sort) {
-      query = query.sort(req.query.sort);
+      // Support multi-field sorting: ?sort=price,ratingsAverage
+      const sortBy = req.query.sort.split(',').join(' ');
+      console.log('Sorting by:', sortBy);
+      query = query.sort(sortBy);
     }
     // ======================================
     // NOTE: EXECUTE QUERY
