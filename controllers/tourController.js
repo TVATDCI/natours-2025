@@ -7,23 +7,23 @@ const Tour = require('../models/tourModel');
 // #: GET /api/v1/tours - Get all tours
 exports.getAllTours = async (req, res) => {
   try {
-    // Use destructuring (spread opt) to create a shallow copy of req.query so we can modify it safely
+    // NOTE: BUILD QUERY --------------------------------------
+    // Use (spread opt) to create a shallow copy of req.query into Obj so it can be modified safely
     const queryObj = { ...req.query };
 
-    // Define fields to exclude from filtering (used later for pagination, sorting and more)
+    // Define fields by destructuring the obj to variable(excludeFields)to exclude from filtering (used later for pagination, sorting and more)
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
 
     // Remove those excluded fields from queryObj
     excludeFields.forEach((field) => delete queryObj[field]);
 
     // DEBUG: Log incoming query and the filtered query object
-    console.log('Raw query:', req.query);
-    console.log('Filtering with queryObj:', queryObj);
+    // console.log('Raw query:', req.query);
+    // console.log('Filtering with queryObj:', queryObj);
 
-    // Perform the database query using only valid filter fields
-    const tours = await Tour.find(queryObj);
+    const query = Tour.find(queryObj);
 
-    // NOTE: or as usual.
+    // TEST: or as usual.
     // const tours = await Tour.find(req.query);
 
     // TEST: Hard coded MongoDB query
@@ -39,6 +39,11 @@ exports.getAllTours = async (req, res) => {
     //   .where('difficulty')
     //   .equals('easy');
 
+    // NOTE: EXECUTE --------------------------------------
+
+    const tours = await query;
+
+    // NOTE: SEND RESPOND -------------------------------------
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,
