@@ -9,8 +9,9 @@ exports.getAllTours = async (req, res) => {
   console.log('Raw query:', req.query);
   try {
     // ======================================
-    // NOTE: BUILD QUERY — Basic Filtering
+    // NOTE: BUILD QUERY
     // ======================================
+    // LEARN: 1A) — Basic Filtering
     // Use (spread opt) to clone the request query to allow safe modification
     const queryObj = { ...req.query };
 
@@ -20,9 +21,7 @@ exports.getAllTours = async (req, res) => {
     // Remove those excluded fields from queryObj
     excludeFields.forEach((field) => delete queryObj[field]);
 
-    // ======================================
-    // NOTE: Advanced Filtering (e.g., gte, lte) MongoDB syntax
-    // ======================================
+    // LEARN: 1B) - Advanced Filtering (e.g., gte, lte) MongoDB syntax
     // Convert queryObj to a string with .stringify
     let queryStr = JSON.stringify(queryObj);
 
@@ -47,8 +46,13 @@ exports.getAllTours = async (req, res) => {
 
     // const query = Tour.find(queryObj);
     // put the obj into back into query - ready for the execution!
-    const query = Tour.find(advancedFilter);
+    // Change constant (const) to let - for sorting(.sort)
+    let query = Tour.find(advancedFilter); // has been parsed on line: 32
 
+    // LEARN: 2) sorting
+    if (req.query.sort) {
+      query = query.sort(req.query.sort);
+    }
     // ======================================
     // NOTE: EXECUTE QUERY
     // ======================================
