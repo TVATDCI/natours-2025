@@ -6,9 +6,12 @@ const Tour = require('../models/tourModel');
 
 // #: GET /api/v1/tours - Get all tours
 exports.getAllTours = async (req, res) => {
+  console.log('Raw query:', req.query);
   try {
-    // NOTE: BUILD QUERY --------------------------------------
-    // Use (spread opt) to create a shallow copy of req.query into Obj so it can be modified safely
+    // ======================================
+    // NOTE: BUILD QUERY — Basic Filtering
+    // ======================================
+    // Use (spread opt) to clone the request query to allow safe modification
     const queryObj = { ...req.query };
 
     // Define fields by destructuring the obj to variable(excludeFields)to exclude from filtering (used later for pagination, sorting and more)
@@ -17,13 +20,23 @@ exports.getAllTours = async (req, res) => {
     // Remove those excluded fields from queryObj
     excludeFields.forEach((field) => delete queryObj[field]);
 
+    // ======================================
+    // NOTE: Advanced Filtering (e.g., gte, lte) MongoDB syntax
+    // ======================================
+    // Convert queryObj to a string
+    let queryStr = JSON.stringify(queryObj);
+
+    // Replace advanced filter operators with MongoDB syntax ($gte, $lt, etc.)
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    // Parse the modified string back into an object and call it advancedFilter
+    const advancedFilter = JSON.parse(queryStr);
+    console.log('Parsed filter:', advancedFilter);
+
     // DEBUG: Log incoming query and the filtered query object
-    // console.log('Raw query:', req.query);
     // console.log('Filtering with queryObj:', queryObj);
 
-    const query = Tour.find(queryObj);
-
-    // TEST: or as usual.
+    // TEST: Mongoose Query Method
     // const tours = await Tour.find(req.query);
 
     // TEST: Hard coded MongoDB query
@@ -32,6 +45,15 @@ exports.getAllTours = async (req, res) => {
     //   difficulty: 'medium',
     // });
 
+    // const query = Tour.find(queryObj);
+    // Turn queryObj into queryStr(AKA advancedFilter) for advanced filtering!
+    const query = Tour.find(JSON.parse(advancedFilter));
+
+    // ======================================
+    // NOTE: EXECUTE QUERY
+    // ======================================
+    const tours = await query;
+
     // TEST: Special mongoose query chaining!?!
     // const tours = await Tour.find()
     //   .where('duration')
@@ -39,11 +61,9 @@ exports.getAllTours = async (req, res) => {
     //   .where('difficulty')
     //   .equals('easy');
 
-    // NOTE: EXECUTE --------------------------------------
-
-    const tours = await query;
-
-    // NOTE: SEND RESPOND -------------------------------------
+    // ======================================
+    // NOTE: SEND RESPONSE
+    // ======================================
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,
