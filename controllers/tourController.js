@@ -23,7 +23,7 @@ exports.getAllTours = async (req, res) => {
     // ======================================
     // NOTE: Advanced Filtering (e.g., gte, lte) MongoDB syntax
     // ======================================
-    // Convert queryObj to a string
+    // Convert queryObj to a string with .stringify
     let queryStr = JSON.stringify(queryObj);
 
     // Replace advanced filter operators with MongoDB syntax ($gte, $lt, etc.)
@@ -46,8 +46,8 @@ exports.getAllTours = async (req, res) => {
     // });
 
     // const query = Tour.find(queryObj);
-    // Turn queryObj into queryStr(AKA advancedFilter) for advanced filtering!
-    const query = Tour.find(JSON.parse(advancedFilter));
+    // put the obj into back into query - ready for the execution!
+    const query = Tour.find(advancedFilter);
 
     // ======================================
     // NOTE: EXECUTE QUERY
