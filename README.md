@@ -8,54 +8,48 @@ I value this project as a deep dive into building a **real-world, production-rea
 
 **Natours** isn't a brand new project around. However, it also has the approach and introduces me to **enterprise-level structure**. Its core feature gives an Opportunity to develop it into a modern real world app. It gives me that feels like: **practical, grounded, and developer-focused**
 
-**What am i doing?**
+### What Am I Doing?
 
-#### Recap & Develop!
+#### Recap & Current Development Goals
 
-- **Master the entire modern backend stack**  
-  Node.js, Express, MongoDB, and Mongoose (MongoDB JS driver)
+- **Master the complete modern backend stack**  
+  Working with Node.js, Express, MongoDB, and Mongoose to build efficient, scalable web services.
 
-- **Real-world application from start to finish**  
-  Build a complete, beautiful, and production-ready application — including a RESTful API and server-rendered website
+- **Build a production-ready application from scratch**  
+  Designing and developing a full-stack app, including a RESTful API and server-rendered frontend (Pug).
 
-- **Build a fast, scalable, feature-rich RESTful API**  
-  Create a modular, well-structured API for tours, users, reviews, and bookings. Includes Middleware chaining, Model validation.
+- **Develop a powerful RESTful API**  
+  Creating modular, structured APIs for tours, users, reviews, and bookings — using middleware, validation, and advanced routing techniques.
 
-- **Advanced Query Handling**
-  Add filtering, sorting, pagination, and field limiting using query string manipulation and Mongoose features.
+- **Implement advanced query features**  
+  Enable filtering, sorting, pagination, and field limiting via query strings and Mongoose capabilities.
 
-- **Robust Error Handling**
-  Implement centralized error management using custom error classes and Express middleware.
+- **Robust error handling**  
+  Centralized error management with custom error classes and Express middleware.
 
-- **Deep understanding of Node.js internals**  
-  Learn how Node works behind the scenes (event loop, non-blocking vs blocking, streams, CommonJS modules, etc.)
+- **Understand Node.js under the hood**  
+  Deep-dive into Node's core concepts: event loop, asynchronous/non-blocking I/O, modules, and streams.
 
-- **CRUD Operations with Mongoose**  
-  Perform full create, read, update, and delete logic with MongoDB through Mongoose models.
+- **CRUD operations and advanced Mongoose**  
+  Full create, read, update, delete functionality + schema validation, virtuals, and middleware.
 
-- **Advanced Mongoose techniques**  
-  Dive into all the powerful features Mongoose offers
-
-- **Handle complex NoSQL data**  
-  Including geospatial data and querying
+- **Work with complex NoSQL data**  
+  Including geospatial data, embedded/nested documents, and custom aggregation pipelines.
 
 - **Authentication & Authorization**  
-  Implement JWT-based login, password encryption, password reset functionality and access control for protected routes.
+  Secure routes with JWT-based auth, hashed passwords, and user role permissions.
 
-- **Securing the app with security best practices**  
-  Including data sanitization, add protections such as rate limiting, HTTP headers, NoSQL injection protection.
+- **Security best practices**  
+  Sanitize data, prevent NoSQL injection, XSS, and use rate limiting and secure HTTP headers.
 
-- **Server-side rendering with Pug**  
-  Create & Build dynamic HTML pages from templates using Express and Pug template engine
+- **Handle file uploads and emails**  
+  Add functionality for uploading files (images) and sending transactional emails.
 
-- **Credit card payments integration**  
-  Use Stripe for processing payments securely
+- **Credit card payments with Stripe**  
+  Integrate Stripe for secure payment processing.
 
-- **File uploads and emails**  
-  Implement file upload and email sending capabilities
-
-- **Deployment to production**  
-  Deploy your Node.js app to production using tools like Render, and configure environment variables securely.
+- **Deploy to production**  
+  Deploy the app using Render or similar platforms with secure environment configuration.
 
 ---
 
@@ -189,7 +183,7 @@ To stay aligned with the course content and maximize learning, I am starting the
 
 #### Plan Going Forward
 
-We’re developing in the `commonJs` branch, step-by-step with the course. After completing each section, we’ll open a pull request into `main`.
+My plan is to start developing in the `commonJs` branch, step-by-step with the course. After completing each section, i’ll open a pull request into `main`.
 
 Once the course is complete, we plan to
 
@@ -274,7 +268,7 @@ Resources are usually returned in **JSON format**, and identified by **URLs** (c
 
 #### Example: Tour API
 
-If we were building a tour-related REST API, with **HTTP Methods**. **POST-GET-PUT-PATCH-DELETE**
+If i were building a tour-related REST API, with **HTTP Methods**. **POST-GET-PUT-PATCH-DELETE**
 
 - `POST /api/v1/tours` → Add a new tour **C**reate
 - `GET /api/v1/tours` → Get all tours **R**ead
@@ -1046,6 +1040,31 @@ GET /api/v1/tours?duration[gte]=5&difficulty=easy&sort=-ratingsAverage,price
 
 - Filter for tours with duration >= 5 and difficulty=easy
 - Sort them by highest ratingsAverage, then lowest price
+
+**sorting default to the date of the document created**
+
+If the user does **not** provide a `?sort=` parameter in the request, the API automatically applies a default sort order:
+
+- If the user sends ?sort=price,ratingAverage, it sorts by both.
+- If no sort parameter is provided, it defaults to createdAt (latest first).
+
+```js
+if (req.query.sort) {
+  // Support multi-field sorting from query string(queryStr): ?sort=price,ratingsAverage
+  const sortBy = req.query.sort.split(',').join(' ');
+  console.log('Sorting by:', sortBy);
+  query = query.sort(sortBy);
+} else {
+  // set default to the time document were created in DESC order
+  query = query.sort('-createdAt');
+}
+```
+
+It ensures the newest tours (or documents) are returned first.
+
+- `GET /api/v1/tours?sort=price` → Sort by price ascending
+- `GET /api/v1/tours?sort=-ratingsAverage,-price` → Highest rated & most expensive
+- `GET /api/v1/tours` → Defaults to `createdAt` (most recent documents first)
 
 **This modular query system allows:**
 
