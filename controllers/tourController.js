@@ -53,10 +53,13 @@ exports.getAllTours = async (req, res) => {
     // STEP 2: SORTING
     // ======================================
     if (req.query.sort) {
-      // Support multi-field sorting: ?sort=price,ratingsAverage
+      // Support multi-field sorting from query string(queryStr): ?sort=price,ratingsAverage
       const sortBy = req.query.sort.split(',').join(' ');
       console.log('Sorting by:', sortBy);
       query = query.sort(sortBy);
+    } else {
+      // set default to the time document were created in DESC order
+      query = query.sort('-createdAt');
     }
     // ======================================
     // NOTE: EXECUTE QUERY
