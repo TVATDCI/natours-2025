@@ -1132,7 +1132,7 @@ password: {
 | Field limiting  | `.select()`         | `?fields=name,duration,price` |
 | Field exclusion | `.select('-field')` | `?fields=-__v`                |
 
-**Learn more:** [Mongoose Query Documentation](https://mongoosejs.com/docs/queries.html)
+**Learn more:** [Mongoose Schema](<https://mongoosejs.com/docs/api/schema.html#Schema()>)
 
 **Better sorting**
 
