@@ -105,7 +105,8 @@ I value this project as a deep dive into building a **real-world, production-rea
 13. [Dynamic Filtering with queryObj](#dynamic-filtering-with-queryobj)
     - [The flow of dynamic filtering](#the-flow-of-dynamic-filtering)
 14. [Advanced Filtering](#advanced-filtering)
-    - [Sorting](#sorting) -[FIELD LIMITING](#field-limiting)
+    - [Sorting](#sorting)
+    - [Field limiting](#field-limiting)
 
 ---
 
@@ -1104,8 +1105,8 @@ GET /api/v1/tours?fields=name,price,duration
     "name": "The Forest Hiker",
     "price": 297,
     "duration": 5
-  },
-  ...
+  }
+  // The rest of the document
 ]
 ```
 
