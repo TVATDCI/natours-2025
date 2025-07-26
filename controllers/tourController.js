@@ -75,7 +75,7 @@ exports.getAllTours = async (req, res) => {
       const fields = req.query.fields.split(',').join(' ');
       query = query.select(fields);
     } else {
-      // By default, exclude the internal version key
+      // By default, exclude the Mongoose internal version key (-__v)
       query = query.select('-__v');
     }
     // ======================================
