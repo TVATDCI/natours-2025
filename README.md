@@ -1072,7 +1072,49 @@ It ensures the newest tours (or documents) are returned first.
 - Separation of concerns between filtering, sorting, and pagination
 - A professional, enterprise-ready API design
 
-**Learn more:** [Mongoose Query Documentation](https://mongoosejs.com/docs/queries.html)
+#### FIELD LIMITING
+
+Field Limiting — also known as "selecting specific fields" — a useful feature for optimizing the API responses.
+
+```js
+if (req.query.fields) {
+  // Converts comma-separated fields to space-separated for Mongoose .select()
+  const fields = req.query.fields.split(',').join(' ');
+  query = query.select(fields);
+} else {
+  // By default, exclude the internal version key
+  query = query.select('-__v');
+}
+```
+
+- `Tour.find().select('name price')` → returns only `name` and price
+- `Tour.find().select('-__v')` → excludes the `__v` field (which Mongoose adds by default)
+
+**Test example**
+
+```bash
+GET /api/v1/tours?fields=name,price,duration
+```
+
+**Respond example**
+
+```json
+[
+  {
+    "name": "The Forest Hiker",
+    "price": 297,
+    "duration": 5
+  },
+  ...
+]
+```
+
+**IT:**
+
+- Allows client-side customization of responses
+- Reduces payload size
+- Prevents exposing sensitive fields (like passwords, internal fields)
+  **Learn more:** [Mongoose Query Documentation](https://mongoosejs.com/docs/queries.html)
 
 **Better sorting**
 
