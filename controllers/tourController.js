@@ -12,6 +12,7 @@ exports.getAllTours = async (req, res) => {
     // NOTE: BUILD QUERY
     // ======================================
     // STEP 1A: Basic Filtering
+    // ======================================
     // Create a shallow copy of req.query to safely modify it
     const queryObj = { ...req.query };
 
@@ -19,7 +20,9 @@ exports.getAllTours = async (req, res) => {
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
     excludeFields.forEach((field) => delete queryObj[field]);
 
+    // ======================================
     // STEP 1B: Advanced Filtering
+    // ======================================
     // Convert queryObj to a JSON string
     let queryStr = JSON.stringify(queryObj);
 
@@ -45,7 +48,9 @@ exports.getAllTours = async (req, res) => {
     // const query = Tour.find(queryObj);
     // put the obj back into query - ready for the execution!
 
+    // ======================================
     // STEP 1C: Create Mongoose Query Object
+    // ======================================
     // Use `let` to allow chaining methods like `.sort()`, `.limit()` later
     let query = Tour.find(advancedFilter); // has been parsed on line: 32
 
@@ -60,6 +65,18 @@ exports.getAllTours = async (req, res) => {
     } else {
       // set default to the time document were created in DESC order
       query = query.sort('-createdAt');
+    }
+
+    // ======================================
+    // STEP 3: FIELD LIMITING
+    // ======================================
+    if (req.query.fields) {
+      // Converts comma-separated fields to space-separated for Mongoose .select()
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      // By default, exclude the internal version key
+      query = query.select('-__v');
     }
     // ======================================
     // NOTE: EXECUTE QUERY
@@ -92,7 +109,9 @@ exports.getAllTours = async (req, res) => {
   }
 };
 
+// ======================================
 // #: GET /api/v1/tours/:id - Get a specific tour by ID
+// ======================================
 exports.getTour = async (req, res) => {
   try {
     const tour = await Tour.findById(req.params.id);
@@ -120,7 +139,9 @@ exports.getTour = async (req, res) => {
   }
 };
 
+// ======================================
 // #: POST /api/v1/tours - Create a new tour
+// ======================================
 exports.createTour = async (req, res) => {
   try {
     // NOTE: core concept in JavaScript and Mongoose
@@ -170,7 +191,9 @@ exports.createTour = async (req, res) => {
   }
 };
 
+// ======================================
 // #: PATCH /api/v1/tours/:id - Update an existing tour
+// ======================================
 exports.updateTour = async (req, res) => {
   try {
     const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
@@ -211,7 +234,9 @@ exports.updateTour = async (req, res) => {
   }
 };
 
+// ======================================
 // #: DELETE /api/v1/tours/:id - Delete a tour
+// ======================================
 exports.deleteTour = async (req, res) => {
   try {
     const tour = await Tour.findByIdAndDelete(req.params.id);
@@ -229,7 +254,7 @@ exports.deleteTour = async (req, res) => {
     // });
 
     // NOTE: HTTP status(204) = No content. In RESTFUL API no data is sent back to the client in DELETE operation!
-    // #: 204 = "Request was successful, but there's no content to send back"
+    // LEARN: 204 = "Request was successful, but there's no content to send back"
     //
     res.status(204).json({
       status: 'success',
