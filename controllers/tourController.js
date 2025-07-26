@@ -43,7 +43,7 @@ exports.getAllTours = async (req, res) => {
     // });
 
     // const query = Tour.find(queryObj);
-    // put the obj into back into query - ready for the execution!
+    // put the obj back into query - ready for the execution!
 
     // STEP 1C: Create Mongoose Query Object
     // Use `let` to allow chaining methods like `.sort()`, `.limit()` later
