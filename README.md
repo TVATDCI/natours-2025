@@ -1115,7 +1115,24 @@ GET /api/v1/tours?fields=name,price,duration
 - Allows client-side customization of responses
 - Reduces payload size
 - Prevents exposing sensitive fields (like passwords, internal fields)
-  **Learn more:** [Mongoose Query Documentation](https://mongoosejs.com/docs/queries.html)
+
+**NOTE:**
+**Exclude fields permanently (e.g., `password` or `createdAt`), use `.select: false` in your Mongoose schema:**
+
+```js
+password: {
+  type: String,
+  required: true,
+  select: false, // Will never be returned in query results
+}
+```
+
+| Feature         | Method Used         | Example                       |
+| --------------- | ------------------- | ----------------------------- |
+| Field limiting  | `.select()`         | `?fields=name,duration,price` |
+| Field exclusion | `.select('-field')` | `?fields=-__v`                |
+
+**Learn more:** [Mongoose Query Documentation](https://mongoosejs.com/docs/queries.html)
 
 **Better sorting**
 
