@@ -110,6 +110,8 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Creating Documents with Mongoose](#creating-documents-with-mongoose)
 13. [Dynamic Filtering with queryObj](#dynamic-filtering-with-queryobj)
     - [The flow of dynamic filtering](#the-flow-of-dynamic-filtering)
+14. [Advanced Filtering](#advanced-filtering)
+    - [Sorting](#sorting)
 
 ---
 
@@ -1008,11 +1010,50 @@ const tours = await query;
 - Replace **MongoDB operators** (`gte`, `gt`, `lte`, `lt`) with `$prefix` (e.g., `$gte`)
 - Parse Obj back into query
 
-**Sorting**
+#### Sorting
 
 - Sorting
 - Pagination
 - Field limiting
+
+Sorting by one or more fields:
+
+```bash
+GET /api/v1/tours?sort=price
+GET /api/v1/tours?sort=price,ratingsAverage
+GET /api/v1/tours?sort=-ratingsAverage,-price
+```
+
+```js
+if (req.query.sort) {
+  // Support multi-field sorting: ?sort=price,ratingsAverage
+  const sortBy = req.query.sort.split(',').join(' ');
+  console.log('Sorting by:', sortBy);
+  query = query.sort(sortBy);
+}
+```
+
+- `sort=price`: Sorts by price ascending.
+- `sort=-price`: Sorts by price descending.
+- `sort=price,ratingsAverage`: Sorts by price first, then by ratings (if price is equal).
+- `sort=-ratingsAverage,-price`: Prioritizes highest-rated and most expensive tours.
+
+**example**
+
+```bash
+GET /api/v1/tours?duration[gte]=5&difficulty=easy&sort=-ratingsAverage,price
+```
+
+- Filter for tours with duration >= 5 and difficulty=easy
+- Sort them by highest ratingsAverage, then lowest price
+
+**This modular query system allows:**
+
+- Cleaner, safer, and more flexible MongoDB queries
+- Separation of concerns between filtering, sorting, and pagination
+- A professional, enterprise-ready API design
+
+**Learn more:** [Mongoose Query Documentation](https://mongoosejs.com/docs/queries.html)
 
 **Better sorting**
 
