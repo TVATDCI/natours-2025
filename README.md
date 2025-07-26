@@ -983,11 +983,38 @@ This pattern ensures:
 
 **Importantly it lays the foundation for additional features later.**
 
-such as:
+#### Advanced Filtering:
+
+MongoDB uses comparison operators like $gte, $lte, $lt, $gt. These aren’t supported in URL parameters by default.
+**URL request** **URL**-friendly-\*\*syntax must be implemented to validate MongoDB queries!
+
+```bash
+GET /api/v1/tours?duration[gte]=5&price[lt]=1500
+```
+
+```js
+let queryStr = JSON.stringify(queryObj);
+queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+const advancedFilter = JSON.parse(queryStr);
+const query = Tour.find(advancedFilter);
+// EXECUTE
+const tours = await query;
+```
+
+**basically**
+
+- Use `let` to allow chaining methods
+- Convert queryObj to a JSON string
+- Replace **MongoDB operators** (`gte`, `gt`, `lte`, `lt`) with `$prefix` (e.g., `$gte`)
+- Parse Obj back into query
+
+**Sorting**
 
 - Sorting
 - Pagination
 - Field limiting
+
+**Better sorting**
 
 [Back to the top](#natours-2025)
 
