@@ -58,6 +58,7 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Sorting](#sorting)
     - [Field Limiting](#field-limiting)
 18. [Pagination with Mongoose in Node.js](#pagination-with-mongoose-in-nodejs)
+19. [Route aliasing pattern](#route-aliasing-pattern)
 
 ---
 
@@ -1371,5 +1372,45 @@ Pagination: { page: 3, limit: 3, skip: 6 }
 - Always pair pagination with sort (e.g. ?sort=createdAt) for consistent ordering.
 
 [Pagination-stack-overflow](https://stackoverflow.com/questions/5539955/how-to-paginate-with-mongoose-in-node-js)
+
+---
+
+#### Route aliasing pattern
+
+---
+
+**FEATURE** `/top-5-cheap`
+
+routes/tourRoutes.js
+
+```js
+router
+  .route('/top-5-cheap')
+  .get(tourController.aliasTopTours, tourController.getAllTours);
+```
+
+pre-fields middleware to manipulate the incoming queryObj as default query before it hits the controller
+
+```js
+exports.aliasTopTours = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
+```
+
+Then call `GET /api/v1/tours/top-5-cheap`:
+
+**Feature:**
+
+- Will hit the route.
+- Trigger the aliasTopTours middleware:
+- Sets `req.query.limit` to `'5'`
+- Sets `req.query.sort` to `-ratingsAverage,price`
+- Sets `req.query.fields` to show only selected fields
+- Pass `req to getAllTours`, which will process it just like a regular `GET /tours` request but with those query defaults applied.
+
+---
 
 [Back to the top](#natours-2025)
