@@ -1243,11 +1243,3 @@ Pagination: { page: 3, limit: 3, skip: 6 }
 [Pagination-stack-overflow](https://stackoverflow.com/questions/5539955/how-to-paginate-with-mongoose-in-node-js)
 
 [Back to the top](#natours-2025)
-
-```
-
-```
-
-```
-
-```
