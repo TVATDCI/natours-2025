@@ -89,7 +89,7 @@ exports.getAllTours = async (req, res) => {
     query = query.skip(skip).limit(limit);
 
     // ======================================
-    // DEBUG:
+    // DEBUG: Page, limit, skip - PANIC
     console.log('Pagination:', { page, limit, skip });
     // ======================================
 
@@ -121,7 +121,7 @@ exports.getAllTours = async (req, res) => {
     // ======================================
 
     // ======================================
-    // DEBUG: Tour name
+    // DEBUG: Tour name - PANIC
     console.log(
       'Returned tours:',
       tours.map((t) => t.name),
