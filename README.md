@@ -1140,7 +1140,7 @@ password: {
 
 ---
 
-### Pagination
+### Pagination with Mongoose in Node.js
 
 Pagination is the process of dividing content into discrete pages, primarily used to improve user experience when dealing with large (**data in chunks (pages)**) amounts of information. It allows for organized presentation and easier navigation, especially useful for improving **performance** and **user experience** when dealing with large datasets.websites and APIs.
 
@@ -1153,16 +1153,79 @@ Pagination is the process of dividing content into discrete pages, primarily use
 **Logic**
 
 ```js
-const page = req.query.page * 1 || 1; // Convert to number and set default to 1
-const limit = req.query.limit * 1 || 100; // Default limit = 100 docs per page
-const skip = (page - 1) * limit;
+//  * 1 = convert a str to number
+const page = req.query.page * 1 || 1; // Get page number, default is 1
+const limit = req.query.limit * 1 || 100; // Get items per page, default is 100
+const skip = (page - 1) * limit; // Calculate how many documents to skip
+
+// page=3&limit=10, 1-10 page 1, 11-20 page 2, = 3 21-30 page
+query = query.skip(skip).limit(limit); // Apply pagination to the query
+console.log('Pagination:', { page, limit, skip });
 ```
 
-**NOTE:**
+- **NOTE:**
 
 - skip() tells MongoDB how many documents to ignore
 - limit() tells MongoDB how many to return
 - Make sure to cast req.query.page and req.query.limit to numbers
+
+`URL req;`
+
+```bash
+GET /api/v1/tours?page=2&limit=3
+```
+
+`returned:`
+
+```bash
+Raw query: { limit: '3', page: '3' }
+Pagination: { page: 3, limit: 3, skip: 6 }
+```
+
+- `page = 3`
+- `limit = 3`
+- `skip = (3 - 1) \* 3 = 6`
+
+| Step                       | Explanation                                                                |       |                                                                  |
+| -------------------------- | -------------------------------------------------------------------------- | ----- | ---------------------------------------------------------------- |
+| \`page \* 1                |                                                                            | 1\`   | Converts the `page` query string to a number; default is `1`.    |
+| \`limit \* 1               |                                                                            | 100\` | Converts the `limit` query string to a number; default is `100`. |
+| `skip = (page-1)*limit`    | Calculates how many results to skip for the current page.                  |       |                                                                  |
+| `.skip(skip).limit(limit)` | Modifies the Mongoose query to only return results for that page.          |       |                                                                  |
+| Error Handling             | If the `skip` value is too large (beyond the dataset), return a 404 error. |       |                                                                  |
+
+#### Testing Pagination
+
+| URL Request                    | Description                              |
+| ------------------------------ | ---------------------------------------- |
+| `/api/v1/tours?page=1&limit=3` | Returns the first 3 tours                |
+| `/api/v1/tours?page=2&limit=3` | Returns the next 3 tours                 |
+| `/api/v1/tours?page=3&limit=3` | Returns the last 3 tours                 |
+| `/api/v1/tours?page=4&limit=3` | ❌ Returns 404 error — page out of range |
+
+---
+
+**Example Success Response:**
+
+```js
+{
+  "status": "success",
+  "results": 3,
+  "data": {
+    "tours": [ ... ]
+  }
+}
+```
+
+**Example Error Response:**
+
+```js
+{
+  "status": "fail",
+  "message": "This page does not exist"
+}
+
+```
 
 **Summary**
 | Query Param | Meaning | Example |
@@ -1171,7 +1234,19 @@ const skip = (page - 1) * limit;
 | `limit` | Results per page | `?limit=5` |
 | `skip` | Calculated internally | `(page - 1) * limit` |
 
+**NOTE**
+
+- If no page or limit is specified, default is page 1 with 100 results.
+- This logic does not crash the server on invalid requests — instead it returns a controlled error response.
+- Always pair pagination with sort (e.g. ?sort=createdAt) for consistent ordering.
+
+[Pagination-stack-overflow](https://stackoverflow.com/questions/5539955/how-to-paginate-with-mongoose-in-node-js)
+
 [Back to the top](#natours-2025)
+
+```
+
+```
 
 ```
 
