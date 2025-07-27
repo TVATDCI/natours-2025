@@ -1138,6 +1138,41 @@ password: {
 
 [Back to the top](#natours-2025)
 
+---
+
+### Pagination
+
+Pagination is the process of dividing content into discrete pages, primarily used to improve user experience when dealing with large (**data in chunks (pages)**) amounts of information. It allows for organized presentation and easier navigation, especially useful for improving **performance** and **user experience** when dealing with large datasets.websites and APIs.
+
+\*It does\*\*
+
+- Prevent sending all data at once (which can crash mobile apps or slow pages)
+- Give users control over how much they see
+- Help with infinite scroll or paginated tables
+
+**Logic**
+
+```js
+const page = req.query.page * 1 || 1; // Convert to number and set default to 1
+const limit = req.query.limit * 1 || 100; // Default limit = 100 docs per page
+const skip = (page - 1) * limit;
+```
+
+**NOTE:**
+
+- skip() tells MongoDB how many documents to ignore
+- limit() tells MongoDB how many to return
+- Make sure to cast req.query.page and req.query.limit to numbers
+
+**Summary**
+| Query Param | Meaning | Example |
+| ----------- | --------------------- | -------------------- |
+| `page` | Which page to fetch | `?page=2` |
+| `limit` | Results per page | `?limit=5` |
+| `skip` | Calculated internally | `(page - 1) * limit` |
+
+[Back to the top](#natours-2025)
+
 ```
 
 ```
