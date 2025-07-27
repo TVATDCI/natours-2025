@@ -1,8 +1,23 @@
 const Tour = require('../models/tourModel');
 
-// #: Middleware: Check that request body has required fields (used only for dev/testing)
+// ======================================
+// #: Middleware:
+// ======================================
+// FEATURE
+// NOTE: Use express concept to pre-field middleware to manipulate the query Object before calling getAllTours
+
+exports.aliasTopTours = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
+
+// ======================================
+// Check that request body has required fields (used only for dev/testing)
 // NOTE: deleted after setting up tourModel.js
 // tourController.checkBody in tourRoutes.js must be removed as well!
+// ======================================
 
 // #: GET /api/v1/tours - Get all tours
 exports.getAllTours = async (req, res) => {

@@ -11,6 +11,10 @@ const router = express.Router(); // modular router
 // router.param('id', tourController.checkID);
 
 router
+  .route('/top-5-cheap')
+  .get(tourController.aliasTopTours, tourController.getAllTours);
+
+router
   .route('/') // root(/api/v1/tours)
   .get(tourController.getAllTours) // Get all tours. sanitizeQuery, removed for now
   .post(tourController.createTour); // Create a new tour. checkBody is removed!
