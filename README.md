@@ -8,7 +8,11 @@ I value this project as a deep dive into building a **real-world, production-rea
 
 **Natours** isn't a brand new project around. However, it also has the approach and introduces me to **enterprise-level structure**. Its core feature gives an Opportunity to develop it into a modern real world app. It gives me that feels like: **practical, grounded, and developer-focused**
 
+---
+
 ### Table of Contents
+
+---
 
 1. [Recap & Current Development Goals](#recap-&-current-development-goals)
 2. [Technologies Used](#technologies-used)
