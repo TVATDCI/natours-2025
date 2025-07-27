@@ -78,6 +78,21 @@ exports.getAllTours = async (req, res) => {
       // By default, exclude the Mongoose internal version key (-__v)
       query = query.select('-__v');
     }
+
+    // ======================================
+    // STEP 4: PAGINATION
+    // ======================================
+    const page = req.query.page * 1 || 1; // Convert to number * and set default to 1
+    const limit = req.query.limit * 1 || 100; // Default limit = 100 docs per page
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    // ======================================
+    // DEBUG:
+    console.log('Pagination:', { page, limit, skip });
+    // ======================================
+
     // ======================================
     // NOTE: EXECUTE QUERY
     // ======================================
@@ -90,9 +105,29 @@ exports.getAllTours = async (req, res) => {
     //   .where('difficulty')
     //   .equals('easy');
 
+    // STEP: Handle case when page is out of range
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip >= numTours) {
+        return res.status(404).json({
+          status: 'fail',
+          message: 'This page does not exist',
+        });
+      }
+    }
+
     // ======================================
     // NOTE: SEND RESPONSE
     // ======================================
+
+    // ======================================
+    // DEBUG: Tour name
+    console.log(
+      'Returned tours:',
+      tours.map((t) => t.name),
+    );
+    // ======================================
+
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,
