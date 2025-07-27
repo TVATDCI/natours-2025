@@ -107,6 +107,7 @@ I value this project as a deep dive into building a **real-world, production-rea
 14. [Advanced Filtering](#advanced-filtering)
     - [Sorting](#sorting)
     - [Field limiting](#field-limiting)
+15. [Pagination with Mongoose in Node.js](#pagination-with-mongoose-in-nodejs)
 
 ---
 
@@ -1140,7 +1141,7 @@ password: {
 
 ---
 
-### Pagination with Mongoose in Node.js
+### Pagination with Mongoose in NodeJs
 
 Pagination is the process of dividing content into discrete pages, primarily used to improve user experience when dealing with large (**data in chunks (pages)**) amounts of information. It allows for organized presentation and easier navigation, especially useful for improving **performance** and **user experience** when dealing with large datasets.websites and APIs.
 
