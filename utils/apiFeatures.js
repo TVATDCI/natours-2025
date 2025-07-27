@@ -9,11 +9,19 @@ class APIFeatures {
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    // Advanced filtering
+    // Advanced filtering: convert operators to MongoDB syntax
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-    this.query = this.query.find(JSON.parse(queryStr));
+    // NOTE: Parse the query string back into an object for advanced filtering.
+    // Using a clearly named variable (`advancedFilter`) improves readability and intent.
+    const advancedFilter = JSON.parse(queryStr);
+
+    console.log('Parsed filter:', advancedFilter);
+
+    // Then call (`advancedFilter`) instead of:
+    // this.query = this.query.find(JSON.parse(queryStr));
+    this.query = this.query.find(advancedFilter);
     return this;
   }
 
