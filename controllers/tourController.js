@@ -92,6 +92,16 @@ exports.getAllTours = async (req, res) => {
     // DEBUG: Page, limit, skip - PANIC
     console.log('Pagination:', { page, limit, skip });
     // ======================================
+    // STEP: Handle case when page is out of range
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip >= numTours) {
+        return res.status(404).json({
+          status: 'fail',
+          message: 'This page does not exist',
+        });
+      }
+    }
 
     // ======================================
     // NOTE: EXECUTE QUERY
@@ -105,21 +115,9 @@ exports.getAllTours = async (req, res) => {
     //   .where('difficulty')
     //   .equals('easy');
 
-    // STEP: Handle case when page is out of range
-    if (req.query.page) {
-      const numTours = await Tour.countDocuments();
-      if (skip >= numTours) {
-        return res.status(404).json({
-          status: 'fail',
-          message: 'This page does not exist',
-        });
-      }
-    }
-
     // ======================================
     // NOTE: SEND RESPONSE
     // ======================================
-
     // ======================================
     // DEBUG: Tour name - PANIC
     console.log(
