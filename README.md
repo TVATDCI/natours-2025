@@ -8,9 +8,60 @@ I value this project as a deep dive into building a **real-world, production-rea
 
 **Natours** isn't a brand new project around. However, it also has the approach and introduces me to **enterprise-level structure**. Its core feature gives an Opportunity to develop it into a modern real world app. It gives me that feels like: **practical, grounded, and developer-focused**
 
-### What Am I Doing?
+### Table of Contents
 
-#### Recap & Current Development Goals
+1. [Recap & Current Development Goals](#recap-&-current-development-goals)
+2. [Technologies Used](#technologies-used)
+3. [Folder Structure](#folder-structure)
+4. [Project Setup: CommonJS First, ES Modules Later](#project-setup-commonjs-first-es-modules-later)
+5. [What is an API?](#what-is-an-api)
+   - [POST `/` Route Example](#post-route)
+6. [REST Architecture and CRUD Operations](#rest-architecture-and-crud-operations)
+   - [What is REST?](#what-is-rest)
+   - [CRUD Operations in REST](#crud-operations-in-rest)
+   - [Resources in REST](#resources-in-rest)
+   - [Tour API Example](#example-tour-api)
+   - [REST Best Practices](#rest-best-practices)
+7. [What is JSON?](#what-is-json)
+   - [JSON Structure](#json-structure)
+   - [Example JSON](#example-json-with-an-array)
+8. [What is JSend?](#what-about-jsend)
+   - [JSend Structure](#basic-jsend-structure)
+   - [Example Tour JSend Response](#example-using-tour-data-success-response)
+   - [Why Use JSend?](#why-use-jsend)
+9. [Stateless RESTful APIs](#stateless-restful-apis)
+   - [What Does Stateless Mean?](#what-does-stateless-mean)
+   - [Why Stateless?](#why-stateless)
+   - [Example with Token Auth](#example)
+   - [Summary of Stateless APIs](#important)
+10. [MVC: Model – View – Controller](#mvc-model--view--controller)
+
+- [What Each Part Does](#what-each-part-does)
+- [MVC in API-Only Projects](#api-only-project)
+- [Suggested Project Structure](#project-structure)
+
+11. [The Request–Response Cycle in Express](#the-requestresponse-cycle-in-express)
+
+- [Express Middleware Flow](#express-middleware-flow)
+
+12. [Express Morgan in Development](#using-morgan-in-development)
+13. [Param Middleware in Express](#param-middleware-in-express)
+    - [Additions For Learning & Scaling](#additions-for-learning--scaling)
+    - [Param Middleware for ID Validation](#param-middleware-for-id-validation)
+14. [Serving Static Files in Express](#serving-static-files-in-express)
+15. [Mongoose Query Methods](#mongoose-query-methods)
+    - [Chaining Queries](#chaining-queries)
+    - [Creating Documents with Mongoose](#creating-documents-with-mongoose)
+16. [Dynamic Filtering with queryObj](#dynamic-filtering-with-queryobj)
+    - [The flow of dynamic filtering](#the-flow-of-dynamic-filtering)
+17. [Advanced Filtering](#advanced-filtering)
+    - [Sorting](#sorting)
+    - [Field limiting](#field-limiting)
+18. [Pagination with Mongoose in Node.js](#pagination-with-mongoose-in-nodejs)
+
+---
+
+### Recap & Current Development Goals
 
 - **Master the complete modern backend stack**  
   Working with Node.js, Express, MongoDB, and Mongoose to build efficient, scalable web services.
@@ -65,53 +116,7 @@ I value this project as a deep dive into building a **real-world, production-rea
 
 ---
 
-### Table of Contents
-
-1. [Project Setup: CommonJS First, ES Modules Later](#project-setup-commonjs-first-es-modules-later)
-2. [What is an API?](#what-is-an-api)
-   - [POST `/` Route Example](#post-route)
-3. [REST Architecture and CRUD Operations](#rest-architecture-and-crud-operations)
-   - [What is REST?](#what-is-rest)
-   - [CRUD Operations in REST](#crud-operations-in-rest)
-   - [Resources in REST](#resources-in-rest)
-   - [Tour API Example](#example-tour-api)
-   - [REST Best Practices](#rest-best-practices)
-4. [What is JSON?](#what-is-json)
-   - [JSON Structure](#json-structure)
-   - [Example JSON](#example-json-with-an-array)
-5. [What is JSend?](#what-about-jsend)
-   - [JSend Structure](#basic-jsend-structure)
-   - [Example Tour JSend Response](#example-using-tour-data-success-response)
-   - [Why Use JSend?](#why-use-jsend)
-6. [Stateless RESTful APIs](#stateless-restful-apis)
-   - [What Does Stateless Mean?](#what-does-stateless-mean)
-   - [Why Stateless?](#why-stateless)
-   - [Example with Token Auth](#example)
-   - [Summary of Stateless APIs](#important)
-7. [MVC: Model – View – Controller](#mvc-model--view--controller)
-   - [What Each Part Does](#what-each-part-does)
-   - [MVC in API-Only Projects](#api-only-project)
-   - [Suggested Project Structure](#project-structure)
-8. [The Request–Response Cycle in Express](#the-requestresponse-cycle-in-express)
-   - [Express Middleware Flow](#express-middleware-flow)
-9. [Express Morgan in Development](#using-morgan-in-development)
-10. [Param Middleware in Express](#param-middleware-in-express)
-    - [Additions For Learning & Scaling](#additions-for-learning--scaling)
-    - [Param Middleware for ID Validation](#param-middleware-for-id-validation)
-11. [Serving Static Files in Express](#serving-static-files-in-express)
-12. [Mongoose Query Methods](#mongoose-query-methods)
-    - [Chaining Queries](#chaining-queries)
-    - [Creating Documents with Mongoose](#creating-documents-with-mongoose)
-13. [Dynamic Filtering with queryObj](#dynamic-filtering-with-queryobj)
-    - [The flow of dynamic filtering](#the-flow-of-dynamic-filtering)
-14. [Advanced Filtering](#advanced-filtering)
-    - [Sorting](#sorting)
-    - [Field limiting](#field-limiting)
-15. [Pagination with Mongoose in Node.js](#pagination-with-mongoose-in-nodejs)
-
----
-
-## Folder Structure
+#### Folder Structure
 
 ```markdown
 project-root/
@@ -194,6 +199,8 @@ Once the course is complete, we plan to
 - Modernize the codebase for production-readines
   This approach gives us both a **solid foundation** and a **modern development path**.
 
+---
+
 ### What is an API?
 
 **API** stands for **Application Programming Interface**.
@@ -211,6 +218,8 @@ These routes are examples of **API endpoints**—each one performs a specific ta
 
 > Simply put: An API is like a waiter in a restaurant. You (the client) tell the waiter what you want (a request), and the waiter brings it from the kitchen (the server) to you (the response).
 
+---
+
 #### POST `/` Route
 
 This route handles **HTTP POST requests** to the root URL (`/`):
@@ -227,9 +236,9 @@ app.post('/', (req, res) => {
 
 ---
 
-## REST Architecture and CRUD Operations
+### REST Architecture and CRUD Operations
 
-### What is REST?
+#### What is REST?
 
 **REST** stands for **Representational State Transfer**.  
 It is a software architectural style used for building **web services and APIs**. REST relies on **standard HTTP methods** to enable communication between clients (like browsers, mobile apps) and servers.
@@ -256,7 +265,7 @@ REST uses HTTP methods to implement **CRUD operations**:
 
 ---
 
-### Resources in REST
+#### Resources in REST
 
 A **resource** is any piece of data the API manages:
 
@@ -295,6 +304,8 @@ If i were building a tour-related REST API, with **HTTP Methods**. **POST-GET-PU
 **REST** makes it easy to build scalable, predictable APIs that follow standard web conventions.
 
 **JSON data format is usually used for both side the server <--> the client**
+
+---
 
 #### What is JSON?
 
@@ -341,6 +352,8 @@ In REST APIs, JSON is the most common format for:
   "location": "Worldwide"
 }
 ```
+
+---
 
 #### What about JSend?
 
@@ -650,13 +663,13 @@ It allows you to:
 
 - Attach useful data to req for later middleware or route handlers
 
-##### Syntax
+**Syntax**
 
 ```js
 app.param('paramName', callback);
 ```
 
-#### Example paramName = `id`
+**Example paramName = `id`**
 
 **1. param in middleware**
 
@@ -699,6 +712,8 @@ router.param('id', (req, res, next, val) => {
 - **Centralized** logic for parameter processing
 
 - **Improves readability** and structure
+
+---
 
 #### Additions (For Learning & Scaling):
 
@@ -743,7 +758,9 @@ router.param('id', (req, res, next, val) => {
 
 Then in `getTour`, you can use `req.tour` instead of searching again.
 
-#### Param Middleware for ID Validation
+---
+
+### Param Middleware for ID Validation
 
 To **avoid repeating** with **DRY Method**
 
@@ -774,6 +791,8 @@ router.param('id', tourController.checkID);
 ```
 
 [Back to the top](#natours-2025)
+
+---
 
 ### Serving static files in Express
 
@@ -866,7 +885,7 @@ await newTour.save();
 const newTour = await Tour.create(req.body);
 ```
 
-#### NOTE:
+**NOTE:**
 
 1. **JavaScript Object Instantiation**
 
@@ -901,6 +920,9 @@ const newTour = await Tour.create(req.body);
 ```
 
 **Learn more:** [Mongoose Query Documentation](https://mongoosejs.com/docs/queries.html)
+[Back to the top](#natours-2025)
+
+---
 
 ### Dynamic Filtering with `queryObj`
 
@@ -971,7 +993,7 @@ Only `difficulty` is used for filtering, while `page`, `sort`, and `limit` are h
 
 ---
 
-#### What it does!
+**What it does!**
 
 This pattern ensures:
 
@@ -980,6 +1002,8 @@ This pattern ensures:
 - More control over how users can interact with the API
 
 **Importantly it lays the foundation for additional features later.**
+
+---
 
 #### Advanced Filtering:
 
@@ -1074,6 +1098,10 @@ It ensures the newest tours (or documents) are returned first.
 - Separation of concerns between filtering, sorting, and pagination
 - A professional, enterprise-ready API design
 
+[Back to the top](#natours-2025)
+
+---
+
 #### FIELD LIMITING
 
 Field Limiting — also known as "selecting specific fields" — a useful feature for optimizing the API responses.
@@ -1114,7 +1142,8 @@ GET /api/v1/tours?fields=name,price,duration
 **IT:**
 
 - Allows client-side customization of responses
-- Reduces payload size
+- Reduces payload size[Back to the top](#natours-2025)
+
 - Prevents exposing sensitive fields (like passwords, internal fields)
 
 **NOTE:**
@@ -1195,6 +1224,8 @@ Pagination: { page: 3, limit: 3, skip: 6 }
 | `.skip(skip).limit(limit)` | Modifies the Mongoose query to only return results for that page.          |       |                                                                  |
 | Error Handling             | If the `skip` value is too large (beyond the dataset), return a 404 error. |       |                                                                  |
 
+---
+
 #### Testing Pagination
 
 | URL Request                    | Description                              |
@@ -1208,7 +1239,7 @@ Pagination: { page: 3, limit: 3, skip: 6 }
 
 **Example Success Response:**
 
-```js
+````js
 {
   "status": "success",
   "results": 3,
@@ -1216,7 +1247,8 @@ Pagination: { page: 3, limit: 3, skip: 6 }
     "tours": [ ... ]
   }
 }
-```
+```[Back to the top](#natours-2025)
+
 
 **Example Error Response:**
 
@@ -1226,7 +1258,7 @@ Pagination: { page: 3, limit: 3, skip: 6 }
   "message": "This page does not exist"
 }
 
-```
+````
 
 **Summary**
 | Query Param | Meaning | Example |
