@@ -61,6 +61,7 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Field Limiting](#field-limiting)
 18. [Pagination with Mongoose in Node.js](#pagination-with-mongoose-in-nodejs)
 19. [Route aliasing pattern](#route-aliasing-pattern)
+20. [Refactoring API Features](#refactoring-api-features)
 
 ---
 
@@ -1414,5 +1415,13 @@ Then call `GET /api/v1/tours/top-5-cheap`:
 - Pass `req to getAllTours`, which will process it just like a regular `GET /tours` request but with those query defaults applied.
 
 ---
+
+### Refactoring API Feature
+
+---
+
+As our API grows more powerful—with support for filtering, sorting, field limiting, and pagination—it becomes harder to maintain these features inside `getAllTours` controller. To make the code more modular and reusable, **refactoring these query features into a dedicated utility class**: `APIFeatures`.
+
+This follows the principle of **separation of concerns**, keeping your controller focused on handling requests and responses, while the query logic is abstracted away.
 
 [Back to the top](#natours-2025)
