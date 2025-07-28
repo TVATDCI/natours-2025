@@ -17,6 +17,7 @@ class APIFeatures {
     // Using a clearly named variable (`advancedFilter`) improves readability and intent.
     const advancedFilter = JSON.parse(queryStr);
 
+    // DEBUG
     console.log('Parsed filter:', advancedFilter);
 
     // Then call (`advancedFilter`) instead of:
@@ -29,6 +30,9 @@ class APIFeatures {
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
+
+      // DEBUG
+      console.log('Sorting by:', sortBy);
     } else {
       this.query = this.query.sort('-createdAt');
     }
@@ -40,6 +44,9 @@ class APIFeatures {
     if (this.queryString.fields) {
       const fields = this.queryString.fields.split(',').join(' ');
       this.query = this.query.select(fields);
+
+      // DEBUG
+      console.log('Limited by:', fields);
     } else {
       this.query = this.query.select('-__v');
     }
@@ -53,6 +60,9 @@ class APIFeatures {
     const skip = (page - 1) * limit;
 
     this.query = this.query.skip(skip).limit(limit);
+
+    // DEBUG
+    console.log('Pagination:', { page, limit, skip });
 
     return this;
   }

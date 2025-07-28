@@ -18,6 +18,8 @@ exports.aliasTopTours = (req, res, next) => {
 // #: GET /api/v1/tours - Get all tours
 // ======================================
 exports.getAllTours = async (req, res) => {
+  // DEBUG
+  console.log('Raw query:', req.query);
   try {
     // STEP: 1) Build the query
     const features = new APIFeatures(Tour.find(), req.query)
@@ -28,6 +30,12 @@ exports.getAllTours = async (req, res) => {
 
     // STEP: 2) Execute the query
     const tours = await features.query;
+
+    // DEBUG
+    console.log(
+      'Returned tours:',
+      tours.map((t) => t.name),
+    );
 
     // STEP: 3) Send response
     res.status(200).json({
