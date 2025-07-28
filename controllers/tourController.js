@@ -1,9 +1,10 @@
 const Tour = require('../models/tourModel');
+const APIFeatures = require('../utils/apiFeatures');
 
 // ======================================
 // #: Middleware:
 // ======================================
-// FEATURE
+// FEATURE: ROUTE ALIASING PATTERN
 // NOTE: Use express concept to pre-field middleware to manipulate the query Object before calling getAllTours
 
 exports.aliasTopTours = (req, res, next) => {
@@ -14,144 +15,31 @@ exports.aliasTopTours = (req, res, next) => {
 };
 
 // ======================================
-// Check that request body has required fields (used only for dev/testing)
-// NOTE: deleted after setting up tourModel.js
-// tourController.checkBody in tourRoutes.js must be removed as well!
-// ======================================
-
 // #: GET /api/v1/tours - Get all tours
+// ======================================
 exports.getAllTours = async (req, res) => {
-  console.log('Raw query:', req.query);
   try {
-    // ======================================
-    // NOTE: BUILD QUERY
-    // ======================================
-    // STEP 1A: Basic Filtering
-    // ======================================
-    // Create a shallow copy of req.query to safely modify it
-    const queryObj = { ...req.query };
+    // STEP: 1) Build the query
+    const features = new APIFeatures(Tour.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
 
-    // Define fields to exclude from filtering (used for other features like pagination, sorting, etc.)
-    const excludeFields = ['page', 'sort', 'limit', 'fields'];
-    excludeFields.forEach((field) => delete queryObj[field]);
+    // STEP: 2) Execute the query
+    const tours = await features.query;
 
-    // ======================================
-    // STEP 1B: Advanced Filtering
-    // ======================================
-    // Convert queryObj to a JSON string
-    let queryStr = JSON.stringify(queryObj);
-
-    // Replace MongoDB operators (gte, gt, lte, lt) with $ prefix (e.g., $gte)
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-
-    // Parse back into an object
-    const advancedFilter = JSON.parse(queryStr);
-    console.log('Parsed filter:', advancedFilter);
-
-    // DEBUG: Log incoming query and the filtered query object
-    // console.log('Filtering with queryObj:', queryObj);
-
-    // TEST: Mongoose Query Method
-    // const tours = await Tour.find(req.query);
-
-    // TEST: Hard coded MongoDB query
-    // const tours = await Tour.find({
-    //   duration: 7,
-    //   difficulty: 'medium',
-    // });
-
-    // const query = Tour.find(queryObj);
-    // put the obj back into query - ready for the execution!
-
-    // ======================================
-    // STEP 1C: Create Mongoose Query Object
-    // ======================================
-    // Use `let` to allow chaining methods like `.sort()`, `.limit()` later
-    let query = Tour.find(advancedFilter); // has been parsed on line: 32
-
-    // ======================================
-    // STEP 2: SORTING
-    // ======================================
-    if (req.query.sort) {
-      // Support multi-field sorting from query string(queryStr): ?sort=price,ratingsAverage
-      const sortBy = req.query.sort.split(',').join(' ');
-      console.log('Sorting by:', sortBy);
-      query = query.sort(sortBy);
-    } else {
-      // set default to the time document were created in DESC order
-      query = query.sort('-createdAt');
-    }
-
-    // ======================================
-    // STEP 3: FIELD LIMITING
-    // ======================================
-    if (req.query.fields) {
-      // Converts comma-separated fields to space-separated for Mongoose .select()
-      const fields = req.query.fields.split(',').join(' ');
-      query = query.select(fields);
-    } else {
-      // By default, exclude the Mongoose internal version key (-__v)
-      query = query.select('-__v');
-    }
-
-    // ======================================
-    // STEP 4: PAGINATION
-    // ======================================
-    const page = req.query.page * 1 || 1; // Convert to number * and set default to 1
-    const limit = req.query.limit * 1 || 100; // Default limit = 100 docs per page
-    const skip = (page - 1) * limit;
-
-    query = query.skip(skip).limit(limit);
-
-    // ======================================
-    // DEBUG: Page, limit, skip - PANIC
-    console.log('Pagination:', { page, limit, skip });
-    // ======================================
-    // STEP: Handle case when page is out of range
-    if (req.query.page) {
-      const numTours = await Tour.countDocuments();
-      if (skip >= numTours) {
-        return res.status(404).json({
-          status: 'fail',
-          message: 'This page does not exist',
-        });
-      }
-    }
-
-    // ======================================
-    // NOTE: EXECUTE QUERY
-    // ======================================
-    const tours = await query;
-
-    // TEST: Special mongoose query chaining!?!
-    // const tours = await Tour.find()
-    //   .where('duration')
-    //   .equals(5)
-    //   .where('difficulty')
-    //   .equals('easy');
-
-    // ======================================
-    // NOTE: SEND RESPONSE
-    // ======================================
-    // ======================================
-    // DEBUG: Tour name - PANIC
-    console.log(
-      'Returned tours:',
-      tours.map((t) => t.name),
-    );
-    // ======================================
-
+    // STEP: 3) Send response
     res.status(200).json({
       status: 'success',
-      requestedAt: req.requestTime,
       results: tours.length,
       data: {
         tours,
       },
     });
   } catch (err) {
-    res.status(500).json({
-      status: 'error',
+    res.status(400).json({
+      status: 'fail',
       message: err.message,
     });
   }
