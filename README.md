@@ -62,6 +62,9 @@ I value this project as a deep dive into building a **real-world, production-rea
 18. [Pagination with Mongoose in Node.js](#pagination-with-mongoose-in-nodejs)
 19. [Route aliasing pattern](#route-aliasing-pattern)
 20. [Refactoring API Features](#refactoring-api-features)
+    - [Class Structure](#class-structure)
+    - [Introducing what Inside the Constructor](#introducing-what-inside-the-constructor)
+    - [Blueprint Analogy: Why a Class](#blueprint-analogy-why-a-class)
 
 ---
 
@@ -1467,6 +1470,8 @@ exports.getAllTours = async (req, res) => {
 };
 ```
 
+#### Class Structure
+
 New class APIFeatures in `utils/APIFeature.js`:
 
 ```js
@@ -1534,7 +1539,7 @@ class APIFeatures {
 
 - Makes unit testing easier.
 
-#### Introducing what’s Inside the Constructor
+#### Introducing what Inside the Constructor:
 
 **example**: constructor inside our `APIFeatures` class.
 In object-oriented programming, a constructor is a special method used for creating and initializing objects based on a class.
@@ -1551,7 +1556,7 @@ constructor(query, queryString) {
 
 By assigning them to `this.query` and `this.queryString`, we can use them across all methods inside the class (e.g., `.filter()`, `.sort()`, etc.)—because `this` refers to the current instance of the class.
 
-#### Blueprint Analogy: Why a Class?
+#### Blueprint Analogy: Why a Class
 
 Think of the `APIFeatures` class as a blueprint or recipe for building enhanced queries. Just like a blueprint can build multiple houses, this class can create multiple customized query pipelines for any resource (Tours, Users, Reviews...).
 
