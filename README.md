@@ -61,7 +61,7 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Field Limiting](#field-limiting)
 18. [Pagination with Mongoose in Node.js](#pagination-with-mongoose-in-nodejs)
 19. [Route aliasing pattern](#route-aliasing-pattern)
-20. [Refactoring API Features](#refactoring-api-features)
+20. [Refactoring API Feature](#refactoring-api-feature)
     - [Class Structure](#class-structure)
     - [Introducing what Inside the Constructor](#introducing-what-inside-the-constructor)
     - [Blueprint Analogy: Why a Class](#blueprint-analogy-why-a-class)
