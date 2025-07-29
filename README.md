@@ -1424,4 +1424,114 @@ As our API grows more powerful—with support for filtering, sorting, field limi
 
 This follows the principle of **separation of concerns**, keeping your controller focused on handling requests and responses, while the query logic is abstracted away.
 
-[Back to the top](#natours-2025)
+---
+
+##### The goals
+
+Controller is likely bloated with filtering, sorting, field limiting, and pagination logic all in one place. By refactoring into a class (`APIFeature`). It creates architectural upgrade to improves readability, reusability, and separation of concerns in `tourControllers.js`to stay clean and keep **focusing on logic**, not technical query building.
+
+- Keeps tourController.js clean and focused.
+- Makes it easy to reuse query features across different resources (e.g., Tours, Users, Reviews).
+- Adds a clear structure for chaining query methods.
+
+Refactored `tourController.js`:
+
+```js
+exports.getAllTours = async (req, res) => {
+  try {
+    // 1) Build the query
+    // With this pattern, any new resource (e.g., Reviews, Users) can instantly gain rich query features
+    const features = new APIFeatures(Tour.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    // 2) Execute the query
+    const tours = await features.query;
+
+    // 3) Send response
+    res.status(200).json({
+      status: 'success',
+      results: tours.length,
+      data: {
+        tours,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+```
+
+New class APIFeatures in `utils/APIFeature.js`:
+
+```js
+class APIFeatures {
+  constructor(query, queryString) {
+    this.query = query; // Mongoose query
+    this.queryString = queryString; // Express req.query
+  }
+
+  filter() {
+    const queryObj = { ...this.queryString };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    // Advanced filtering: convert operators to MongoDB syntax
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    const advancedFilter = JSON.parse(queryStr);
+
+    // Optional for more transparent and readable: explicitly name the parsed filter
+    console.log('Parsed filter:', advancedFilter);
+
+    this.query = this.query.find(advancedFilter);
+    return this;
+  }
+
+  sort() {
+    if (this.queryString.sort) {
+      const sortBy = this.queryString.sort.split(',').join(' ');
+      this.query = this.query.sort(sortBy);
+    } else {
+      this.query = this.query.sort('-createdAt');
+    }
+    return this;
+  }
+
+  limitFields() {
+    if (this.queryString.fields) {
+      const fields = this.queryString.fields.split(',').join(' ');
+      this.query = this.query.select(fields);
+    } else {
+      this.query = this.query.select('-__v');
+    }
+    return this;
+  }
+
+  paginate() {
+    const page = this.queryString.page * 1 || 1;
+    const limit = this.queryString.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    this.query = this.query.skip(skip).limit(limit);
+    return this;
+  }
+}
+```
+
+| Feature         | Example Query Param                        | Description                                       |
+| --------------- | ------------------------------------------ | ------------------------------------------------- |
+| Filtering       | `/api/v1/tours?duration=5`                 | Filters results by fields in the schema           |
+| Advanced Filter | `/api/v1/tours?price[gte]=500`             | MongoDB-style filters with operators              |
+| Sorting         | `/api/v1/tours?sort=price,-ratingsAverage` | Sort by one or more fields (ascending/descending) |
+| Field Limiting  | `/api/v1/tours?fields=name,price`          | Select only specific fields                       |
+| Pagination      | `/api/v1/tours?page=2&limit=10`            | Skip and limit results for pagination             |
+
+- Makes unit testing easier.
+  [Back to the top](#natours-2025)
+  [Back to the top](#natours-2025)
