@@ -1429,7 +1429,9 @@ This follows the principle of **separation of concerns**, keeping your controlle
 
 ---
 
-##### The goals
+##### Refactoring controller
+
+---
 
 Controller is likely bloated with filtering, sorting, field limiting, and pagination logic all in one place. By refactoring into a class (`APIFeature`). It creates architectural upgrade to improves readability, reusability, and separation of concerns in `tourControllers.js`to stay clean and keep **focusing on logic**, not technical query building.
 
@@ -1470,7 +1472,11 @@ exports.getAllTours = async (req, res) => {
 };
 ```
 
+---
+
 #### Class Structure
+
+---
 
 New class APIFeatures in `utils/APIFeature.js`:
 
@@ -1539,7 +1545,11 @@ class APIFeatures {
 
 - Makes unit testing easier.
 
+---
+
 #### Introducing what Inside the Constructor:
+
+---
 
 **example**: constructor inside our `APIFeatures` class.
 In object-oriented programming, a constructor is a special method used for creating and initializing objects based on a class.
@@ -1556,7 +1566,11 @@ constructor(query, queryString) {
 
 By assigning them to `this.query` and `this.queryString`, we can use them across all methods inside the class (e.g., `.filter()`, `.sort()`, etc.)—because `this` refers to the current instance of the class.
 
+---
+
 #### Blueprint Analogy: Why a Class
+
+---
 
 Think of the `APIFeatures` class as a blueprint or recipe for building enhanced queries. Just like a blueprint can build multiple houses, this class can create multiple customized query pipelines for any resource (Tours, Users, Reviews...).
 
@@ -1589,4 +1603,7 @@ const tours = await features.query;
 | Blueprint idea | Enables reuse of filtering/sorting logic across resources |
 
 [Back to the top](#natours-2025)
+
+---
+
 [Back to the top](#natours-2025)
