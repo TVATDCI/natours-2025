@@ -1533,5 +1533,55 @@ class APIFeatures {
 | Pagination      | `/api/v1/tours?page=2&limit=10`            | Skip and limit results for pagination             |
 
 - Makes unit testing easier.
-  [Back to the top](#natours-2025)
-  [Back to the top](#natours-2025)
+
+#### Introducing what’s Inside the Constructor
+
+**example**: constructor inside our `APIFeatures` class.
+In object-oriented programming, a constructor is a special method used for creating and initializing objects based on a class.
+
+```js
+constructor(query, queryString) {
+  this.query = query; // The Mongoose query object
+  this.queryString = queryString; // Express request query (req.query)
+}
+```
+
+- `query` is the actual Mongoose query (e.g., `Tour.find()`), which we will chain and modify (e.g., add sorting, pagination, etc.).
+- `queryString` is the raw object from the incoming request URL (like `req.query`), containing things like `?sort=price&limit=5`.
+
+By assigning them to `this.query` and `this.queryString`, we can use them across all methods inside the class (e.g., `.filter()`, `.sort()`, etc.)—because `this` refers to the current instance of the class.
+
+#### Blueprint Analogy: Why a Class?
+
+Think of the `APIFeatures` class as a blueprint or recipe for building enhanced queries. Just like a blueprint can build multiple houses, this class can create multiple customized query pipelines for any resource (Tours, Users, Reviews...).
+
+That means every time instance is created with:
+
+```js
+new APIFeatures(Tour.find(), req.query);
+```
+
+A new customizable query engine, tailored to the request’s parameters. Then chaining methods begins `new`:
+
+```js
+.filter()
+.sort()
+.limitFields()
+.paginate();
+```
+
+Each method modifies the original `this.query`, and at the end, it is **executed** it with:
+
+```js
+const tours = await features.query;
+```
+
+**Summery**
+| Concept | Role in `APIFeatures` |
+| -------------- | --------------------------------------------------------- |
+| `constructor` | Initializes and stores the base query and parameters |
+| `this.query` | A Mongoose query that gets modified by each method |
+| Blueprint idea | Enables reuse of filtering/sorting logic across resources |
+
+[Back to the top](#natours-2025)
+[Back to the top](#natours-2025)
