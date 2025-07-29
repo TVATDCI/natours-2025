@@ -1433,13 +1433,13 @@ This follows the principle of **separation of concerns**, keeping your controlle
 
 ---
 
-Controller is likely bloated with filtering, sorting, field limiting, and pagination logic all in one place. By refactoring into a class (`APIFeature`). It creates architectural upgrade to improves readability, reusability, and separation of concerns in `tourControllers.js`to stay clean and keep **focusing on logic**, not technical query building.
+Any controller is likely bloated with filtering, sorting, field limiting, and pagination logic all in one place. By refactoring into a class (`APIFeature`). It creates architectural upgrade to improves readability, reusability, and separation of concerns in `tourControllers.js`to stay clean and keep **focusing on logic**, not technical query building.
 
 - Keeps tourController.js clean and focused.
 - Makes it easy to reuse query features across different resources (e.g., Tours, Users, Reviews).
 - Adds a clear structure for chaining query methods.
 
-Refactored `tourController.js`:
+**Refactored `tourController.js`**:
 
 ```js
 exports.getAllTours = async (req, res) => {
@@ -1478,7 +1478,7 @@ exports.getAllTours = async (req, res) => {
 
 ---
 
-New class APIFeatures in `utils/APIFeature.js`:
+**New class APIFeatures in `utils/APIFeature.js`**:
 
 ```js
 class APIFeatures {
@@ -1594,6 +1594,8 @@ Each method modifies the original `this.query`, and at the end, it is **executed
 ```js
 const tours = await features.query;
 ```
+
+---
 
 **Summery**
 | Concept | Role in `APIFeatures` |
