@@ -1423,9 +1423,9 @@ Then call `GET /api/v1/tours/top-5-cheap`:
 
 ---
 
-As our API grows more powerful—with support for filtering, sorting, field limiting, and pagination—it becomes harder to maintain these features inside `getAllTours` controller. To make the code more modular and reusable, **refactoring these query features into a dedicated utility class**: `APIFeatures`.
+As API grows with more filtering, sorting, field limiting, and pagination—it becomes harder to maintain these features inside `getAllTours` controller. To make the code more modular and reusable, **refactoring these query features into a dedicated utility class**: `APIFeatures`.
 
-This follows the principle of **separation of concerns**, keeping your controller focused on handling requests and responses, while the query logic is abstracted away.
+This follows the principle of **separation of concerns**, keeping controller focused on handling requests and responses, while the query logic is abstracted away.
 
 ---
 
