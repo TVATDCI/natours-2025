@@ -46,7 +46,7 @@ class APIFeatures {
     // this.query = this.query.find(JSON.parse(queryStr));
     this.query = this.query.find(advancedFilter);
 
-    // Enables chaining
+    // Enables chaining (return)
     return this;
   }
 
@@ -57,6 +57,7 @@ class APIFeatures {
   // ======================================
 
   sort() {
+    // if (req.queryString.sort)
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
@@ -64,9 +65,15 @@ class APIFeatures {
       // DEBUG
       console.log('Sorting by:', sortBy);
     } else {
+      // ======================================
+      // 4. PAGINATION
+      // Supports paging with ?page=2&limit=10
+      // Skip calculated from (page - 1) * limit
+      // ======================================
       this.query = this.query.sort('-createdAt');
     }
 
+    // Enables chaining (return)
     return this;
   }
 
@@ -87,6 +94,7 @@ class APIFeatures {
       this.query = this.query.select('-__v');
     }
 
+    // Enables chaining
     return this;
   }
 
@@ -106,6 +114,7 @@ class APIFeatures {
     // DEBUG
     console.log('Pagination:', { page, limit, skip });
 
+    // Enables chaining
     return this;
   }
 }
