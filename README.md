@@ -65,6 +65,7 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Class Structure](#class-structure)
     - [Introducing what Inside the Constructor](#introducing-what-inside-the-constructor)
     - [Blueprint Analogy: Why a Class](#blueprint-analogy-why-a-class)
+    - [Removed - page out of range -check after refactoring into APIFeatures](#removing-page-out-of-range-check-after-refactoring-into-apifeatures)
 
 ---
 
@@ -1605,6 +1606,89 @@ const tours = await features.query;
 | Blueprint idea | Enables reuse of filtering/sorting logic across resources |
 
 [Back to the top](#natours-2025)
+
+---
+
+#### Removing “page out of range” check after refactoring into `APIFeatures`
+
+In the original implementation (before the class), in `getAllTours` controller "STEP 4: `PAGINATION`"
+ERROR handler `status(404)` explicitly checked after building the query whether the page requested goes beyond the available data:
+
+```js
+// Handle case when page is out of range
+if (req.query.page) {
+  const numTours = await Tour.countDocuments();
+  if (skip >= numTours) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'This page does not exist',
+    });
+  }
+}
+```
+
+**However, it is not included in `APIFeatures.paginate()`**
+
+**REASONS**
+
+1. **Separation of Concerns**
+   `APIFeatures` class: Encapsulates, chains query logic and class is designed to **build and manipulate a query**. Its role is to:
+
+- Filter
+- Sort
+- Limit fields
+- Paginate
+
+- It **does not execute** the query (await query) or send a response.
+- Checking if the page is out of range requires executing this line:
+
+**NOTE**:
+
+```js
+await Tour.countDocuments();
+```
+
+IS **asynchronous**, `paginate()` method in `APIFeatures` is a **synchronous chainable method**. **Injecting an await would break the flow** or require major redesign (like making all methods async and awaiting each one).
+
+2. **Mongoose Handles It Gracefully**
+
+Requesting a page that's out of range (e.g., page 1000 when there are only 10 results), the `query.skip(skip).limit(limit)` will simply return an empty array. It’s not an error — it’s just “no results on this page.”
+
+**strict 404 VS silent empty**
+
+Some developers **prefer** this silent behavior over throwing a 404. In fact, most APIs (like GitHub, Stripe, etc.)
+
+```sass
+❌ No 404 for empty pages — just return results: 0.
+```
+
+However, If API contract demands it (e.g., The API must return a 404 when out of range)
+A solution (optional) by implementing **after executing the query** in controller, which keep the separation of concerns **and** add the validation after the query runs.
+
+```js
+// Execute the query
+const tours = await features.query;
+
+if (tours.length === 0 && req.query.page) {
+  const numTours = await Tour.countDocuments();
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 100;
+  const skip = (page - 1) * limit;
+
+  if (skip >= numTours) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'This page does not exist',
+    });
+  }
+```
+
+| Reason                             | Explanation                                                                               |
+| ---------------------------------- | ----------------------------------------------------------------------------------------- |
+| Separation of Concerns             | `APIFeatures` shouldn't be responsible for sending HTTP responses or running async logic. |
+| Design Simplicity                  | Keep `paginate()` fast, chainable, and free of database hits.                             |
+| Mongoose Handles It                | Empty arrays are not errors — many APIs prefer it that way.                               |
+| CHECK _can_ be added in controller | Optional, based on your design goal (strict 404 vs silent empty).                         |
 
 ---
 
