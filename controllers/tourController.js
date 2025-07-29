@@ -31,6 +31,22 @@ exports.getAllTours = async (req, res) => {
     // STEP: 2) Execute the query
     const tours = await features.query;
 
+    // OPTIONAL: paginate() method in APIFeatures is a synchronous chainable method. Injecting an await would break the flow.
+    // SOLUTION: optional err handler status (404), when paginate out of range, after executing the query in controller!
+    if (tours.length === 0 && req.query.page) {
+      const numTours = await Tour.countDocuments();
+      const page = req.query.page * 1 || 1;
+      const limit = req.query.limit * 1 || 100;
+      const skip = (page - 1) * limit;
+
+      if (skip >= numTours) {
+        return res.status(404).json({
+          status: 'fail',
+          message: 'This page does not exist',
+        });
+      }
+    }
+
     // DEBUG
     console.log(
       'Returned tours:',
