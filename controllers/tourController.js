@@ -228,14 +228,22 @@ exports.deleteTour = async (req, res) => {
   }
 };
 
+// ======================================
+// #: AGGREGATION Pipeline Stages:
+// ======================================
+
 exports.getTourStats = async (req, res) => {
   try {
+    console.log('📊 Running Tour Stats Aggregation...');
+
     const stats = await Tour.aggregate([
-      { $match: { ratingsAverage: { $gte: 4.5 } } }, // match stage
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } }, // match stage
+      },
       {
         $group: {
-          // group stage
-          _id: '$difficulty', // null for one big group
+          // group
+          _id: '$difficulty', // or use null here for total stats
           numTours: { $sum: 1 },
           avgRating: { $avg: '$ratingsAverage' },
           avgPrice: { $avg: '$price' },
@@ -245,11 +253,16 @@ exports.getTourStats = async (req, res) => {
       },
     ]);
 
+    console.log('Aggregation Result:', JSON.stringify(stats, null, 2));
+
     res.status(200).json({
       status: 'success',
-      data: { stats },
+      data: {
+        stats,
+      },
     });
   } catch (err) {
+    console.error('Aggregation Error:', err.message);
     res.status(500).json({
       status: 'error',
       message: err.message,

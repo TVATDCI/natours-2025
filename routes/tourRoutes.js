@@ -14,6 +14,8 @@ router
   .route('/top-5-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTours);
 
+router.route('/tour-stats').get(tourController.getTourStats);
+
 router
   .route('/') // root(/api/v1/tours)
   .get(tourController.getAllTours) // Get all tours. sanitizeQuery, removed for now
