@@ -4,7 +4,7 @@
 // STEP: 1. Set up the blueprint:
 // - query: the base Mongoose query (e.g., Tour.find())
 // - queryString: the incoming req.query object from Express
-// This allows each method (filter, sort, etc.) to access and manipulate them.
+// - This allows each method (filter, sort, etc.) to access and manipulate them.
 // ======================================
 
 class APIFeatures {
