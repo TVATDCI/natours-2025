@@ -1807,6 +1807,87 @@ exports.getTourStats = async (req, res) => {
 };
 ```
 
+**Test URI `getTourStats`**
+
+`GET`;
+
+```js
+http://127.0.0.1:3000/api/v1/tours/tour-stats
+```
+
+**OR switching between total and grouped stats with a query param**
+
+`GET`
+
+```js
+http://127.0.0.1:3000/api/v1/tours/tour-stats?group=none
+```
+
+**result**
+
+```js
+{
+    "status": "success",
+    "data": {
+        "stats": [
+            {
+                "_id": "easy",
+                "numTours": 4,
+                "avgRating": 4.675,
+                "avgPrice": 1272,
+                "minPrice": 397,
+                "maxPrice": 1997
+            },
+            {
+                "_id": "difficult",
+                "numTours": 2,
+                "avgRating": 4.6,
+                "avgPrice": 1997,
+                "minPrice": 997,
+                "maxPrice": 2997
+            },
+            {
+                "_id": "medium",
+                "numTours": 3,
+                "avgRating": 4.8,
+                "avgPrice": 1664.3333333333333,
+                "minPrice": 497,
+                "maxPrice": 2997
+            }
+        ]
+    }
+}
+```
+
+\*\*Or toggle `\_id` between `null and` `'$difficulty'`
+
+1. With `_id: null`
+   This is expected when you group **all documents together** — to get just one aggregated result for all tours.
+
+```js
+{
+  $group: {
+    _id: null,
+    numTours: { $sum: 1 },
+    ...
+  }
+}
+
+```
+
+2. With `_id: '$difficulty'`
+   This groups the documents by **difficulty** (`easy`, `medium`, `difficult`) and applies the same stats per group — works as designed.
+
+```js
+{
+  $group: {
+    _id: '$difficulty',
+    ...
+  }
+}
+
+```
+
 Updating documents with an aggregation pipeline using the stages shown in [Aggregation stages](https://www.mongodb.com/docs/manual/reference/operator/aggregation-pipeline/)
 
 [Updates with Aggregation Pipeline](https://www.mongodb.com/docs/manual/tutorial/update-documents-with-aggregation-pipeline/#std-label-updates-agg-pipeline)
