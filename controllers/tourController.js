@@ -234,7 +234,7 @@ exports.deleteTour = async (req, res) => {
 
 exports.getTourStats = async (req, res) => {
   try {
-    console.log('📊 Running Tour Stats Aggregation...');
+    console.log('Running Tour Stats Aggregation...');
 
     const stats = await Tour.aggregate([
       {
@@ -245,12 +245,24 @@ exports.getTourStats = async (req, res) => {
           // group
           _id: '$difficulty', // or use null here for total stats
           numTours: { $sum: 1 },
+          numRatings: { $sum: '$ratingsQuantity' },
           avgRating: { $avg: '$ratingsAverage' },
           avgPrice: { $avg: '$price' },
           minPrice: { $min: '$price' },
           maxPrice: { $max: '$price' },
         },
       },
+      {
+        // NOTE: sort by any field you calculate in $group, like avgRating, numTours, etc.
+        // $sort: { _id: 1 }, // Sort by difficulty: easy → medium → difficult
+        $sort: { avgPrice: 1 }, // Sort by average price in Ascending order or -1 for Descending order
+      },
+      // NOTE: $match can also be rematched
+      // In this case $ne ()= none equal to) match the ones which does not have difficulty to easy. result = difficult → medium
+      // `_id` is used here because it is previously grouped by difficulty: _id: "$difficulty"
+      //   {
+      //     $match: { _id: { $ne: 'easy' } },
+      //   },
     ]);
 
     console.log('Aggregation Result:', JSON.stringify(stats, null, 2));
