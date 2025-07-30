@@ -65,7 +65,7 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Class Structure](#class-structure)
     - [Introducing what Inside the Constructor](#introducing-what-inside-the-constructor)
     - [Blueprint Analogy: Why a Class](#blueprint-analogy-why-a-class)
-    - [Removed - page out of range -check after refactoring into APIFeatures](#removing-page-out-of-range-check-after-refactoring-into-apifeatures)
+    - [Removing page out of range check after refactoring into APIFeatures](#removing-page-out-of-range-check-after-refactoring-into-apifeatures)
 
 ---
 
@@ -1691,5 +1691,118 @@ if (tours.length === 0 && req.query.page) {
 | CHECK _can_ be added in controller | Optional, based on your design goal (strict 404 vs silent empty).                         |
 
 ---
+
+### Aggregation Pipeline
+
+---
+
+Aggregation pipeline can be seen as a series of processing stages where each stage transforms the documents and passes the result to the next stage.
+
+Each stage is an object that performs a specific operation. It's like a conveyor belt: documents go in one end, get filtered, shaped, grouped, and transformed, then come out the other end.
+
+[Aggregation Pipeline](https://www.mongodb.com/docs/manual/core/aggregation-pipeline/)
+
+**1. `$match` — Filter documents**
+
+This stage filters documents, similar to a `find()` query. It’s usually used early in the pipeline to narrow down the documents you're working with.
+
+**Example**
+
+Filtering tours to only those with a `ratingsAverage` of 4.5 or higher.
+
+```js
+{
+  $match: {
+    ratingsAverage: {
+      $gte: 4.5;
+    }
+  }
+}
+```
+
+**2. `$group` — Group and calculate stats**
+
+This stage groups documents by a specified field and can perform aggregations like sum, avg, min, max, etc.
+
+**Example**
+
+Grouping the tours by their difficulty (`easy`, `medium`, `difficult`) and calculate stats for each group.
+
+```js
+{
+  $group: {
+    _id: '$difficulty', // group by difficulty
+    numTours: { $sum: 1 }, // count tours per group
+    avgRating: { $avg: '$ratingsAverage' },
+    avgPrice: { $avg: '$price' },
+    minPrice: { $min: '$price' },
+    maxPrice: { $max: '$price' }
+  }
+}
+```
+
+**Eventually, adding them together with `.aggregate`**
+
+```js
+Tour.aggregate([
+  {
+    $match: { ratingsAverage: { $gte: 4.5 } },
+  },
+  {
+    $group: {
+      _id: '$difficulty',
+      numTours: { $sum: 1 },
+      avgRating: { $avg: '$ratingsAverage' },
+      avgPrice: { $avg: '$price' },
+      minPrice: { $min: '$price' },
+      maxPrice: { $max: '$price' },
+    },
+  },
+]);
+```
+
+At the end of this pipeline:
+
+1.  Filters tours with high ratings
+2.  Groups by difficulty
+3.  Calculates meaningful stats for each difficulty level
+
+**Use Case in this project**
+
+```js
+GET / api / v1 / tours / tour - stats;
+```
+
+```js
+exports.getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      { $match: { ratingsAverage: { $gte: 4.5 } } },
+      {
+        $group: {
+          _id: '$difficulty',
+          numTours: { $sum: 1 },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: { stats },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+```
+
+Updating documents with an aggregation pipeline using the stages shown in [Updates with Aggregation Pipeline](https://www.mongodb.com/docs/manual/tutorial/update-documents-with-aggregation-pipeline/#std-label-updates-agg-pipeline)
 
 [Back to the top](#natours-2025)
