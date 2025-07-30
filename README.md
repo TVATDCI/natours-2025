@@ -1700,9 +1700,13 @@ Aggregation pipeline can be seen as a series of processing stages where each sta
 
 Each stage is an object that performs a specific operation. It's like a conveyor belt: documents go in one end, get filtered, shaped, grouped, and transformed, then come out the other end.
 
+- Group values from multiple documents together.
+- Perform operations on the grouped data to return a single result.
+- Analyze data changes over tim
+
 [Aggregation Pipeline](https://www.mongodb.com/docs/manual/core/aggregation-pipeline/)
 
-**1. `$match` — Filter documents**
+**1. `$match` — Filter documents - "match stage"**
 
 This stage filters documents, similar to a `find()` query. It’s usually used early in the pipeline to narrow down the documents you're working with.
 
@@ -1720,7 +1724,7 @@ Filtering tours to only those with a `ratingsAverage` of 4.5 or higher.
 }
 ```
 
-**2. `$group` — Group and calculate stats**
+**2. `$group` — Group and calculate stats - "group stage"**
 
 This stage groups documents by a specified field and can perform aggregations like sum, avg, min, max, etc.
 
@@ -1803,6 +1807,8 @@ exports.getTourStats = async (req, res) => {
 };
 ```
 
-Updating documents with an aggregation pipeline using the stages shown in [Updates with Aggregation Pipeline](https://www.mongodb.com/docs/manual/tutorial/update-documents-with-aggregation-pipeline/#std-label-updates-agg-pipeline)
+Updating documents with an aggregation pipeline using the stages shown in [Aggregation stages](https://www.mongodb.com/docs/manual/reference/operator/aggregation-pipeline/)
+
+[Updates with Aggregation Pipeline](https://www.mongodb.com/docs/manual/tutorial/update-documents-with-aggregation-pipeline/#std-label-updates-agg-pipeline)
 
 [Back to the top](#natours-2025)
