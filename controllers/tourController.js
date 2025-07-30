@@ -284,53 +284,59 @@ exports.getTourStats = async (req, res) => {
 };
 
 // ======================================
-// #: Monthly-plan
+// #: Monthly Plan - Tour start stats by month
 // ======================================
 exports.getMonthlyPlan = async (req, res) => {
-  const year = +req.params.year; // to convert str to number - req.params.year * 1 Or, Number (req.params.year * 1)
+  // Convert year from string to number (e.g., from req.params.year = '2025' to 2025)
+  const year = +req.params.year; // Number(req.params.year) or req.params.year * 1
 
   try {
     const plan = await Tour.aggregate([
       {
-        // Deconstruct `startDates` array to separate docs for each date
+        // STEP 1: Break apart startDates array — one doc per date
         $unwind: '$startDates',
       },
       {
-        // Match dates within the given year
+        // STEP 2: Only include dates from the specified year
         $match: {
           startDates: {
-            $gte: new Date(`${year}-01-01`),
-            $lte: new Date(`${year}-12-31`),
+            $gte: new Date(`${year}-01-01`), // Jan 1st of the year
+            $lte: new Date(`${year}-12-31`), // Dec 31st of the year
           },
         },
       },
       {
-        // Group by month (1 = Jan, 12 = Dec)
+        // STEP 3: Group by month, count tours, and collect names
         $group: {
-          _id: { $month: '$startDates' },
-          numTourStarts: { $sum: 1 },
-          tours: { $push: '$name' },
+          _id: { $month: '$startDates' }, // Group by month number (1–12)
+          numTourStarts: { $sum: 1 }, // Count how many tours start in that month
+          tours: { $push: '$name' }, // Push tour names into an array
         },
       },
       {
-        // Add field for clarity (_id → month)
+        // STEP 4: Add 'month' field to replace `_id` for readability
         $addFields: { month: '$_id' },
       },
       {
+        // STEP 5: Remove the `_id` field from results (we now use 'month')
         $project: {
-          _id: 0, // Hide `_id`, now using `month`
+          _id: 0,
         },
       },
       {
-        // Sort by number of tour starts
-        $sort: { numTourStarts: -1 },
+        // STEP 6: Sort months by how many tours start in each
+        $sort: { numTourStarts: -1 }, // Descending order
       },
       {
-        // Optional: limit to top 6 months
+        // STEP 7: Return only the top 6 months
         $limit: 6,
       },
     ]);
 
+    // DEBUG: Log the plan to the console
+    console.log('Monthly Plan:', plan);
+
+    // STEP 8: Send JSON response
     res.status(200).json({
       status: 'success',
       data: {
@@ -338,6 +344,9 @@ exports.getMonthlyPlan = async (req, res) => {
       },
     });
   } catch (err) {
+    // DEBUG: ERROR HANDLING
+    console.error('Error in getMonthlyPlan:', err);
+
     res.status(500).json({
       status: 'error',
       message: err.message,
