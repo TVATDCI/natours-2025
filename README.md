@@ -1910,7 +1910,71 @@ Using aggregation pipeline on the `startDates` field (which is an array), and ca
 ]
 ```
 
-**Update the startDates!**
+##### Update the startDates!
+
+**One-liner update script** to run in a Node.js script, MongoDB shell, or Mongoose context to update all `startDates` in all tour documents to future years
+
+**MongoDB Shell or Compass (aggregation-aware tools):**
+
+```js
+db.tours.updateMany({}, [
+  {
+    $set: {
+      startDates: {
+        $map: {
+          input: '$startDates',
+          as: 'date',
+          in: {
+            $dateFromParts: {
+              year: 2025, // current year(2025)
+              month: { $month: '$$date' },
+              day: { $dayOfMonth: '$$date' },
+              hour: { $hour: '$$date' },
+              minute: { $minute: '$$date' },
+              second: { $second: '$$date' },
+            },
+          },
+        },
+      },
+    },
+  },
+]);
+```
+
+##### 🛑
+
+- Loops through each startDates array
+- Keeps the same month, day, and time
+- Updates the year to the current (now year2025) for all
+
+**Mongoose (Node.js):**
+
+```js
+await Tour.updateMany({}, [
+  {
+    $set: {
+      startDates: {
+        $map: {
+          input: '$startDates',
+          as: 'date',
+          in: {
+            $dateFromParts: {
+              year: 2025, // current year(2025)
+              month: { $month: '$$date' },
+              day: { $dayOfMonth: '$$date' },
+              hour: { $hour: '$$date' },
+              minute: { $minute: '$$date' },
+              second: { $second: '$$date' },
+            },
+          },
+        },
+      },
+    },
+  },
+]);
+```
+
+[Update Aggregation Pipeline](https://www.mongodb.com/docs/manual/tutorial/update-documents-with-aggregation-pipeline/#std-label-updates-agg-pipeline)
 
 **Implement `routes/tourRoutes.js`**
 
@@ -1924,7 +1988,5 @@ router
 **Start getting your hand dirty building the `getMonthlyPlan` Logic**
 
 Have Fun 😄
-
-[Updates with Aggregation Pipeline](https://www.mongodb.com/docs/manual/tutorial/update-documents-with-aggregation-pipeline/#std-label-updates-agg-pipeline)
 
 [Back to the top](#natours-2025)
