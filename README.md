@@ -2081,7 +2081,7 @@ catch (err) {
   if (isNaN(year)) {
     return res.status(400).json({
       status: 'fail',
-      message: 'Year parameter must be a valid number',
+      message: 'Invalid year. Please provide a numeric value.',
     });
   }
   ```
