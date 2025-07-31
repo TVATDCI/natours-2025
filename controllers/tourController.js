@@ -275,6 +275,7 @@ exports.getTourStats = async (req, res) => {
       },
     });
   } catch (err) {
+    // DEBUG:
     console.error('Aggregation Error:', err.message);
     res.status(500).json({
       status: 'error',
@@ -289,6 +290,21 @@ exports.getTourStats = async (req, res) => {
 exports.getMonthlyPlan = async (req, res) => {
   // Convert year from string to number (e.g., from req.params.year = '2025' to 2025)
   const year = +req.params.year; // Number(req.params.year) or req.params.year * 1
+
+  // ====================================
+  // NOTE: Validate year input
+  // - to solve abc or isNan confusion.
+  // - As won't crash and still returned - 200 OK with Monthly Plan: []
+  // ====================================
+  // NOTE: if isNaN(year) will give a warning as to void the global isNaN() because it can behave unexpectedly with non-numbers.
+  // (https://github.com/airbnb/javascript#standard-library--isnaneslintno-restricted-globals)
+  // SOLUTION: if Number.isNaN(year)
+  if (Number.isNaN(year)) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Invalid year. Please provide a numeric value.',
+    });
+  }
 
   try {
     const plan = await Tour.aggregate([
