@@ -60,11 +60,11 @@ const tourSchema = new mongoose.Schema(
     },
     startDates: [Date],
   },
-  // #: Obj schema option to virtual property
+  // #: Insert Obj schema option to virtual property
   // 2. Implement it inside tourSchema(.schema)
   {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toJSON: { virtuals: true }, // to confirm when the data is output to JSON.
+    toObject: { virtuals: true }, // also when the data is output as Obj.
   },
 );
 
