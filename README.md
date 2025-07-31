@@ -1989,4 +1989,57 @@ router
 
 Have Fun 😄
 
+##### `res.status(500)` ERROR HANDLING in monthly-plan
+
+```js
+catch (err) {
+
+  console.error('Error in getMonthlyPlan:', err);
+
+  res.status(500).json({
+    status: 'error',
+    message: err.message,
+  });
+}
+```
+
+`500` is the HTTP status code for **Internal Server Error**, which means something unexpected happened on the **server side**
+
+It could be:
+
+- There’s an unhandled exception in your code.
+- MongoDB throws an error (e.g., invalid aggregation, bad operator).
+- Something breaks during the asynchronous operation (`await Tour.aggregate(...))`.
+- The input causes a runtime error (like a malformed Date, undefined, etc.) OR, forgotten pre-validate.
+
+##### Examples of Triggers for This Catch Block
+
+1. Invalid `req.params.year` (e.g. Nan):
+
+- If **URL** `.req` is sent:
+  `GET /api/v1/tours/monthly-plan/abc` to:
+
+  ```js
+  const year = +req.params.year; // Number(req.params.year) or req.params.year * 1
+  ```
+
+  Then: It is confusing ...
+
+  ```js
+  new Date('NaN-01-01'); // ➜ Invalid Date
+  ```
+
+  In postman test: status(200) ok!
+
+  ```js
+  {
+    "status": "success",
+    "data": {
+        "plan": []
+    }
+  }
+  ```
+
+  2. Aggregation syntax error:
+
 [Back to the top](#natours-2025)
