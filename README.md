@@ -1989,7 +1989,11 @@ router
 
 Have Fun 😄
 
+---
+
 ##### `res.status(500)` ERROR HANDLING in monthly-plan
+
+---
 
 ```js
 catch (err) {
@@ -2005,7 +2009,7 @@ catch (err) {
 
 `500` is the HTTP status code for **Internal Server Error**, which means something unexpected happened on the **server side**
 
-It could be:
+**It could be:**
 
 - There’s an unhandled exception in your code.
 - MongoDB throws an error (e.g., invalid aggregation, bad operator).
@@ -2014,7 +2018,7 @@ It could be:
 
 ##### Examples of Triggers for This Catch Block
 
-1. Invalid `req.params.year` (e.g. Nan):
+**1. Invalid `req.params.year` (e.g. NaN)**:
 
 - If **URL** `.req` is sent:
   `GET /api/v1/tours/monthly-plan/abc` to:
@@ -2023,13 +2027,13 @@ It could be:
   const year = +req.params.year; // Number(req.params.year) or req.params.year * 1
   ```
 
-  Then: It is confusing ...
+  **Then: It is confusing ...**
 
   ```js
   new Date('NaN-01-01'); // ➜ Invalid Date
   ```
 
-  In postman test: status(200) ok!
+  **In postman test: status(200) ok!**
 
   ```js
   {
@@ -2040,6 +2044,46 @@ It could be:
   }
   ```
 
-  2. Aggregation syntax error:
+  **2. Aggregation syntax error:**
+  - If it accidentally mistype an aggregation stage or operator:
+
+  ```js
+  $unwind: '$startDates'; // but you mistyped `$unwind` or used the wrong path
+  ```
+
+  **3. Schema-related issues:**
+  - If a document has no `startDates` array or contains invalid types (e.g. a string instead of a date), MongoDB may throw or return unexpected results.
+
+  **In my development**
+  I `catch` it with this block:
+
+  ```js
+  console.error('Error in getMonthlyPlan:', err);
+  ```
+
+  **YES, It is a beginner problem.**
+
+  But it
+  - Prevents the server from crashing.
+  - Returns a clear message to the client.
+  - Helps me debug by logging the real error to the server console:
+
+  ***
+
+  **Optional Improvement: Validate Input Early**
+
+  ***
+
+  Guarding the pipeline against invalid input. It ensures only clean input makes it into the aggregation pipeline.
+
+  ```js
+  const year = Number(req.params.year);
+  if (isNaN(year)) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Year parameter must be a valid number',
+    });
+  }
+  ```
 
 [Back to the top](#natours-2025)
