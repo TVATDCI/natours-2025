@@ -294,10 +294,10 @@ exports.getMonthlyPlan = async (req, res) => {
   // ====================================
   // NOTE: Validate year input
   // - to solve abc or isNan confusion.
-  // - As won't crash and still returned - 200 OK with Monthly Plan: []
+  // - As it won't crash and still returned - 200 OK with Monthly Plan: []
   // ====================================
   // NOTE: if isNaN(year) will give a warning as to void the global isNaN() because it can behave unexpectedly with non-numbers.
-  // (https://github.com/airbnb/javascript#standard-library--isnaneslintno-restricted-globals)
+  // (https://github.com/airbnb/javascript#standard-library--isnaneslintno-restricted-globals) - updated 31-07-25
   // SOLUTION: if Number.isNaN(year)
   if (Number.isNaN(year)) {
     return res.status(400).json({
@@ -326,18 +326,19 @@ exports.getMonthlyPlan = async (req, res) => {
         $group: {
           _id: { $month: '$startDates' }, // Group by month number (1–12)
           numTourStarts: { $sum: 1 }, // Count how many tours start in that month
-          tours: { $push: '$name' }, // Push tour names into an array
+          tours: { $push: '$name' }, // Push tour names into an 'array'
         },
       },
       {
         // STEP 4: Add 'month' field to replace `_id` for readability
-        $addFields: { month: '$_id' },
+        $addFields: { month: '$_id' }, // _id refers to month number. addField is used to copy _id value into a new field (month)
+        // Once month field is created with _id value, use $project(below) ot remove _id field
       },
       {
-        // STEP 5: Remove the `_id` field from results (we now use 'month')
+        // STEP 5: Remove the `_id` field from results (using 'month' instead)
         $project: {
           _id: 0,
-        },
+        }, // Project can be used as include or EXCLUDE. _id: 0 sets MongoDB to exclude _id field from the output
       },
       {
         // STEP 6: Sort months by how many tours start in each
