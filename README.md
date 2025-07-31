@@ -1888,7 +1888,42 @@ http://127.0.0.1:3000/api/v1/tours/tour-stats?group=none
 
 ```
 
-Updating documents with an aggregation pipeline using the stages shown in [Aggregation stages](https://www.mongodb.com/docs/manual/reference/operator/aggregation-pipeline/)
+Updating documents with an aggregation pipeline using the stages shown in [MongoDB - Aggregation Pipeline](https://www.mongodb.com/docs/manual/reference/operator/aggregation-pipeline/)
+
+---
+
+**`getMonthlyPlan`**
+
+Using aggregation pipeline on the `startDates` field (which is an array), and calculate:
+
+- How many tours start per month
+- Names of those tours
+- filter by year
+
+**Current data**
+
+```json
+"startDates": [
+  "2021-03-23T09:00:00.000Z",
+  "2021-10-25T08:00:00.000Z",
+  "2022-01-30T09:00:00.000Z"
+]
+```
+
+**Update the startDates!**
+
+**Implement `routes/tourRoutes.js`**
+
+```js
+router
+  // additional URL params(/:year) to filter by year
+  .route('/monthly-plan/:year')
+  .get(tourController.getMonthlyPlan);
+```
+
+**Start getting your hand dirty building the `getMonthlyPlan` Logic**
+
+Have Fun 😄
 
 [Updates with Aggregation Pipeline](https://www.mongodb.com/docs/manual/tutorial/update-documents-with-aggregation-pipeline/#std-label-updates-agg-pipeline)
 
