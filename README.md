@@ -66,6 +66,12 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Introducing what Inside the Constructor](#introducing-what-inside-the-constructor)
     - [Blueprint Analogy: Why a Class](#blueprint-analogy-why-a-class)
     - [Removing page out of range check after refactoring into APIFeatures](#removing-page-out-of-range-check-after-refactoring-into-apifeatures)
+21. [Aggregation Pipeline](#aggregation-pipeline)
+    - [Use Case in this project](#use-case-in-this-project)
+    - [getMonthlyPlan](#getmonthlyplan)
+    - [Update the startDates](#update-the-startdates)
+    - [res.status(500) ERROR HANDLING in monthly-plan](#resstatus500-error-handling-in-monthly-plan)
+    - [Examples of Triggers for This Catch Block](#examples-of-triggers-for-this-catch-block)
 
 ---
 
@@ -1771,7 +1777,7 @@ At the end of this pipeline:
 2.  Groups by difficulty
 3.  Calculates meaningful stats for each difficulty level
 
-**Use Case in this project**
+##### Use Case in this project
 
 ```js
 GET / api / v1 / tours / tour - stats;
@@ -1806,6 +1812,8 @@ exports.getTourStats = async (req, res) => {
   }
 };
 ```
+
+[Back to the top](#natours-2025)
 
 **Test URI `getTourStats`**
 
@@ -1859,7 +1867,7 @@ http://127.0.0.1:3000/api/v1/tours/tour-stats?group=none
 }
 ```
 
-\*\*Or toggle `\_id` between `null and` `'$difficulty'`
+**Or toggle `\_id` between `null and` `'$difficulty'`**
 
 1. With `_id: null`
    This is expected when you group **all documents together** — to get just one aggregated result for all tours.
@@ -1892,7 +1900,7 @@ Updating documents with an aggregation pipeline using the stages shown in [Mongo
 
 ---
 
-**`getMonthlyPlan`**
+##### `getMonthlyPlan`
 
 Using aggregation pipeline on the `startDates` field (which is an array), and calculate:
 
@@ -1941,7 +1949,7 @@ db.tours.updateMany({}, [
 ]);
 ```
 
-##### 🛑
+**🛑**
 
 - Loops through each startDates array
 - Keeps the same month, day, and time
@@ -1989,6 +1997,8 @@ router
 
 Have Fun 😄
 
+[Back to the top](#natours-2025)
+
 ---
 
 ##### `res.status(500)` ERROR HANDLING in monthly-plan
@@ -2013,10 +2023,14 @@ catch (err) {
 
 - There’s an unhandled exception in your code.
 - MongoDB throws an error (e.g., invalid aggregation, bad operator).
-- Something breaks during the asynchronous operation (`await Tour.aggregate(...))`.
+- Something breaks during the asynchronous operation (`await Tour.aggregate(...)`).
 - The input causes a runtime error (like a malformed Date, undefined, etc.) OR, forgotten pre-validate.
 
+---
+
 ##### Examples of Triggers for This Catch Block
+
+---
 
 **1. Invalid `req.params.year` (e.g. NaN)**:
 
