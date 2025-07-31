@@ -169,7 +169,7 @@ exports.updateTour = async (req, res) => {
       });
     }
 
-    // DEBUG: in developemnt
+    // DEBUG: in development
     if (process.env.NODE_ENV === 'development') {
       console.log('Updated tour:', {
         id: updatedTour._id,
