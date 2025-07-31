@@ -61,7 +61,7 @@ const tourSchema = new mongoose.Schema(
     startDates: [Date],
   },
   // #: Obj schema option to virtual property
-  // Note: It is inside .schema
+  // 2. Implement it inside tourSchema(.schema)
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
@@ -74,6 +74,7 @@ const tourSchema = new mongoose.Schema(
 
 // NOTE: ARROW functions (=>) CAN NOT be used here because `this` keyword won't refer to the document.
 // So regular function in this case.
+// 1. Define virtual property in tourSchema(.schema)
 
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
