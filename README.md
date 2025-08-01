@@ -73,6 +73,7 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [res.status(500) ERROR HANDLING in monthly-plan](#resstatus500-error-handling-in-monthly-plan)
     - [Examples of Triggers for This Catch Block](#examples-of-triggers-for-this-catch-block)
 22. [Virtual Properties in MongoDB/Mongoose](#virtual-properties-in-mongodbmongoose)
+23. [Mongoose Middleware](#mongoose-middleware)
 
 ---
 
@@ -2151,7 +2152,56 @@ const tourSchema = new mongoose.Schema(
 
 Now, when the tour data as JSON (e.g. via API), durationWeeks will appear automatically.
 
+---
+
+#### Mongoose Middleware
+
+---
+
+Middleware (also called pre and post hooks) are functions which are passed control during execution of asynchronous functions. Middleware is specified on the schema level and is useful for writing plugins.
+
+**Types of Middleware**
+
+Mongoose has 4 types of middleware: document middleware, model middleware, aggregate middleware, and query middleware.
+
+Document middleware is supported for the following document functions. In Mongoose, a document is an instance of a `Model` class. In document middleware functions, `this` refers to the document. To access the model, use `this.constructor`.
+
+- [Pre](#https://mongoosejs.com/docs/middleware.html#pre)
+  - Pre middleware functions are executed one after another, when each middleware calls next.
+- [Post](#https://mongoosejs.com/docs/middleware.html#post)
+
+**Document Middleware Lifecycle**
+
+```js
+tourSchema
+  .pre('save', function (next) {
+    // Runs before .save() and .create()
+    next();
+  })
+  .post('save', function (doc, next) {
+    // Runs after .save()
+    next();
+  });
+```
+
+- [Errors in Pre Hooks](#https://mongoosejs.com/docs/middleware.html#error-handling)
+- [Asynchronous Post Hooks](#https://mongoosejs.com/docs/middleware.html#post-async)
+- [Define Middleware Before Compiling Models](#https://mongoosejs.com/docs/middleware.html#defining)
+- [Save/Validate Hooks](#https://mongoosejs.com/docs/middleware.html#order)
+- [Accessing Parameters in Middleware](#https://mongoosejs.com/docs/middleware.html#accessing-parameters-in-middleware)
+- [Naming Conflicts](#https://mongoosejs.com/docs/middleware.html#naming)
+- [Notes on findAndUpdate() and Query Middleware](#https://mongoosejs.com/docs/middleware.html#notes)
+- [Error Handling Middleware](#https://mongoosejs.com/docs/middleware.html#error-handling-middleware)
+- [Aggregation Hooks](#https://mongoosejs.com/docs/middleware.html#aggregate)
+- [Synchronous Hooks](#https://mongoosejs.com/docs/middleware.html#synchronous)
+
+**MORE**: [Mongoose Middleware(official docs)](#https://mongoosejs.com/docs/middleware.html)
+
 [Back to the top](#natours-2025)
+
+```
+
+```
 
 ```
 
