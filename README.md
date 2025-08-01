@@ -72,6 +72,7 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Update the startDates](#update-the-startdates)
     - [res.status(500) ERROR HANDLING in monthly-plan](#resstatus500-error-handling-in-monthly-plan)
     - [Examples of Triggers for This Catch Block](#examples-of-triggers-for-this-catch-block)
+22. [Virtual Properties in MongoDB/Mongoose](#virtual-properties-in-mongodbmongoose)
 
 ---
 
@@ -2126,7 +2127,7 @@ const tour = await Tour.findOne();
 console.log(tour.durationWeeks); // ➜ 2
 ```
 
-But in MongoDB, there's **NO** `durationWeeks` **field**. It’s purely virtual.
+But in MongoDB, there's **NO** `durationWeeks` **field**. It **can not be used as a query**. It’s purely virtual.
 
 **2. Implement virtuals inside tourSchema(.schema)** as **Obj schema option** to virtual property
 
