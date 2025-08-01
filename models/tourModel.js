@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const slugify = require('slugify');
+
 // ======================================
 // #: tourSchema / Obj. schema definitions
 // ======================================
@@ -12,6 +14,7 @@ const tourSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
+    slug: String,
     duration: {
       type: Number,
       required: [true, 'A tour must have a duration'],
@@ -78,6 +81,20 @@ const tourSchema = new mongoose.Schema(
 
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+// ======================================
+// #: Document Middleware
+// Note on .save() middleware
+// It ONLY runs before when using .save() and .create() commands
+// Does not run on .updateOne(), insertMany() or .findByIdAndUpdate()!
+// ======================================
+
+tourSchema.pre('save', function (next) {
+  // 'this' refers to the document being saved
+  this.slug = slugify(this.name, { lower: true });
+  console.log('Document middleware: Will save document...');
+  next(); // move to next middleware
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
