@@ -2100,4 +2100,58 @@ catch (err) {
   }
   ```
 
+  ##### Virtual Properties in MongoDB/Mongoose
+
+  **Virtuals** are fields that don’t actually get stored in the database, but are **computed dynamically** when a document is retrieved.
+
+It is useful when included in calculated value in the API responses, without permanently saving it to the DB.
+
+**1. Defining a Virtual Property in the schema**
+virtuals can be implemented in Mongoose Schema, not to individual documents. But Define virtual property in tourSchema(.schema)
+
+```js
+tourSchema.virtual('durationWeeks').get(function () {
+  return this.duration / 7;
+});
+```
+
+- Now `durationWeeks`(in the existing database) is the virtual property.
+- this.duration refers to the duration field in the document.
+- It calculates weeks by dividing days by 7.
+
+**Example**:
+
+```js
+const tour = await Tour.findOne();
+console.log(tour.durationWeeks); // ➜ 2
+```
+
+But in MongoDB, there's **NO** `durationWeeks` **field**. It’s purely virtual.
+
+**2. Implement virtuals inside tourSchema(.schema)** as **Obj schema option** to virtual property
+
+More Objects can be inserted in `const tourSchema = new mongoose.Schema({})` such as Obj. schema definitions and also Obj. schema option `mongoose.Schema({schema definitions},{schema options})`
+
+By default, virtuals don't show up in `res.json()` or `.toObject().`
+
+```js
+const tourSchema = new mongoose.Schema(
+  {
+    name: String,
+    duration: Number,
+    // other fields
+  },
+  {
+    toJSON: { virtuals: true }, // enable JSON
+    toObject: { virtuals: true }, // enable Obj
+  },
+);
+```
+
+Now, when the tour data as JSON (e.g. via API), durationWeeks will appear automatically.
+
 [Back to the top](#natours-2025)
+
+```
+
+```
