@@ -135,10 +135,6 @@ I value this project as a deep dive into building a **real-world, production-rea
 
 ```markdown
 project-root/
-├── base/
-│ ├── appX.js
-│ ├── tourRoutesX.js
-│ └── userRoutesX.js
 ├── config/
 │ └── db.js
 ├── dev-data/
@@ -181,6 +177,10 @@ project-root/
 ├── routes/
 │ ├── tourRoutes.js
 │ └── userRoutes.js
+├── utils/
+│ ├── apiFeatures.js
+│ ├── X.js
+│ └── X.js
 ├── .eslintrc.json
 ├── .gitignore
 ├── .prettierrc
