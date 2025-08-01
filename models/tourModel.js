@@ -85,16 +85,35 @@ tourSchema.virtual('durationWeeks').get(function () {
 
 // ======================================
 // #: Document Middleware
-// Note on .save() middleware
+// Note: .save() middleware
 // It ONLY runs before when using .save() and .create() commands
 // Does not run on .updateOne(), insertMany() or .findByIdAndUpdate()!
+// "slug: String," should also be be added to the schema!
 // ======================================
-
+// PRE-SAVE-HOOK tourSchema.pre(save), executed before saving a document to the DB.
+// ======================================
 tourSchema.pre('save', function (next) {
   // 'this' refers to the document being saved
   this.slug = slugify(this.name, { lower: true });
-  console.log('Document middleware: Will save document...');
+  console.log('Document middleware: Will save document with .slug...');
   next(); // move to next middleware
+});
+
+// ======================================
+// SAVE-HOOK both pre - post can be called multiple times
+// ======================================
+
+tourSchema.pre('save', function (next) {
+  console.log('Document middleware: Will save document ...');
+  next();
+});
+
+// ======================================
+// POST-SAVE-HOOK tourSchema.post(save), called after the document is saved.
+// ======================================
+tourSchema.post('save', function (doc, next) {
+  console.log('Document middleware: Saved document:', doc);
+  next();
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
