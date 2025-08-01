@@ -62,6 +62,11 @@ const tourSchema = new mongoose.Schema(
       select: false, // exclude(select) field(createdAt) from the schema(false)
     },
     startDates: [Date],
+    secretTour: {
+      // QUERY MIDDLEWARE
+      type: Boolean,
+      default: false,
+    },
   },
   // #: Insert Obj schema option to virtual property
   // 2. Implement it inside tourSchema(.schema)
@@ -84,35 +89,45 @@ tourSchema.virtual('durationWeeks').get(function () {
 });
 
 // ======================================
-// #: Document Middleware
-// Note: .save() middleware
-// It ONLY runs before when using .save() and .create() commands
-// Does not run on .updateOne(), insertMany() or .findByIdAndUpdate()!
-// "slug: String," should also be be added to the schema!
+// #: Document Middleware (.save() & .create() only)
+// Note: Does NOT run on updateOne(), findByIdAndUpdate(), or insertMany()
+// Remember to define: slug: String in the schema!
 // ======================================
-// PRE-SAVE-HOOK tourSchema.pre(save), executed before saving a document to the DB.
+
+// ======================================
+// PRE-SAVE HOOK — generate slug from tour name
 // ======================================
 tourSchema.pre('save', function (next) {
   // 'this' refers to the document being saved
   this.slug = slugify(this.name, { lower: true });
-  console.log('Document middleware: Will save document with .slug...');
-  next(); // move to next middleware
-});
-
-// ======================================
-// SAVE-HOOK both pre - post can be called multiple times
-// ======================================
-
-tourSchema.pre('save', function (next) {
-  console.log('Document middleware: Will save document ...');
+  // console.log('Document middleware: Will save document with .slug...');
   next();
 });
 
 // ======================================
-// POST-SAVE-HOOK tourSchema.post(save), called after the document is saved.
+// PRE-SAVE HOOK — extra logging or prep work
 // ======================================
-tourSchema.post('save', function (doc, next) {
-  console.log('Document middleware: Saved document:', doc);
+// tourSchema.pre('save', function (next) {
+//   console.log('Document middleware: Will save document ...');
+//   next();
+// });
+
+// ======================================
+// POST-SAVE HOOK — runs after doc is saved in DB
+// ======================================
+// tourSchema.post('save', function (doc, next) {
+//   console.log('Document middleware: Saved document:', doc);
+//   next();
+// });
+
+// ======================================
+// QUERY MIDDLEWARE
+// ======================================
+// tourSchema.pre('find', function (next){}
+// /^find/: Regex matches find, findOne, findOneAndUpdate, etc.
+// .pre('find'): Runs before any .find() query is executed.
+tourSchema.pre(/^find/, function (next) {
+  console.log('Query middleware: About to execute a find operation...');
   next();
 });
 
