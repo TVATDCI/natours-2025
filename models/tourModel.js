@@ -124,10 +124,23 @@ tourSchema.pre('save', function (next) {
 // QUERY MIDDLEWARE
 // ======================================
 // tourSchema.pre('find', function (next){}
-// /^find/: Regex matches find, findOne, findOneAndUpdate, etc.
-// .pre('find'): Runs before any .find() query is executed.
+// /^find/: Regex matches find, findOne, findOneAndUpdate, OR /^find/ = all start with find
+// .pre('find'): Runs before any .find() query is executed.(tourController.js/line: 25)
 tourSchema.pre(/^find/, function (next) {
   console.log('Query middleware: About to execute a find operation...');
+  this.find({ secretTour: { $ne: true } }); // $ne= not equal to true - exclude secret tours
+  console.log(
+    'secretTour is now set to true: now it is not there if you look for it...',
+  );
+
+  this.start = Date.now(); // just for measuring query time (optional)
+  next();
+});
+
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took ${Date.now() - this.start} ms`);
+
+  console.log(`Returned ${docs.length} documents`);
   next();
 });
 
