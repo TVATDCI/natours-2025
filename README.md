@@ -2371,4 +2371,23 @@ const tourSchema = new mongoose.Schema({
 - Most validation errors return clear messages — you can customize them
 - Sample used in this project `required`, `min`, `max`, `minlength`, `maxlength`, and `enum`
 
+---
+
+##### The Difference Between `Date.now()` and `Date.now`
+
+---
+
+**Memory Trick**
+
+**`default: Date.now()` ← This runs the function immediately**
+
+- **Result:** It sets the default value to the **timestamp at the time the schema is defined** — not when the document is created.
+- **Problem:** All documents will get the **same timestamp** (from when the app started or model was loaded).
+
+**`default: Date.now` ← This passes the function, not the result**
+
+- Correct Usage in Mongoose
+- Mongoose will **call the function** each time a new document is created
+- **Each document gets its own unique creation timestamp**
+
 [Back to the top](#natours-2025)
