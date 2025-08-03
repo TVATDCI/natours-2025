@@ -2261,6 +2261,8 @@ tourSchema.pre('aggregate', function (next) {
 
 ### Data Validation
 
+[validatot.js](https://github.com/validatorjs/validator.js/)
+
 ---
 
 #### Built-in Validation
