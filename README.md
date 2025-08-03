@@ -2184,16 +2184,16 @@ tourSchema
   });
 ```
 
-- [Errors in Pre Hooks](#https://mongoosejs.com/docs/middleware.html#error-handling)
-- [Asynchronous Post Hooks](#https://mongoosejs.com/docs/middleware.html#post-async)
-- [Define Middleware Before Compiling Models](#https://mongoosejs.com/docs/middleware.html#defining)
-- [Save/Validate Hooks](#https://mongoosejs.com/docs/middleware.html#order)
-- [Accessing Parameters in Middleware](#https://mongoosejs.com/docs/middleware.html#accessing-parameters-in-middleware)
-- [Naming Conflicts](#https://mongoosejs.com/docs/middleware.html#naming)
-- [Notes on findAndUpdate() and Query Middleware](#https://mongoosejs.com/docs/middleware.html#notes)
-- [Error Handling Middleware](#https://mongoosejs.com/docs/middleware.html#error-handling-middleware)
-- [Aggregation Hooks](#https://mongoosejs.com/docs/middleware.html#aggregate)
-- [Synchronous Hooks](#https://mongoosejs.com/docs/middleware.html#synchronous)
+[Errors in Pre Hooks](#https://mongoosejs.com/docs/middleware.html#error-handling)
+[Asynchronous Post Hooks](#https://mongoosejs.com/docs/middleware.html#post-async)
+[Define Middleware Before Compiling Models](#https://mongoosejs.com/docs/middleware.html#defining)
+[Save/Validate Hooks](#https://mongoosejs.com/docs/middleware.html#order)
+[Accessing Parameters in Middleware](#https://mongoosejs.com/docs/middleware.html#accessing-parameters-in-middleware)
+[Naming Conflicts](#https://mongoosejs.com/docs/middleware.html#naming)
+[Notes on findAndUpdate() and Query Middleware](#https://mongoosejs.com/docs/middleware.html#notes)
+[Error Handling Middleware](#https://mongoosejs.com/docs/middleware.html#error-handling-middleware)
+[Aggregation Hooks](#https://mongoosejs.com/docs/middleware.html#aggregate)
+[Synchronous Hooks](#https://mongoosejs.com/docs/middleware.html#synchronous)
 
 **MORE**: [Mongoose Middleware(official docs)](#https://mongoosejs.com/docs/middleware.html)
 
