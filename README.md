@@ -2193,8 +2193,67 @@ tourSchema
 - [Notes on findAndUpdate() and Query Middleware](https://mongoosejs.com/docs/middleware.html#notes)
 - [Error Handling Middleware](https://mongoosejs.com/docs/middleware.html#error-handling-middleware)
 - [Aggregation Hooks](https://mongoosejs.com/docs/middleware.html#aggregate)
+  - Aggregation middleware lets you intercept and modify aggregation pipelines before they're executed. This is useful when, Example in this project:
+  - Exclude secret tours from all aggregation pipelines unless explicitly included.
+  - Add common stages (like filtering, logging, or caching).
+
+```js
+// ======================================
+// AGGREGATION MIDDLEWARE
+// ======================================
+// This middleware runs before any aggregation pipeline is executed on the Tour model.
+// It is used to automatically exclude secret tours from all AGGREGATION!
+// ======================================
+
+tourSchema.pre('aggregate', function (next) {
+  // Adds a $match stage to the beginning of the aggregation pipeline
+  // This filters out secret tours (secretTour: true), so they won't appear in aggregations by default
+  // unshift() is used to make sure this is the FIRST stage in the pipeline
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+
+  next();
+});
+```
+
+**Summary**
+
+```js
+// tourSchema
+secretTour: {
+  type: Boolean,
+  default: false
+}
+```
+
+- Every tour defaults to `secretTour`: false (i.e., not secret).
+- If it is manually set `secretTour: true`, then it will be set as a secret.
+
+```js
+// QUERY MIDDLEWARE
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  next();
+});
+```
+
+- Query Middleware filters out any `secretTour: true` documents from all find queries (find, findOne, etc.)
+- So now, even if a tour is secret, it won’t show up in regular `Tour.find()` queries
+
+```js
+// AGGREGATION MIDDLEWARE
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  next();
+});
+```
+
+- Modifies every aggregation pipeline before it's executed
+- It injects a `$match` stage to exclude secret tours from being processed
+- `unshift()` makes sure it’s the first stage, which is important for correct filtering
+- “Tricky but now the secretTour is a secret! ... After it goes through this process next();, it is now also excluded from the pipeline." I say so!
+
 - [Synchronous Hooks](https://mongoosejs.com/docs/middleware.html#synchronous)
 
-**MORE**: [Mongoose Middleware(official docs)](https://mongoosejs.com/docs/middleware.html)
+**More >>** [Mongoose Middleware(official docs)](https://mongoosejs.com/docs/middleware.html)
 
 [Back to the top](#natours-2025)
