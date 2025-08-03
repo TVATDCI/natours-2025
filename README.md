@@ -2256,4 +2256,24 @@ tourSchema.pre('aggregate', function (next) {
 
 **More >>** [Mongoose Middleware(official docs)](https://mongoosejs.com/docs/middleware.html)
 
+---
+
+### Data Validation
+
+---
+
+#### Built-in Validation
+
+Data Validation, specifically Built-in Validation with Mongoose is is a very important part of modeling data. It must done correctly and safely.
+
+Mongoose lets you define validation rules directly in your schema, using properties,
+such as:
+
+- required
+- minlength, maxlength
+- min, max
+- enum
+- validate (for custom validators)
+- These validations run before the document is saved to the database. If validation fails, Mongoose throws an error.
+
 [Back to the top](#natours-2025)
