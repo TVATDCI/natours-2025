@@ -138,9 +138,21 @@ tourSchema.pre(/^find/, function (next) {
 });
 
 tourSchema.post(/^find/, function (docs, next) {
+  // DEBUG:
   console.log(`Query took ${Date.now() - this.start} ms`);
 
-  console.log(`Returned ${docs.length} documents`);
+  // DEBUG:
+  //  console.log(`Returned ${docs.length} documents`);
+  next();
+});
+
+// ======================================
+// AGGREGATION MIDDLEWARE
+// ======================================
+
+tourSchema.pre('aggregate', function (next) {
+  console.log('Aggregation middleware: About to run aggregation...', this);
+
   next();
 });
 
