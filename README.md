@@ -74,6 +74,7 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Examples of Triggers for This Catch Block](#examples-of-triggers-for-this-catch-block)
 22. [Virtual Properties in MongoDB/Mongoose](#virtual-properties-in-mongodbmongoose)
 23. [Mongoose Middleware](#mongoose-middleware)
+24. [Data Validation](#data-validation)
 
 ---
 
