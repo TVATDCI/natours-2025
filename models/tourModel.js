@@ -50,14 +50,16 @@ const tourSchema = new mongoose.Schema(
     },
     priceDiscount: {
       type: Number,
-      // Custom validator
-      //   validate: {
-      //     validator: function (val) {
-      //       // 'this' only points to current doc on NEW document creation
-      //       return val < this.price;
-      //     },
-      //     message: 'Discount price ({VALUE}) should be below regular price',
-      //   },
+      // Custom validator to make sure the discount is always below the regular price
+      // 'val' is the value entered for priceDiscount
+      // 'this.price' refers to the regular price on the current document
+      // Only works on document creation (e.g., Tour.create), not on updates
+      validate: {
+        validator: function (val) {
+          return val < this.price;
+        },
+        message: 'Discount price ({VALUE}) should be below regular price',
+      },
     },
     summary: {
       type: String,
