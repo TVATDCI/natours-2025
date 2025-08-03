@@ -10,12 +10,13 @@ const tourSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'A tour must have a name'],
-      unique: true,
-      trim: true,
-      maxlength: [40, 'A tour name must have less or equal than 40 characters'], // tourController/line: 161 (runValidators: true)
-      minlength: [10, 'A tour name must have more or equal than 10 characters'],
+      required: [true, 'A tour must have a name'], // Built-in: field must be provided
+      unique: true, // Ensures no duplicate names (not a validator, more of a DB constraint)
+      trim: true, // Removes extra spaces
+      maxlength: [40, 'A tour name must have <= 40 characters'], // Built-in validator
+      minlength: [10, 'A tour name must have >= 10 characters'], // Built-in validator
     },
+
     slug: String,
     duration: {
       type: Number,
@@ -49,6 +50,14 @@ const tourSchema = new mongoose.Schema(
     },
     priceDiscount: {
       type: Number,
+      // Custom validator
+      //   validate: {
+      //     validator: function (val) {
+      //       // 'this' only points to current doc on NEW document creation
+      //       return val < this.price;
+      //     },
+      //     message: 'Discount price ({VALUE}) should be below regular price',
+      //   },
     },
     summary: {
       type: String,
@@ -66,7 +75,12 @@ const tourSchema = new mongoose.Schema(
     images: [String],
     createdAt: {
       type: Date,
-      default: Date.now, // NOT Date.now()
+      // Correct Usage in Mongoose. It passes the function, not the result.
+      // Mongoose will call the function each time a new document is created.
+      // So each document gets its own unique creation timestamp
+      default: Date.now,
+      // NOT Date.now() will It sets the default value to the timestamp at the time the schema is defined,
+      // not when the document is created. All documents will get the same timestamp
       select: false, // exclude(select) field(createdAt) from the schema(false)
     },
     startDates: [Date],
@@ -76,7 +90,7 @@ const tourSchema = new mongoose.Schema(
       default: false,
     },
   },
-  // #: Insert Obj schema option to virtual property
+  // NOTE: Insert Obj schema option to virtual property
   // 2. Implement it inside tourSchema(.schema)
   {
     toJSON: { virtuals: true }, // to confirm when the data is output to JSON.
