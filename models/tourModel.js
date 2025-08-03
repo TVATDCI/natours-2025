@@ -128,9 +128,9 @@ tourSchema.pre('save', function (next) {
 // .pre('find'): Runs before any .find() query is executed.(tourController.js/line: 25)
 tourSchema.pre(/^find/, function (next) {
   console.log('Query middleware: About to execute a find operation...');
-  this.find({ secretTour: { $ne: true } }); // $ne= not equal to true - exclude secret tours
+  this.find({ secretTour: { $ne: true } }); // $ne= not equal to true - exclude secret tours. Now it is a secrete!
   console.log(
-    'secretTour is now set to true: now it is not there if you look for it...',
+    'secretTour is now set to true: now it i a secrete not there if you look for it...',
   );
 
   this.start = Date.now(); // just for measuring query time (optional)
@@ -149,9 +149,20 @@ tourSchema.post(/^find/, function (docs, next) {
 // ======================================
 // AGGREGATION MIDDLEWARE
 // ======================================
+// This middleware runs before any aggregation pipeline is executed on the Tour model.
+// It is used to automatically exclude secret tours from all AGGREGATION!
+// ======================================
 
 tourSchema.pre('aggregate', function (next) {
-  console.log('Aggregation middleware: About to run aggregation...', this);
+  console.log('Aggregation middleware: Specify Pipeline...');
+
+  // STEP: Exclude secret tours in all aggregations unless already handled
+  // Adds a $match stage to the beginning of the aggregation pipeline
+  // This filters out secret tours (secretTour: true), so they won't appear in aggregations by default
+  // unshift() is used to make sure this is the FIRST stage in the pipeline
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+
+  console.log(this.pipeline());
 
   next();
 });
