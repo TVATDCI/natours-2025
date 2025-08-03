@@ -2270,11 +2270,105 @@ Data Validation, specifically Built-in Validation with Mongoose is is a very imp
 Mongoose lets you define validation rules directly in your schema, using properties,
 such as:
 
-- required
-- minlength, maxlength
-- min, max
-- enum
-- validate (for custom validators)
-- These validations run before the document is saved to the database. If validation fails, Mongoose throws an error.
+- `required`
+- `minlength`, `maxlength`
+- `min`, `max`
+- `enum`
+- `validate` (for custom validators)
+- These validations run before the document is saved to the database.
+- If validation fails, Mongoose throws an error.
+
+```js
+{
+  "errors": {
+    "price": {
+      "message": "A tour must have a price",
+      "kind": "required",
+      ...
+    }
+  },
+  "message": "Tour validation failed"
+}
+```
+
+##### Example: Tour Schema With Built-in Validation
+
+`tourSchema`
+
+```js
+const tourSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'A tour must have a name'], // Built-in: field must be provided
+    unique: true, // Ensures no duplicate names (not a validator, more of a DB constraint)
+    trim: true, // Removes extra spaces
+    maxlength: [40, 'A tour name must have <= 40 characters'], // Built-in validator
+    minlength: [10, 'A tour name must have >= 10 characters'], // Built-in validator
+  },
+
+  duration: {
+    type: Number,
+    required: [true, 'A tour must have a duration'],
+  },
+  maxGroupSize: {
+    type: Number,
+    required: [true, 'A tour must have a group size'],
+  },
+  difficulty: {
+    type: String,
+    required: [true, 'A tour must have a difficulty'],
+    enum: {
+      values: ['easy', 'medium', 'difficult'],
+      message: 'Difficulty must be either: easy, medium, or difficult',
+    },
+  },
+  price: {
+    type: Number,
+    required: [true, 'A tour must have a price'],
+  },
+  priceDiscount: {
+    type: Number,
+    // Custom validator
+    validate: {
+      validator: function (val) {
+        // 'this' only points to current doc on NEW document creation
+        return val < this.price;
+      },
+      message: 'Discount price ({VALUE}) should be below regular price',
+    },
+  },
+  summary: {
+    type: String,
+    trim: true,
+    required: [true, 'A tour must have a summary'],
+  },
+  description: {
+    type: String,
+    trim: true,
+  },
+  imageCover: {
+    type: String,
+    required: [true, 'A tour must have a cover image'],
+  },
+  createdAt: {
+    type: Date,
+    // Correct Usage in Mongoose. It passes the function, not the result.
+    // Mongoose will call the function each time a new document is created.
+    // So each document gets its own unique creation timestamp
+    default: Date.now,
+    // NOT Date.now() will It sets the default value to the timestamp at the time the schema is defined,
+    // NOT when the document is created. All documents will get the same timestamp
+    select: false, // exclude(select) field(createdAt) from the schema(false)
+  },
+  // ... other fields
+});
+```
+
+**Summery**
+
+- Mongoose has built-in validation you define inside your schema
+- These rules make sure invalid data is never saved to the database
+- Most validation errors return clear messages — you can customize them
+- Sample used in this project `required`, `min`, `max`, `minlength`, `maxlength`, and `enum`
 
 [Back to the top](#natours-2025)
