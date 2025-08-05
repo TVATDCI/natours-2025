@@ -183,7 +183,7 @@ project-root/
 │ └── userRoutes.js
 ├── utils/
 │ ├── apiFeatures.js
-│ ├── X.js
+│ ├── appError.js
 │ └── X.js
 ├── .eslintrc.json
 ├── .gitignore
