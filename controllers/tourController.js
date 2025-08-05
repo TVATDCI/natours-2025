@@ -103,7 +103,7 @@ exports.createTour = catchAsync(async (req, res, next) => {
 });
 
 // ======================================
-// #: PATCH /api/v1/tours/:id - Update an existing tour
+// #: PATCH /api/v1/tours/:id - REFACTORED Update an existing tour
 // ======================================
 exports.updateTour = catchAsync(async (req, res, next) => {
   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
@@ -132,38 +132,21 @@ exports.updateTour = catchAsync(async (req, res, next) => {
 });
 
 // ======================================
-// #: DELETE /api/v1/tours/:id - Delete a tour
+// #: DELETE /api/v1/tours/:id - REFACTORED Delete a tour
 // ======================================
-exports.deleteTour = async (req, res) => {
-  try {
-    const tour = await Tour.findByIdAndDelete(req.params.id);
+exports.deleteTour = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findByIdAndDelete(req.params.id);
 
-    if (!tour) {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Tour not found',
-      });
-    }
-    // DEBUG: dev-testing with status(200)
-    // res.status(200).json({
-    //   status: 'success',
-    //   message: 'Tour deleted successfully',
-    // });
-
-    // NOTE: HTTP status(204) = No content. In RESTFUL API no data is sent back to the client in DELETE operation!
-    // LEARN: 204 = "Request was successful, but there's no content to send back"
-    //
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: 'fail',
-      message: err.message,
-    });
+  if (!tour) {
+    return next(new AppError('Tour not found', 404));
   }
-};
+
+  // NOTE: 204 = No Content (successful, but nothing to send back)
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
 
 // ======================================
 // #: AGGREGATION Pipeline Stages:
