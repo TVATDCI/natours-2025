@@ -149,60 +149,46 @@ exports.deleteTour = catchAsync(async (req, res, next) => {
 });
 
 // ======================================
-// #: AGGREGATION Pipeline Stages:
+// #: AGGREGATION REFACTORED Pipeline Stages:
 // ======================================
+exports.getTourStats = catchAsync(async (req, res, next) => {
+  // DEBUG:
+  console.log('Running Tour Stats Aggregation...');
 
-exports.getTourStats = async (req, res) => {
-  try {
-    // DEBUG:
-    console.log('Running Tour Stats Aggregation...');
+  const stats = await Tour.aggregate([
+    {
+      $match: { ratingsAverage: { $gte: 4.5 } }, // Filter tours with high ratings
+    },
+    {
+      $group: {
+        _id: '$difficulty', // Group by difficulty
+        numTours: { $sum: 1 },
+        numRatings: { $sum: '$ratingsQuantity' },
+        avgRating: { $avg: '$ratingsAverage' },
+        avgPrice: { $avg: '$price' },
+        minPrice: { $min: '$price' },
+        maxPrice: { $max: '$price' },
+      },
+    },
+    {
+      $sort: { avgPrice: 1 }, // Sort by avgPrice ascending
+    },
+    // Optional match stage:
+    // {
+    //   $match: { _id: { $ne: 'easy' } },
+    // },
+  ]);
 
-    const stats = await Tour.aggregate([
-      {
-        $match: { ratingsAverage: { $gte: 4.5 } }, // match stage
-      },
-      {
-        $group: {
-          // group
-          _id: '$difficulty', // or use null here for total stats
-          numTours: { $sum: 1 },
-          numRatings: { $sum: '$ratingsQuantity' },
-          avgRating: { $avg: '$ratingsAverage' },
-          avgPrice: { $avg: '$price' },
-          minPrice: { $min: '$price' },
-          maxPrice: { $max: '$price' },
-        },
-      },
-      {
-        // NOTE: sort by any field you calculate in $group, like avgRating, numTours, etc.
-        // $sort: { _id: 1 }, // Sort by difficulty: easy → medium → difficult
-        $sort: { avgPrice: 1 }, // Sort by average price in Ascending order or -1 for Descending order
-      },
-      // NOTE: $match can also be rematched
-      // In this case $ne ()= none equal to) match the ones which does not have difficulty to easy. result = difficult → medium
-      // `_id` is used here because it is previously grouped by difficulty: _id: "$difficulty"
-      //   {
-      //     $match: { _id: { $ne: 'easy' } },
-      //   },
-    ]);
-    // DEBUG:
-    console.log('Aggregation Result:', JSON.stringify(stats, null, 2));
+  // DEBUG:
+  console.log('Aggregation Result:', JSON.stringify(stats, null, 2));
 
-    res.status(200).json({
-      status: 'success',
-      data: {
-        stats,
-      },
-    });
-  } catch (err) {
-    // DEBUG:
-    console.error('Aggregation Error:', err.message);
-    res.status(500).json({
-      status: 'error',
-      message: err.message,
-    });
-  }
-};
+  res.status(200).json({
+    status: 'success',
+    data: {
+      stats,
+    },
+  });
+});
 
 // ======================================
 // #: Monthly Plan - Unwinding Projecting - Tour start stats by month?
