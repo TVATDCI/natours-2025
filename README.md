@@ -75,6 +75,8 @@ I value this project as a deep dive into building a **real-world, production-rea
 22. [Virtual Properties in MongoDB/Mongoose](#virtual-properties-in-mongodbmongoose)
 23. [Mongoose Middleware](#mongoose-middleware)
 24. [Data Validation](#data-validation)
+25. [Errors handling in Express](#errors-handling-in-express)
+    - [Operational Errors vs Programming Errors](#operational-errors-vs-programming-errors)
 
 ---
 
