@@ -20,41 +20,32 @@ exports.aliasTopTours = (req, res, next) => {
 // ======================================
 // #: GET /api/v1/tours - Get all tours
 // ======================================
-exports.getAllTours = async (req, res) => {
-  // DEBUG
-  console.log('Raw query:', req.query);
-  try {
-    // STEP: 1) Build the query
-    const features = new APIFeatures(Tour.find(), req.query)
-      .filter()
-      .sort()
-      .limitFields()
-      .paginate();
+exports.getAllTours = catchAsync(async (req, res, next) => {
+  // STEP: 1) Build the query
+  const features = new APIFeatures(Tour.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
 
-    // STEP: 2) Execute the query
-    const tours = await features.query;
+  // STEP: 2) Execute the query
+  const tours = await features.query;
 
-    // DEBUG
-    console.log(
-      'Returned tours:',
-      tours.map((t) => t.name),
-    );
+  // DEBUG: will be removed in production
+  console.log(
+    'Returned tours:',
+    tours.map((t) => t.name),
+  );
 
-    // STEP: 3) Send response
-    res.status(200).json({
-      status: 'success',
-      results: tours.length,
-      data: {
-        tours,
-      },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: 'fail',
-      message: err.message,
-    });
-  }
-};
+  // STEP: 3) Send response
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours,
+    },
+  });
+});
 
 // ======================================
 // #: GET /api/v1/tours/:id - Get a specific tour by ID
@@ -75,7 +66,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
 });
 
 // ======================================
-// #: GET /api/v1/tours/:id - Ninja
+// SOLUTION: GET /api/v1/tours/:id - Ninja
 // ======================================
 // exports.getTour = catchAsync(async (req, res, next) => {
 //   const tour = await Tour.findById(req.params.id);
@@ -114,45 +105,36 @@ exports.createTour = catchAsync(async (req, res, next) => {
 // ======================================
 // #: PATCH /api/v1/tours/:id - Update an existing tour
 // ======================================
-exports.updateTour = async (req, res) => {
-  try {
-    const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-      new: true, // return updated document
-      runValidators: true, // validate update against schema
-    });
+exports.updateTour = catchAsync(async (req, res) => {
+  const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+    new: true, // return updated document
+    runValidators: true, // validate update against schema
+  });
 
-    if (!updatedTour) {
-      // NOTE: 404 Not Found. The request was properly formed, but the resource does not exist.
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Tour not found',
-      });
-    }
-
-    // DEBUG: in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Updated tour:', {
-        id: updatedTour._id,
-        name: updatedTour.name,
-        price: updatedTour.price,
-      });
-    }
-
-    res.status(200).json({
-      status: 'success',
-      data: {
-        tour: updatedTour,
-      },
-    });
-
-    // NOTE: The server cannot process the request because it's malformed, invalid, or logically incorrect.
-  } catch (err) {
-    res.status(400).json({
+  if (!updatedTour) {
+    // NOTE: 404 Not Found. The request was properly formed, but the resource does not exist.
+    return res.status(404).json({
       status: 'fail',
-      message: err.message,
+      message: 'Tour not found',
     });
   }
-};
+
+  // DEBUG: in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Updated tour:', {
+      id: updatedTour._id,
+      name: updatedTour.name,
+      price: updatedTour.price,
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: updatedTour,
+    },
+  });
+});
 
 // ======================================
 // #: DELETE /api/v1/tours/:id - Delete a tour
