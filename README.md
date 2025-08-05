@@ -142,6 +142,10 @@ I value this project as a deep dive into building a **real-world, production-rea
 project-root/
 ├── config/
 │ └── db.js
+├── controllers/
+│ ├── errorController.js
+│ ├── tourController.js
+│ └── userController.js
 ├── dev-data/
 │ ├── data/
 │ │ ├── reviews.json
