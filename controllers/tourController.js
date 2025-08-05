@@ -105,21 +105,16 @@ exports.createTour = catchAsync(async (req, res, next) => {
 // ======================================
 // #: PATCH /api/v1/tours/:id - Update an existing tour
 // ======================================
-exports.updateTour = catchAsync(async (req, res) => {
+exports.updateTour = catchAsync(async (req, res, next) => {
   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true, // return updated document
-    runValidators: true, // validate update against schema
+    new: true,
+    runValidators: true,
   });
 
   if (!updatedTour) {
-    // NOTE: 404 Not Found. The request was properly formed, but the resource does not exist.
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Tour not found',
-    });
+    return next(new AppError('Tour not found', 404));
   }
 
-  // DEBUG: in development
   if (process.env.NODE_ENV === 'development') {
     console.log('Updated tour:', {
       id: updatedTour._id,
