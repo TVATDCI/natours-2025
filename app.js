@@ -6,7 +6,9 @@ const morgan = require('morgan');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+// ======================================
 const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
@@ -40,23 +42,33 @@ app.use('/api/v1/users', userRouter);
 app.all('*', (req, res, next) => {
   next(
     new AppError(
-      `Refactored err handler can't find ${req.originalUrl} on this server!`,
+      `Refactored err handler can't find ${req.originalUrl} on this server`,
       404,
     ),
   );
 });
 
-app.use((err, req, res, next) => {
-  console.log(err.stack); // DEBUG:
+// ======================================
+// #: Global Error Handling Middleware (in controllers/errorController.js)
+// ======================================
 
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'err';
+app.use(globalErrorHandler);
 
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-});
+// ======================================
+// moved to be refactored in controllers/errorController.js
+// ======================================
+
+// app.use((err, req, res, next) => {
+//   console.log(err.stack); // DEBUG:
+
+//   err.statusCode = err.statusCode || 500;
+//   err.status = err.status || 'err';
+
+//   res.status(err.statusCode).json({
+//     status: err.status,
+//     message: err.message,
+//   });
+// });
 // ======================================
 // #: SERVER: server.js >>
 // ======================================
