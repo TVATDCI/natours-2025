@@ -16,6 +16,7 @@ connectDB();
 // console.log('USERNAME:', process.env.DEV_USERNAME);
 // console.log('PASSWORD:', process.env.PASSWORD);
 
+// ======================================
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}...`);
