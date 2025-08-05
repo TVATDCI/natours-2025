@@ -2257,6 +2257,8 @@ tourSchema.pre('aggregate', function (next) {
 
 **More >>** [Mongoose Middleware(official docs)](https://mongoosejs.com/docs/middleware.html)
 
+[Back to the top](#natours-2025)
+
 ---
 
 ### Data Validation
@@ -2391,5 +2393,88 @@ const tourSchema = new mongoose.Schema({
 - Correct Usage in Mongoose
 - Mongoose will **call the function** each time a new document is created
 - **Each document gets its own unique creation timestamp**
+
+[Back to the top](#natours-2025)
+
+#### Errors Handling in Express:
+
+The distinction between **operational errors** and **programming errors** is a fundamental concept in robust Node.js app architecture
+
+---
+
+##### Operational Errors vs Programming Errors
+
+| **Type**               | **What it means**                                                              | **Examples**                                                                                                           |
+| ---------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| **Operational Errors** | Known, expected, and handled errors caused by _legitimate runtime conditions_. | - Invalid user input (e.g. bad ID) <br> - Failing to connect to DB <br> - Route not found <br> - Failed to read a file |
+| **Programming Errors** | Bugs in your code — things you _did not expect to happen_.                     | - `undefined is not a function` <br> - Trying to access a property on `null` <br> - Logic bugs                         |
+
+##### The Matters in Express Apps
+
+Operational errors are safe to send to the client (with friendly messages). Programming errors are not — they’re bugs, and typically when tested and logged, crash the app (in production), and fix the code.
+
+**Example**: class `AppError` to mark **operational errors**:
+
+`utils/appError.js`
+
+```js
+class AppError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+
+    this.statusCode = statusCode;
+    this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
+    this.isOperational = true; // 🔥 Marks this as an "expected" error
+
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+```
+
+This flag `isOperational` allows us to handle operational errors gracefully, while allowing other (programming) errors to crash the app in production (to avoid undefined behavior).
+
+---
+
+##### Global Error Handler (in `controllers/errorController.js`)
+
+```js
+module.exports = (err, req, res, next) => {
+  // Set default values
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
+
+  // Only send full error in development
+  if (process.env.NODE_ENV === 'development') {
+    res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack,
+    });
+  } else if (process.env.NODE_ENV === 'production') {
+    // Only send safe info to client
+    if (err.isOperational) {
+      res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    } else {
+      // Programming or unknown error: don't leak details
+      console.error('ERROR 💥', err);
+      res.status(500).json({
+        status: 'error',
+        message: 'Something went wrong!',
+      });
+    }
+  }
+};
+```
+
+- **Operational errors** = catch them, handle gracefully, send to client.
+- **programming errors** = don't try to handle; crash app (in production) and fix
+
+🕵️ **DEEP DIVE:**
+[express.js Error Handling Docs](https://expressjs.com/en/guide/error-handling.html)
+[MDN: JS Error Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
 
 [Back to the top](#natours-2025)
