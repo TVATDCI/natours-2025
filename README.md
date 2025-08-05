@@ -77,6 +77,7 @@ I value this project as a deep dive into building a **real-world, production-rea
 24. [Data Validation](#data-validation)
 25. [Errors handling in Express](#errors-handling-in-express)
     - [Operational Errors vs Programming Errors](#operational-errors-vs-programming-errors)
+    - [Global Error Handler in controllers/errorController](#global-error-handler-in-controllerserrorcontrollerjs)
 
 ---
 
@@ -2426,7 +2427,7 @@ class AppError extends Error {
 
     this.statusCode = statusCode;
     this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
-    this.isOperational = true; // 🔥 Marks this as an "expected" error
+    this.isOperational = true; // Marks this as an "expected" error
 
     Error.captureStackTrace(this, this.constructor);
   }
@@ -2435,9 +2436,33 @@ class AppError extends Error {
 
 This flag `isOperational` allows us to handle operational errors gracefully, while allowing other (programming) errors to crash the app in production (to avoid undefined behavior).
 
+- Extends the native JS `Error` class.
+- Adds `statusCode` and `status` (like fail or error) for easier control.
+- Adds a flag `isOperational` so for global err to **distinguish between operational vs programming errors**.
+- Captures stack trace without polluting it with the constructor function itself.
+
 ---
 
-##### Global Error Handler (in `controllers/errorController.js`)
+**Catch-All for Unhandled Routes**
+
+```js
+app.all('*', (req, res, next) => {
+  next(
+    new AppError(
+      `Refactored err handler can't find ${req.originalUrl} on this server!`,
+      404,
+    ),
+  );
+});
+```
+
+- Handles all undefined routes (like **/cucumber**).
+- It creates a new operational **error** with a message and statusCode **404**.
+- The error is then passed to your **global error handler** via `next()`.
+
+---
+
+##### Global Error Handler in `controllers/errorController.js`
 
 ```js
 module.exports = (err, req, res, next) => {
@@ -2451,7 +2476,7 @@ module.exports = (err, req, res, next) => {
       status: err.status,
       error: err,
       message: err.message,
-      stack: err.stack,
+      stack: err.stack, // bugs hunter - calling stack trace (for development) of where the err occurred line by line!
     });
   } else if (process.env.NODE_ENV === 'production') {
     // Only send safe info to client
@@ -2462,15 +2487,25 @@ module.exports = (err, req, res, next) => {
       });
     } else {
       // Programming or unknown error: don't leak details
-      console.error('ERROR 💥', err);
+      console.error('UNEXPECTED ERROR ', err);
       res.status(500).json({
         status: 'error',
-        message: 'Something went wrong!',
+        message: 'Something in Programming or unknown went wrong!',
       });
     }
   }
 };
 ```
+
+**global error handler with production - production readiness readiness**
+
+— Express recognizes it because it has 4 parameters: (`err`, `req`, `res`, `next`).
+
+- Logs the error's stack trace. (for development of where the err occurred line by line!)
+- Sets default values for the error object in case they’re missing.
+- Sends a structured JSON response back to the client.
+
+##### Summery
 
 - **Operational errors** = catch them, handle gracefully, send to client.
 - **programming errors** = don't try to handle; crash app (in production) and fix
