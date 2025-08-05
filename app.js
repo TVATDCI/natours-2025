@@ -42,7 +42,7 @@ app.use('/api/v1/users', userRouter);
 app.all('*', (req, res, next) => {
   next(
     new AppError(
-      `Refactored err handler can't find ${req.originalUrl} on this server!`,
+      `err handler can't find ${req.originalUrl} on this server!`,
       404,
     ),
   );
