@@ -1,6 +1,9 @@
 const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFeatures');
 
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
+
 // ======================================
 // #: Middleware:
 // ======================================
@@ -31,22 +34,6 @@ exports.getAllTours = async (req, res) => {
     // STEP: 2) Execute the query
     const tours = await features.query;
 
-    // OPTIONAL: paginate() method in APIFeatures is a synchronous chainable method. Injecting an await would break the flow.
-    // SOLUTION: optional err handler status (404), when paginate out of range, after executing the query in controller!
-    // if (tours.length === 0 && req.query.page) {
-    //   const numTours = await Tour.countDocuments();
-    //   const page = req.query.page * 1 || 1;
-    //   const limit = req.query.limit * 1 || 100;
-    //   const skip = (page - 1) * limit;
-
-    //   if (skip >= numTours) {
-    //     return res.status(404).json({
-    //       status: 'fail',
-    //       message: 'This page does not exist',
-    //     });
-    //   }
-    // }
-
     // DEBUG
     console.log(
       'Returned tours:',
@@ -72,84 +59,44 @@ exports.getAllTours = async (req, res) => {
 // ======================================
 // #: GET /api/v1/tours/:id - Get a specific tour by ID
 // ======================================
-exports.getTour = async (req, res) => {
-  try {
-    const tour = await Tour.findById(req.params.id);
-    // Tour.findOne({_id req.params.id})
+exports.getTour = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findById(req.params.id);
 
-    if (!tour) {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Tour not found',
-      });
-    }
-
-    // NOTE: request succeeds and the server returns content (usually JSON).
-    res.status(200).json({
-      status: 'success',
-      data: {
-        tour,
-      },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: 'fail',
-      message: 'Invalid ID format or error fetching tour',
-    });
+  if (!tour) {
+    return next(new AppError('Tour not found', 404));
   }
-};
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour,
+    },
+  });
+});
 
 // ======================================
-// #: POST /api/v1/tours - Create a new tour
+// #: POST /api/v1/tours - REFACTORED Create a new tour
+// With catchAsync(async (req, res, next) => {const newTour = await Tour.create(req.body);
 // ======================================
-exports.createTour = async (req, res) => {
-  try {
-    // NOTE: core concept in JavaScript and Mongoose
-    // const newTour = new Tour({})
-    // newTour.save()
-    /**
-     * Two ways to create and save a Mongoose document:
-     *
-     * 1. Manual: Instantiate and then save
-     *    const newTour = new Tour(req.body);
-     *    await newTour.save();
-     *
-     * 2. Shortcut: .create() does both in one step
-     *    const newTour = await Tour.create(req.body);
-     *
-     * Both return the saved document.
-     * Are asynchronous and should be awaited.
-     * Will trigger schema validation before writing to MongoDB.
-     */
 
-    // Shorthand using Model.create()
-    const newTour = await Tour.create(req.body);
+exports.createTour = catchAsync(async (req, res, next) => {
+  const newTour = await Tour.create(req.body);
 
-    // DEBUG: in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Created tour:', {
-        name: newTour.name,
-        _id: newTour._id,
-        price: newTour.price,
-      });
-    }
-
-    // NOTE: a new resource is successfully created on the server.
-    res.status(201).json({
-      status: 'success',
-      data: {
-        tour: newTour,
-      },
-    });
-
-    // NOTE: The server cannot process the request because it's malformed, invalid, or logically incorrect.
-  } catch (err) {
-    res.status(400).json({
-      status: 'fail',
-      message: err.message,
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Created tour:', {
+      name: newTour.name,
+      _id: newTour._id,
+      price: newTour.price,
     });
   }
-};
+
+  res.status(201).json({
+    status: 'success',
+    data: {
+      tour: newTour,
+    },
+  });
+});
 
 // ======================================
 // #: PATCH /api/v1/tours/:id - Update an existing tour
