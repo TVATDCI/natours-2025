@@ -189,7 +189,7 @@ project-root/
 ├── utils/
 │ ├── apiFeatures.js
 │ ├── appError.js
-│ └── X.js
+│ └── catchAsync.js
 ├── .eslintrc.json
 ├── .gitignore
 ├── .prettierrc
