@@ -54,7 +54,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
 
   if (!tour) {
-    return next(new AppError('Tour not found', 404));
+    return next(new AppError('Tour ID not found', 404));
   }
 
   res.status(200).json({
@@ -112,7 +112,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   });
 
   if (!updatedTour) {
-    return next(new AppError('Tour not found', 404));
+    return next(new AppError('Tour ID not found', 404));
   }
 
   if (process.env.NODE_ENV === 'development') {
@@ -138,7 +138,7 @@ exports.deleteTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndDelete(req.params.id);
 
   if (!tour) {
-    return next(new AppError('Tour not found', 404));
+    return next(new AppError('Tour ID not found', 404));
   }
 
   // NOTE: 204 = No Content (successful, but nothing to send back)
