@@ -13,4 +13,6 @@ class AppError extends Error {
   }
 }
 
+// to be continued 🚧
+
 module.exports = AppError;
