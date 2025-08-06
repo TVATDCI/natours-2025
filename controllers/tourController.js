@@ -149,20 +149,23 @@ exports.deleteTour = catchAsync(async (req, res, next) => {
 });
 
 // ======================================
-// #: AGGREGATION REFACTORED Pipeline Stages:
+// #: GET /api/v1/tours/tour-stats - Aggregated Tour Statistics
 // ======================================
 exports.getTourStats = catchAsync(async (req, res, next) => {
-  // DEBUG:
+  // DEBUG: Log for development insight
   console.log('Running Tour Stats Aggregation...');
 
+  // STEP 1: Run aggregation pipeline
   const stats = await Tour.aggregate([
     {
-      $match: { ratingsAverage: { $gte: 4.5 } }, // Filter tours with high ratings
+      // Filter tours with ratingsAverage >= 4.5
+      $match: { ratingsAverage: { $gte: 4.5 } },
     },
     {
+      // Group tours by difficulty level and calculate statistics
       $group: {
-        _id: '$difficulty', // Group by difficulty
-        numTours: { $sum: 1 },
+        _id: '$difficulty', // Group by the 'difficulty' field or use null here for total stats
+        numTours: { $sum: 1 }, // Count how many tours in each group
         numRatings: { $sum: '$ratingsQuantity' },
         avgRating: { $avg: '$ratingsAverage' },
         avgPrice: { $avg: '$price' },
@@ -171,17 +174,22 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
       },
     },
     {
-      $sort: { avgPrice: 1 }, // Sort by avgPrice ascending
+      // Sort grouped results by average price (ascending) or -1 (descending)
+      $sort: { avgPrice: 1 },
     },
-    // Optional match stage:
-    // {
-    //   $match: { _id: { $ne: 'easy' } },
-    // },
+    // OPTIONAL: Remove 'easy' difficulty tours
+    // NOTE: $match can also be rematched
+    // In this case $ne ()= none equal to) match the ones which does not have difficulty to easy. result = difficult → medium
+    // `_id` is used here because it is previously grouped by difficulty: _id: "$difficulty"
+    //   {
+    //     $match: { _id: { $ne: 'easy' } },
+    //   },
   ]);
 
-  // DEBUG:
+  // DEBUG: Pretty-print stats in console
   console.log('Aggregation Result:', JSON.stringify(stats, null, 2));
 
+  // STEP 2: Send JSON response
   res.status(200).json({
     status: 'success',
     data: {
@@ -194,10 +202,19 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
 // #: Monthly Plan - Unwinding Projecting - Tour start stats by month
 // ======================================
 exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
-  // STEP 0: Convert year param to number
+  // STEP 0: // Convert year from string to number (e.g., from req.params.year = '2025' to 2025)
   const year = +req.params.year;
+  // Number(req.params.year) or req.params.year * 1
 
   // STEP 1: Validate the year input
+  // ====================================
+  // NOTE: Validate year input
+  // - to solve abc or isNan confusion.
+  // - As it won't crash and still returned - 200 OK with Monthly Plan: []
+  // ====================================
+  // NOTE: if isNaN(year) will give a warning as to void the global isNaN() because it can behave unexpectedly with non-numbers.
+  // (https://github.com/airbnb/javascript#standard-library--isnaneslintno-restricted-globals) - updated 31-07-25
+  // SOLUTION: if Number.isNaN(year)
   if (Number.isNaN(year)) {
     return next(
       new AppError('Invalid year. Please provide a numeric value.', 400),
@@ -219,19 +236,23 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
     },
     {
       $group: {
-        _id: { $month: '$startDates' },
-        numTourStarts: { $sum: 1 },
-        tours: { $push: '$name' },
+        id: { $month: '$startDates' }, // Group by month number (1–12)
+        numTourStarts: { $sum: 1 }, // Count how many tours start in that month
+        tours: { $push: '$name' }, // Push tour names into an 'array'
       },
     },
     {
       $addFields: { month: '$_id' },
+      // _id refers to month number. addField is used to copy _id value into a new field (month)
+      // Once month field is created with _id value, use $project(below) ot remove _id field
     },
     {
       $project: { _id: 0 },
+      // Project can be used as include or EXCLUDE. _id: 0 sets MongoDB to exclude _id field from the output
     },
     {
       $sort: { numTourStarts: -1 },
+      // Descending order
     },
     {
       $limit: 6,
