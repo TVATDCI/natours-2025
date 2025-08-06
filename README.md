@@ -2649,7 +2649,7 @@ This final return acts as a **safety net** if `NODE_ENV` is not defined.
 
 [Back to the top](#natours-2025)
 
--
+---
 
 #### catchAsync Utility Function
 
@@ -2754,5 +2754,41 @@ app.use((err, req, res, next) => {
 ---
 
 [Production-Readiness](#global-error-handler-with-production-readiness)
+
+---
+
+#### 🚧 MongoDB ObjectId blinded me!
+
+```yaml
+ObjectId Format:
+  - Must be exactly 24 characters long
+  - Must consist only of hexadecimal characters:
+    - Allowed: 0–9, a–f (case-insensitive)
+    - Disallowed: Any character outside that range (e.g. "z", "g", symbols)
+
+I forgot that:
+  - 🌵 Valid ObjectId: "6885669311c1889fa57a9e4d" (passes format check)
+  - ✝️ Invalid ObjectId: "6885669311c1889fa57a9e4z" (contains non-hex character "z")
+
+Behavior in Express:
+  - Valid format but no document found → triggers `AppError('Tour not found', 404)`
+  - Invalid ObjectId format → triggers Mongoose `CastError`, handled globally
+
+Tip for Testing 404:
+  - Modify last character to another **hex digit** (e.g. change "d" to "e")
+    → This makes it a valid ObjectId, but it likely won't match any document
+    → Properly triggers your 404 "Tour not found"
+
+Common Mistake:
+  - Changing to a non-hex character (like "z") causes `CastError` (500 response)
+  - This is **not** a 404 — it’s an invalid ID format error
+
+🛡️ Goal for production:
+  - Catch and sanitize CastErrors in global error handler using:
+    - `err.name === 'CastError'`
+    - Return: 400 "Invalid ID format"
+
+I will stick this note on my forehead and walk around for a while 📓
+```
 
 [Back to the top](#natours-2025)
