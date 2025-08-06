@@ -2519,3 +2519,96 @@ module.exports = (err, req, res, next) => {
 [MDN: JS Error Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
 
 [Back to the top](#natours-2025)
++
+#### catchAsync Utility Function
+
+catchAsync utility function helps handle errors in asynchronous Express route handlers without writing repetitive `try/catch` blocks.
+
+---
+
+```js
+ module.exports = (fn) => {
+   return (req, res, next) => {
+     fn(req, res, next).catch(next); // Automatically passes any rejected promise to next()
+   };
+   };
+   };
+ };
+```
+
+##### CLEANER:
+
+`catchAsync` is a higher-order function (a function that returns another function). It takes an **async route handler** as input and returns a new function that automatically catches and forwards any rejected promises to Express global error handler via `next(err)`.
+
+This pattern helps keep controller logic clean and focused.
+
+---
+
+##### DRY
+
+Without `catchAsync` removes try and catch in every controller:
+
+```js
+exports.getTour = async (req, res, next) => {
+  try {
+    const tour = await Tour.findById(req.params.id);
+    res.status(200).json({ status: 'success', data: { tour } });
+  } catch (err) {
+    next(err); // forward error to global error handler
+  }
+};
+```
+
+
+and replace it in **example**
+```js
+exports.getTour = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findById(req.params.id);
+  res.status(200).json({ status: 'success', data: { tour } });
+});
+```
+**fn?**
+`fn` is a **placeholder for an async route handler function** — the actual function you pass in when you use `catchAsync()`.
+
+`fn`under the hood
+```js
+async (req, res, next) => {
+  // async logic (e.g., DB calls, etc.)
+}
+```
+1. route handler defined
+```js
+const catchAsync = require('./utils/catchAsync');
+
+app.get('/api/some-route', catchAsync(async (req, res, next) => {
+  const data = await Model.find();
+  res.status(200).json({ data });
+}));
+```
+
+2. That async function is passed as `fn` to `catchAsync`.
+3. `catchAsync` wraps fn inside another function that catches any errors `(.- - catch-(next)`), and passes them to Express’s global error middleware.
+
+In Express, if it's written:
+```js
+app.get('/route', async (req, res) => {
+  const data = await somethingThatFails(); // 💥 error
+});
+```
+
+That won’t automatically trigger Express’s error handler if `somethingThatFails()` throws or rejects.
+
+But with your `catchAsync` wrapper, any async error gets caught and passed into `next()`, like this:
+```js
+fn(req, res, next).catch(next);
+```
+Which then flows to your global error handler like:
+```js
+app.use((err, req, res, next) => {
+  // Global error handling logic
+});
+```
+
+- `fn` = the async route handler you write
+- `catchAsync(fn)` = wrapper that auto-catches rejections
+- `.catch(next)` = sends error to Express’s error handling middleware
