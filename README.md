@@ -77,7 +77,8 @@ I value this project as a deep dive into building a **real-world, production-rea
 24. [Data Validation](#data-validation)
 25. [Errors handling in Express](#errors-handling-in-express)
     - [Operational Errors vs Programming Errors](#operational-errors-vs-programming-errors)
-    - [Global Error Handler in controllers/errorController](#global-error-handler-in-controllerserrorcontrollerjs)
+    - [Global Error Handler controllers/errorController](#global-error-handler-controllerserrorcontrollerjs)
+    - [Global error handler with production readiness](#global-error-handler-controllerserrorcontrollerjs)
 
 ---
 
@@ -2445,9 +2446,14 @@ This flag `isOperational` allows us to handle operational errors gracefully, whi
 - Adds a flag `isOperational` so for global err to **distinguish between operational vs programming errors**.
 - Captures stack trace without polluting it with the constructor function itself.
 
+##### Summery
+
+- **Operational errors** = catch them, handle gracefully, send to client.
+- **programming errors** = don't try to handle; crash app (in production) and fix
+
 ---
 
-**Catch-All for Unhandled Routes**
+#### Catch-All for Unhandled Routes
 
 ```js
 app.all('*', (req, res, next) => {
@@ -2466,53 +2472,176 @@ app.all('*', (req, res, next) => {
 
 ---
 
-##### Global Error Handler in `controllers/errorController.js`
+#### Global Error Handler `controllers/errorController.js`
+
+`errorController.js` is the **global error-handling middleware** in Express. It follows a **centralized error handling strategy**
 
 ```js
 module.exports = (err, req, res, next) => {
-  // Set default values
+  // ======================================
+  // SET DEFAULTS
+  // ======================================
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
-  // Only send full error in development
+  // ======================================
+  // DEVELOPMENT MODE: send full error details
+  // ======================================
   if (process.env.NODE_ENV === 'development') {
-    res.status(err.statusCode).json({
+    return res.status(err.statusCode).json({
       status: err.status,
-      error: err,
-      message: err.message,
-      stack: err.stack, // bugs hunter - calling stack trace (for development) of where the err occurred line by line!
+      error: err, // Entire error object
+      message: err.message, // Useful error message
+      stack: err.stack, // Stack trace for debugging
     });
-  } else if (process.env.NODE_ENV === 'production') {
-    // Only send safe info to client
+  }
+
+  // ======================================
+  // PRODUCTION MODE: avoid leaking sensitive info
+  // ======================================
+  if (process.env.NODE_ENV === 'production') {
+    // Operational (trusted) error: send specific message to client
     if (err.isOperational) {
-      res.status(err.statusCode).json({
+      return res.status(err.statusCode).json({
         status: err.status,
         message: err.message,
       });
-    } else {
-      // Programming or unknown error: don't leak details
-      console.error('UNEXPECTED ERROR ', err);
-      res.status(500).json({
-        status: 'error',
-        message: 'Something in Programming or unknown went wrong!',
-      });
     }
+
+    // Programming or unknown error: log and send generic message
+    console.error('UNEXPECTED ERROR:', err); // Log full error to server logs
+
+    return res.status(500).json({
+      status: 'error',
+      message: 'Something went very wrong!',
+    });
   }
+
+  // ======================================
+  // DEFAULT FALLBACK (safety net for misconfigured NODE_ENV)
+  // ======================================
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: 'An unexpected error occurred.',
+  });
 };
 ```
 
-**global error handler with production - production readiness**
+---
 
-— Express recognizes it because it has 4 parameters: (`err`, `req`, `res`, `next`).
+#### Global error handler with production readiness
 
-- Logs the error's stack trace. (for development of where the err occurred line by line!)
+---
+
+**Core Concepts**
+
+1. **Centralized Error Handling**
+   Instead of writing `try/catch` blocks or `res.status(...).json(...)` in every controller, funnel all errors to one place using next(err) — and handle everything here.
+
+It covers:
+
+- **Trusted (operational) errors** → caused by user input, invalid data, etc.
+- **Programming errors** → bugs, undefined variables, DB misconfig, etc.
+- **Unknown errors** → just in case something unexpected happens.
+
+2. **Early Return Pattern**
+   Using return to **avoid nesting**. It improves readability and makes the error logic clear.
+
+```js
+if (...) {
+  return res.status(...).json(...);
+}
+```
+
+#### Error Handling Layers
+
+```js
+module.exports = (err, req, res, next) => {
+```
+
+- Express recognizes it because it has 4 parameters: (`err`, `req`, `res`, `next`).
+- Express global error middleware — must have four arguments, or Express won’t treat it as an error handler.
+
+---
+
+##### 1. Set Default Properties
+
+```js
+err.statusCode = err.statusCode || 500;
+err.status = err.status || 'error';
+```
+
 - Sets default values for the error object in case they’re missing.
+
+If an error doesn’t define these properties (e.g., throw new Error()), it defaults to:
+
+- `500 Internal Server Error`
+- `status: 'error'`
+
+---
+
+##### 2. Development Mode
+
+```js
+if (process.env.NODE_ENV === 'development') {
+  return res.status(err.statusCode).json({
+    status: err.status,
+    error: err,
+    message: err.message,
+    stack: err.stack,
+  });
+}
+```
+
+- **Full error object**
+- **Stack trace**
+  - Logs the error's stack trace. (for development of where the err occurred line by line!)
+- **Message**
+
+---
+
+##### 3. Production Mode
+
+```js
+if (process.env.NODE_ENV === 'production') {
+  if (err.isOperational) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+    });
+  }
+
+  console.error('UNEXPECTED ERROR:', err);
+
+  return res.status(500).json({
+    status: 'error',
+    message: 'Something went very wrong!',
+  });
+}
+```
+
+In production, never leak internal implementation (like `.stack`, error objects, or MongoDB traces).
+
+- **If it's operational** (e.g., `new AppError('Tour not found', 404)`), return the custom message.
+
+- **If not** (e.g., programming error), log it and show a generic message.
+
 - Sends a structured JSON response back to the client.
 
-##### Summery
+This ensures users don’t see DB errors, crash logs, or stack traces.
 
-- **Operational errors** = catch them, handle gracefully, send to client.
-- **programming errors** = don't try to handle; crash app (in production) and fix
+---
+
+##### 4. Fall Back
+
+```js
+res.status(err.statusCode).json({
+  status: err.status,
+  message: 'An unexpected error occurred.',
+});
+```
+
+This final return acts as a **safety net** if `NODE_ENV` is not defined.
 
 🕵️ **DEEP DIVE:**
 [express.js Error Handling Docs](https://expressjs.com/en/guide/error-handling.html)
