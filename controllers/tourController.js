@@ -191,92 +191,58 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
 });
 
 // ======================================
-// #: Monthly Plan - Unwinding Projecting - Tour start stats by month?
+// #: Monthly Plan - Unwinding Projecting - Tour start stats by month
 // ======================================
-exports.getMonthlyPlan = async (req, res) => {
-  // Convert year from string to number (e.g., from req.params.year = '2025' to 2025)
-  const year = +req.params.year; // Number(req.params.year) or req.params.year * 1
+exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
+  // STEP 0: Convert year param to number
+  const year = +req.params.year;
 
-  // ====================================
-  // NOTE: Validate year input
-  // - to solve abc or isNan confusion.
-  // - As it won't crash and still returned - 200 OK with Monthly Plan: []
-  // ====================================
-  // NOTE: if isNaN(year) will give a warning as to void the global isNaN() because it can behave unexpectedly with non-numbers.
-  // (https://github.com/airbnb/javascript#standard-library--isnaneslintno-restricted-globals) - updated 31-07-25
-  // SOLUTION: if Number.isNaN(year)
+  // STEP 1: Validate the year input
   if (Number.isNaN(year)) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Invalid year. Please provide a numeric value.',
-    });
+    return next(
+      new AppError('Invalid year. Please provide a numeric value.', 400),
+    );
   }
 
-  try {
-    const plan = await Tour.aggregate([
-      {
-        // STEP 1: Break apart startDates array — one doc per date
-        $unwind: '$startDates',
-      },
-      {
-        // STEP 2: Only include dates from the specified year
-        $match: {
-          startDates: {
-            $gte: new Date(`${year}-01-01`), // Jan 1st of the year
-            $lte: new Date(`${year}-12-31`), // Dec 31st of the year
-          },
+  // STEP 2: Build aggregation pipeline
+  const plan = await Tour.aggregate([
+    {
+      $unwind: '$startDates',
+    },
+    {
+      $match: {
+        startDates: {
+          $gte: new Date(`${year}-01-01`),
+          $lte: new Date(`${year}-12-31`),
         },
       },
-      {
-        // STEP 3: Group by month, count tours, and collect names
-        $group: {
-          _id: { $month: '$startDates' }, // Group by month number (1–12)
-          numTourStarts: { $sum: 1 }, // Count how many tours start in that month
-          tours: { $push: '$name' }, // Push tour names into an 'array'
-        },
+    },
+    {
+      $group: {
+        _id: { $month: '$startDates' },
+        numTourStarts: { $sum: 1 },
+        tours: { $push: '$name' },
       },
-      {
-        // STEP 4: Add 'month' field to replace `_id` for readability
-        $addFields: { month: '$_id' }, // _id refers to month number. addField is used to copy _id value into a new field (month)
-        // Once month field is created with _id value, use $project(below) ot remove _id field
-      },
-      {
-        // STEP 5: Remove the `_id` field from results (using 'month' instead)
-        $project: {
-          _id: 0,
-        }, // Project can be used as include or EXCLUDE. _id: 0 sets MongoDB to exclude _id field from the output
-      },
-      {
-        // STEP 6: Sort months by how many tours start in each
-        $sort: { numTourStarts: -1 }, // Descending order
-      },
-      {
-        // STEP 7: Return only the top 6 months
-        $limit: 6,
-      },
-    ]);
+    },
+    {
+      $addFields: { month: '$_id' },
+    },
+    {
+      $project: { _id: 0 },
+    },
+    {
+      $sort: { numTourStarts: -1 },
+    },
+    {
+      $limit: 6,
+    },
+  ]);
 
-    // DEBUG: Log the plan to the console
-    console.log('Monthly Plan:', plan);
-
-    // STEP 8: Send JSON response
-    res.status(200).json({
-      status: 'success',
-      data: {
-        plan,
-      },
-    });
-  } catch (err) {
-    // DEBUG: ERROR HANDLING
-    console.error('Error in getMonthlyPlan:', err);
-
-    res.status(500).json({
-      status: 'error',
-      message: err.message,
-    });
-  }
-};
-
-// ======================================
-// #: AGGREGATION MIDDLEWARE
-// ======================================
+  // STEP 3: Send the response
+  res.status(200).json({
+    status: 'success',
+    data: {
+      plan,
+    },
+  });
+});
