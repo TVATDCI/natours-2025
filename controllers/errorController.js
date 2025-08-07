@@ -41,11 +41,14 @@ const handleCastErrorDB = (err) => {
 // }
 
 const handleDuplicationFieldsDB = (err) => {
-  const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  //   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0]; // v.1 - Regex
   //DEBUG: if the value of err.errmsg matches regEx as 1st index
-  console.log(value);
+  // console.log(value);
 
-  const message = `Duplicate field value: (name of the Duplicate field) Please use another value`;
+  const field = Object.keys(err.keyValue)[0]; // v.2 access Mongoose err.keyValue directly (2025)
+  const value = err.keyValue[field]; // Using **err.keyValue** is more reliable and cleaner
+
+  const message = `Duplicate field "${field}" and value "${value}" already exist - Please use another value`;
   return new AppError(message, 400);
 };
 
