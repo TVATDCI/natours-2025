@@ -40,6 +40,15 @@ const handleCastErrorDB = (err) => {
 //     "message": "Invalid _id: 6885669311c1889fa57wwwww."
 // }
 
+const handleDuplicationFieldsDB = (err) => {
+  const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  //DEBUG: if the value of err.errmsg matches regEx as 1st index
+  console.log(value);
+
+  const message = `Duplicate field value: (name of the Duplicate field) Please use another value`;
+  return new AppError(message, 400);
+};
+
 // =====================
 // DEVELOPMENT ERROR
 // =====================
@@ -87,7 +96,6 @@ module.exports = (err, req, res, next) => {
     // DEBUG: in development if you are too lazy to switch to :prod
     // tracking err.name CastError for during dev amd hardcoded to bad request!
     if (err.name === 'CastError') err.statusCode = 400;
-
     return sendErrorDev(err, res);
   }
 
@@ -98,6 +106,8 @@ module.exports = (err, req, res, next) => {
     let error = { ...err };
     error.message = err.message; // preserve message
     if (err.name === 'CastError') error = handleCastErrorDB(err);
+
+    if (err.code === 11000) error = handleDuplicationFieldsDB(err);
 
     return sendErrorProd(error, res);
   }
