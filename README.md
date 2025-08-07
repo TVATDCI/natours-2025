@@ -2477,6 +2477,14 @@ app.all('*', (req, res, next) => {
 `errorController.js` is the **global error-handling middleware** in Express. It follows a **centralized error handling strategy**
 
 ```js
+// ======================================
+// Global Error Handler - BASIC
+// ======================================
+// 1. Imports
+// 2. Helper functions (like handleCastErrorDB)
+// 3. Error response functions (sendErrorDev / sendErrorProd)
+// 4. Exported middleware (main error handler)
+
 module.exports = (err, req, res, next) => {
   // ======================================
   // SET DEFAULTS
@@ -2642,6 +2650,26 @@ res.status(err.statusCode).json({
 ```
 
 This final return acts as a **safety net** if `NODE_ENV` is not defined.
+
+#### Global Error Handler
+
+All errors are handled in a centralized `errorController.js`:
+
+- Development Mode: Full stack trace and error object
+- Production Mode: Clean and secure messages
+
+Supported Errors:
+
+| Error Type        | Description                         | HTTP Status |
+| ----------------- | ----------------------------------- | ----------- |
+| CastError         | Invalid MongoDB ObjectId            | 400         |
+| AppError (custom) | Resource not found, forbidden, etc. | 404, 403    |
+| ValidationError   | Schema validation failed            | 400         |
+| DuplicateField    | Unique field violated (e.g., name)  | 400         |
+| JWT Errors        | Invalid or expired token            | 401 / 403   |
+| Programming Error | Unknown, handled gracefully in prod | 500         |
+
+---
 
 🕵️ **DEEP DIVE:**
 [express.js Error Handling Docs](https://expressjs.com/en/guide/error-handling.html)
