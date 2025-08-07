@@ -44,7 +44,7 @@ const sendErrorProd = (err, res) => {
   }
 
   // Programming or unknown error: don't leak details and send generic message
-  console.error('ERROR 💣', err);
+  console.error('ERROR 🧨', err);
 
   return res.status(500).json({
     status: 'error',
