@@ -9,7 +9,7 @@
 const AppError = require('../utils/appError');
 
 // =====================
-// HELPER FUNCTIONS
+// Handling MongoDB Cast Error
 // =====================
 // 400 Bad Request for invalid ObjectId formats
 // MongoDB: Invalid ID (CastError)
@@ -40,6 +40,10 @@ const handleCastErrorDB = (err) => {
 //     "message": "Invalid _id: 6885669311c1889fa57wwwww."
 // }
 
+// =======================================
+// Handling MongoDB duplicate field errors
+// =======================================
+
 const handleDuplicationFieldsDB = (err) => {
   //   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0]; // v.1 - Regex
   //DEBUG: if the value of err.errmsg matches regEx as 1st index
@@ -49,6 +53,16 @@ const handleDuplicationFieldsDB = (err) => {
   const value = err.keyValue[field]; // Using **err.keyValue** is more reliable and cleaner
 
   const message = `Duplicate field "${field}" and value "${value}" already exist - Please use another value`;
+  return new AppError(message, 400);
+};
+
+// =================================
+// Handling MongoDB Validation Error
+// =================================
+
+const handleValidationErrorDB = (err) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
+  const message = `Invalid input data: ${errors.join('. ')}`; // Join the messages together with .(dot)_(space)
   return new AppError(message, 400);
 };
 
@@ -107,10 +121,24 @@ module.exports = (err, req, res, next) => {
   // ======================================
   if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
-    error.message = err.message; // preserve message
-    if (err.name === 'CastError') error = handleCastErrorDB(err);
 
+    // error.message preserve message before the error gets transformed or doesn't
+    error.message = err.message;
+    // Avoids 'undefined' messages or missing logs in transformed errors.
+
+    // =============================================
+    // Handle known operational error types with custom messages
+    // =============================================
+    // Handling MongoDB Cast Error
+    if (err.name === 'CastError') error = handleCastErrorDB(err);
+    // =============================================
+    // Handling MongoDB duplicate field errors
     if (err.code === 11000) error = handleDuplicationFieldsDB(err);
+    // =============================================
+    // Handling MongoDB Validation Error
+    if (err.name === 'ValidationError') error = handleValidationErrorDB(err);
+    // =============================================
+    // To be continued!
 
     return sendErrorProd(error, res);
   }
