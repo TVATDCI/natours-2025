@@ -1,5 +1,5 @@
 // ======================================
-// errorController.js
+// errorController.js / Global Error Handler
 // ======================================
 // 1. Imports
 // 2. Helper functions (like handleCastErrorDB)
@@ -13,11 +13,32 @@ const AppError = require('../utils/appError');
 // =====================
 // 400 Bad Request for invalid ObjectId formats
 // MongoDB: Invalid ID (CastError)
+// In Production only.
 const handleCastErrorDB = (err) => {
   const message = `Invalid ${err.path}: ${err.value}.`;
 
   return new AppError(message, 400);
 };
+
+// NOTE: Switch to production
+
+// NOTE: error example: 400 Bad Request! from DB err
+// "status": "error",
+// "error": {
+//     "stringValue": "\"6885669311c1889fa57wwwww\"",
+//     "valueType": "string",
+//     "kind": "ObjectId",
+//     "value": "6885669311c1889fa57wwwww",
+//     "path": "_id",
+//     "reason": {},
+//     "name": "CastError",
+//     "message": "Cast to ObjectId failed for value \"6885669311c1889fa57wwwww\" (type string) at path \"_id\" for model \"Tour\""
+// },
+// NOTE: To 400 Bad Request! from AppError!
+// {
+//     "status": "fail",
+//     "message": "Invalid _id: 6885669311c1889fa57wwwww."
+// }
 
 // =====================
 // DEVELOPMENT ERROR
@@ -63,7 +84,9 @@ module.exports = (err, req, res, next) => {
   // DEVELOPMENT MODE: send full error details
   // ======================================
   if (process.env.NODE_ENV === 'development') {
-    if (err.name === 'CastError') err.statusCode = 400; // tracking 400 Bad Request for invalid ObjectId formats during dev!
+    // DEBUG: in development if you are too lazy to switch to :prod
+    // tracking err.name CastError for during dev amd hardcoded to bad request!
+    if (err.name === 'CastError') err.statusCode = 400;
 
     return sendErrorDev(err, res);
   }
