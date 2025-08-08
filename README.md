@@ -79,6 +79,7 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Operational Errors vs Programming Errors](#operational-errors-vs-programming-errors)
     - [Global Error Handler controllers/errorController](#global-error-handler-controllerserrorcontrollerjs)
     - [Global error handler with production readiness](#global-error-handler-controllerserrorcontrollerjs)
+    - [Centralizing Async Error Handling in `server.js`](#centralizing-async-error-handling-in-serverjs)
 
 ---
 
@@ -2836,5 +2837,120 @@ notes:
     - Clarity
     - Extensibility
 ```
+
+[Back to the top](#natours-2025)
+
+---
+
+#### Centralizing Async Error Handling in `server.js`
+
+Handling `connectDB()` used a `try/catch` block to handle MongoDB connection
+
+---
+
+```js
+try {
+  await mongoose.connect(process.env.MONGO_URL);
+} catch (err) {
+  console.error(err);
+  process.exit(1);
+}
+```
+
+It **handles the error immediately** inside `db.js`,
+
+- The rejection **never reaches** the global `unhandledRejection` handler.
+- Database startup **errors are isolated** instead of being part of the **central error-handling ecosystem**.
+
+---
+
+##### Refactor Philosophy
+
+**All async errors outside Express** (including DB connection failures) **should be handled in one place** — the global handler in `server.js`.
+
+---
+
+**Refactor Steps**
+
+1. Remove try/catch from `connectDB()`.
+   - Let the promise rejection bubble up naturally.
+
+```js
+const connectDB = async () => {
+  // No try/catch — let the rejection bubble up
+  const DB = await mongoose.connect(process.env.MONGO_URL);
+  console.log(`MongoDB connected successfully 🛸 : ${DB.connection.host}`);
+  console.log(`Port:👉 ${DB.connection.port}`);
+  console.log(`Database: ${DB.connection.name}`);
+};
+
+module.exports = connectDB;
+```
+
+2. Call connectDB() in `server.js` without `.catch()`.
+
+```js
+// ======================================
+// Connect to Database
+connectDB(); // No catch here — failures go to unhandledRejection
+
+// ======================================
+```
+
+3. Synchronous errors outside Express.
+   - `uncaughtException` = sync errors, no `try/catch` present, outside Express’ middleware system.
+
+```js
+// ======================================
+// Global Uncaught Exception Handler
+// (Synchronous errors outside Express)
+// Keep uncaughtException → protects against sync runtime errors before/after Express is running.
+process.on('uncaughtException', (err) => {
+  console.error('🔥 :UNCAUGHT EXCEPTION! Shutting down...');
+  console.error(err.name, err.message);
+  process.exit(1);
+});
+```
+
+4. Store the HTTP server instance so it can be closed timely:
+
+```js
+// Start server
+const port = process.env.PORT || 3000;
+const server = app.listen(port, () => {
+  console.log(`App running on port ${port}...`);
+});
+```
+
+5. Attach a global rejection handler in `server.js`:
+
+```js
+// ======================================
+// Global Unhandled Promise Rejection Handler
+// (Async errors outside Express)
+process.on('unhandledRejection', (err) => {
+  console.error('🧨 :UNHANDLED REJECTION! Shutting down...');
+  console.error(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+```
+
+---
+
+**Error Handling Map**
+| Error Type | Where It’s Caught |
+| --------------------------------------------- | ---------------------------------- |
+| Sync errors inside Express | `errorController.js` |
+| Async errors inside Express (via `next(err)`) | `errorController.js` |
+| Sync errors outside Express | `process.on('uncaughtException')` |
+| Async errors outside Express | `process.on('unhandledRejection')` |
+
+This approach makes `server.js` the single point of failure control for your application startup and runtime errors that happen outside the Express middleware chain.
+
+- **Centralized Control** → All unexpected async errors are handled in one place.
+- **Graceful Shutdown** → Gives ongoing requests time to complete before exiting.
+- **Consistent Logging** → Same format for all fatal errors outside Express.
 
 [Back to the top](#natours-2025)
