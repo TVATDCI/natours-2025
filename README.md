@@ -2902,8 +2902,9 @@ connectDB(); // No catch here — failures go to unhandledRejection
 
 ```js
 // throw new Error('💥 Test uncaughtException!');
-// ======================================
-// Global Uncaught Exception Handler - listen to events even before requiring main app
+// =================================
+// Global Uncaught Exception Handler
+// listen to events even before requiring main app
 // (Synchronous errors outside Express)
 // Keep uncaughtException → protects against sync runtime errors before/after Express is running.
 process.on('uncaughtException', (err) => {
@@ -2911,6 +2912,12 @@ process.on('uncaughtException', (err) => {
   console.error(err.name, err.message);
   process.exit(1);
 });
+
+// ====================================
+dotenv.config({ path: './config.env' });
+
+const connectDB = require('./config/db');
+const app = require('./app');
 ```
 
 4. Store the HTTP server instance so it can be closed timely:
