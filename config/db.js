@@ -1,7 +1,11 @@
+// SITUATION: catching try/catch exiting immediately inside connectDB(), which means the unhandledRejection global handler never even has a chance to run.
+// Because the promise rejection is already being handled right there in the catch.
+// To intercept an unhandled rejection before Express starts serving requests.
+// And Centralize failure of entire error-handling ecosystem in server.js
 // REFACTOR PLAN:
 // STEP: 1. Remove try/catch from connectDB(). so the rejection will bubbles up!
 // STEP: 2. Call connectDB() in server.js and attach .catch() only in a global process.on('unhandledRejection') handler.
-// STEP: 3.Store the server in a variable so it can be shut down gracefully.
+// STEP: 3.Store the server in a variable so it can be shut down timely
 
 const mongoose = require('mongoose');
 
