@@ -8,6 +8,7 @@ const app = require('./app');
 // ======================================
 // Global Uncaught Exception Handler
 // (Synchronous errors outside Express)
+// Keep uncaughtException → protects against sync runtime errors before/after Express is running.
 process.on('uncaughtException', (err) => {
   console.error('🔥 :UNCAUGHT EXCEPTION! Shutting down...');
   console.error(err.name, err.message);
