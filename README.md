@@ -2901,8 +2901,9 @@ connectDB(); // No catch here — failures go to unhandledRejection
    - `uncaughtException` = sync errors, no `try/catch` present, outside Express’ middleware system.
 
 ```js
+// throw new Error('💥 Test uncaughtException!');
 // ======================================
-// Global Uncaught Exception Handler
+// Global Uncaught Exception Handler - listen to events even before requiring main app
 // (Synchronous errors outside Express)
 // Keep uncaughtException → protects against sync runtime errors before/after Express is running.
 process.on('uncaughtException', (err) => {
