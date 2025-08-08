@@ -2785,38 +2785,56 @@ app.use((err, req, res, next) => {
 
 ---
 
-#### 🚧 MongoDB ObjectId blinded me!
+#### Error Handling Philosophy
+
+Global Error Handler `(errorController.js)` 'goal is to manage and format all operational errors before sending them to the client.
+The goal is to **fail gracefully, protect sensitive data**, and **help developers debug faster**.
+
+**Global Error Handling – Quick Reference**
 
 ```yaml
-ObjectId Format:
-  - Must be exactly 24 characters long
-  - Must consist only of hexadecimal characters:
-    - Allowed: 0–9, a–f (case-insensitive)
-    - Disallowed: Any character outside that range (e.g. "z", "g", symbols)
+modes:
+  development:
+    goal: 'Give developers full error details for debugging'
+    response:
+      - status: 'fail or error'
+      - error: 'Full raw error object'
+      - message: 'Human-readable explanation'
+      - stack: 'Stack trace for pinpointing issue'
 
-I forgot that:
-  - 🌵 Valid ObjectId: "6885669311c1889fa57a9e4d" (passes format check)
-  - ✝️ Invalid ObjectId: "6885669311c1889fa57a9e4z" (contains non-hex character "z")
+  production:
+    goal: 'Hide sensitive data, fail gracefully for users'
+    handlers:
+      CastError:
+        description: 'Invalid MongoDB ObjectId format'
+        statusCode: 400
+        message: 'Invalid <field>: <value>'
+      DuplicateField:
+        match: 'err.code === 11000'
+        statusCode: 400
+        message: 'Duplicate field value: <value>. Please use another value.'
+      ValidationError:
+        description: 'Schema validation failed'
+        statusCode: 400
+        message: 'Invalid input data'
 
-Behavior in Express:
-  - Valid format but no document found → triggers `AppError('Tour not found', 404)`
-  - Invalid ObjectId format → triggers Mongoose `CastError`, handled globally
+    unknown_error:
+      statusCode: 500
+      message: 'Something went very wrong!'
 
-Tip for Testing 404:
-  - Modify last character to another **hex digit** (e.g. change "d" to "e")
-    → This makes it a valid ObjectId, but it likely won't match any document
-    → Properly triggers your 404 "Tour not found"
-
-Common Mistake:
-  - Changing to a non-hex character (like "z") causes `CastError` (500 response)
-  - This is **not** a 404 — it’s an invalid ID format error
-
-🛡️ Goal for production:
-  - Catch and sanitize CastErrors in global error handler using:
-    - `err.name === 'CastError'`
-    - Return: 400 "Invalid ID format"
-
-I will stick this note on my forehead and walk around for a while 📓
+notes:
+  preserve_message:
+    reason: 'Shallow copy `{ ...err }` may drop `err.message`'
+    fix: 'error.message = err.message'
+  objectid_format:
+    allowed_chars: '0-9 and a-f (24 hex chars)'
+    invalid_example: '6885669311c1889fa57a9e4z → triggers CastError (400)'
+    valid_but_not_found: '6885669311c1889fa57a9e4e → triggers 404 Not Found'
+  design_goals:
+    - Consistency
+    - Security
+    - Clarity
+    - Extensibility
 ```
 
 [Back to the top](#natours-2025)
