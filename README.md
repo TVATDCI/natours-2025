@@ -145,6 +145,7 @@ project-root/
 ├── config/
 │ └── db.js
 ├── controllers/
+│ ├── authController.js
 │ ├── errorController.js
 │ ├── tourController.js
 │ └── userController.js
