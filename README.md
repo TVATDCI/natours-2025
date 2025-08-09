@@ -170,6 +170,9 @@ project-root/
 │ ├── loginTemplate.pug
 │ ├── tourCardTemplate.pug
 │ └── tourTemplate.pug
+├── models/
+│ ├── tourModel.js
+│ └── userModel.js
 ├── public/
 │ ├── css/
 │ │ └── style.css
