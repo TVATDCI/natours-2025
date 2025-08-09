@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
+// For hashing password
+const bcrypt = require('bcryptjs');
+
 // ===============================
 // User Schema Definition
 // ===============================
@@ -41,7 +44,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please confirm your password'],
       validate: {
-        // This only works on CREATE and SAVE!
+        // NOTE: This only works on CREATE and SAVE!
         validator: function (el) {
           return el === this.password;
         },
@@ -62,6 +65,23 @@ const userSchema = new mongoose.Schema(
     timestamps: true, // Automatically adds createdAt & updatedAt
   },
 );
+
+// ===============================
+// Document Middleware
+// ===============================
+
+// Hashing new password before saving
+userSchema.pre('save', async function (next) {
+  // Only run if password is actually modified
+  if (!this.isModified('password')) return next();
+
+  // Hash the password with cost of 12
+  this.password = await bcrypt.hash(this.password, 12);
+
+  // Remove passwordConfirm field
+  this.passwordConfirm = undefined;
+  next();
+});
 
 const User = mongoose.model('User', userSchema);
 
