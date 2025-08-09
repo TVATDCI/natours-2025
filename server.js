@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 // (Synchronous errors outside Express)
 // Keep uncaughtException → protects against sync runtime errors before/after Express is running.
 process.on('uncaughtException', (err) => {
-  console.error('🔥 :UNCAUGHT EXCEPTION! Shutting down...');
+  console.error('🧨 :UNCAUGHT EXCEPTION! Shutting down...');
   console.error(err.name, err.message);
   process.exit(1);
 });
@@ -16,8 +16,6 @@ dotenv.config({ path: './config.env' });
 const connectDB = require('./config/db');
 const app = require('./app');
 
-// const x = y + 1; // test: uncaughtException
-
 // ======================================
 // Connect to Database
 connectDB(); // No catch here — failures go to unhandledRejection
@@ -26,14 +24,14 @@ connectDB(); // No catch here — failures go to unhandledRejection
 // Start server
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
-  console.log(`App running on port ${port}...`);
+  console.log(`App running on port:🛂: ${port}...`);
 });
 
 // ======================================
 // Global Unhandled Promise Rejection Handler
 // (Async errors outside Express)
 process.on('unhandledRejection', (err) => {
-  console.error('🧨 :UNHANDLED REJECTION! Shutting down...');
+  console.error('🔴 :UNHANDLED REJECTION! Shutting down...');
   console.error(err.name, err.message);
   server.close(() => {
     process.exit(1);
