@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Please tell us your name!'],
+      required: [true, 'Please provide your name!'],
     },
 
     email: {
@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Please provide a password'],
-      minlength: 8,
+      minlength: 8, // password should have a 8 char
       select: false, // Never send back password in queries
     },
 
