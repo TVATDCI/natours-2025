@@ -78,7 +78,7 @@ userSchema.pre('save', async function (next) {
   // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
 
-  // Remove passwordConfirm field
+  // Remove passwordConfirm field -
   this.passwordConfirm = undefined;
   next();
 });
@@ -98,3 +98,5 @@ userSchema.methods.correctPassword = async function (
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
+
+// Next stop - authController.js
