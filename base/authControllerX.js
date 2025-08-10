@@ -7,11 +7,16 @@ const catchAsync = require('../utils/catchAsync');
 // ===============================
 // Helper: Create JWT Token
 // ===============================
-const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+// const signToken = (id) => {
+//   return jwt.sign({ id }, process.env.JWT_SECRET, {
+//     expiresIn: process.env.JWT_EXPIRES_IN,
+//   });
+// };
+
+const signToken = (id) =>
+  jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
-};
 
 // ===============================
 // Helper: Send JWT + Response
