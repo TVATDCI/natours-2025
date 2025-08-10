@@ -16,7 +16,7 @@ const catchAsync = require('../utils/catchAsync');
 // SOLUTION: 2025: move the returned value immediately after the `=>`arrow to avoid the ESLint complaint
 // GITHUB node-jsonwebtoken (https://github.com/auth0/node-jsonwebtoken)
 // npm i jsonwebtoken (https://www.npmjs.com/package/jsonwebtoken)
-// CREATE a new token
+// #: CREATE a new token
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -30,30 +30,39 @@ const signToken = (id) =>
 // Helper: Send JWT + Response
 // ===============================
 const createSendToken = (user, statusCode, res) => {
+  // 1) Create JWT based on the user's MongoDB _id
+  // The _id is the unique identifier stored inside the token payload
   const token = signToken(user._id);
 
+  // 2) Configure cookie options for storing JWT securely
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
-    ),
-    httpOnly: true, // cookie can't be accessed by JS
+    ), // Convert days → ms
+    httpOnly: true, // Prevents JS from reading the cookie in the browser → XSS protection
   };
+
+  // If in production, make sure cookie is only sent over HTTPS
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
+  // 3) Send JWT to the browser as an HTTP cookie
+  // This allows automatic sending of token with every request (good for web apps, not mobile APIs)
   res.cookie('jwt', token, cookieOptions);
 
-  // Remove password from output
+  // 4) Remove the password field before sending the user back to the client
+  // NOTE: Never leak password hashes (even if hashed, it’s sensitive info)
   user.password = undefined;
 
+  // 5) Send the final JSON response with token + user data
   res.status(statusCode).json({
     status: 'success',
-    token,
+    token, // Still include token in body for APIs (e.g., mobile apps that can't rely on cookies)
     data: { user },
   });
 };
 
 // ===============================
-// SIGN UP
+// #: SIGN UP
 // ===============================
 exports.signup = catchAsync(async (req, res, next) => {
   // const newUser = await User.create(req.body) // removed for a new implement below for a security reason!
@@ -76,7 +85,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 // ===============================
-// LOGIN
+// #: LOGIN
 // ===============================
 exports.login = catchAsync(async (req, res, next) => {
   // const email = req.body.email; // eslint will give a warning to use obj-destructuring to extract .body!
@@ -96,16 +105,26 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // STEP: 2) Check if user exists & password is correct
   // NOTE: The output "(User.findOne({ email })" SHOULD NOT contain the password!
-  // BUT: IMPORTANT - The password is needed to be select ".select('+password');" and verified inside the function!
+  // However, password is explicitly selected (.select('+password');)here.
+  // Because it's excluded by default in the schema, but is needed for bcrypt comparison for verification!
   const user = await User.findOne({ email }).select('+password');
+  // IMPORTANT: The check for `!user` must happen BEFORE calling `user.correctPassword()`
+  // Otherwise, if `user` is `null` (email not found), trying to call `correctPassword()`
+  // That would cause a runtime error: "Cannot read properties of null".
 
-  // DEBUG: The password
+  // const correct = await user.correctPassword(password, user.password);
+
+  // SOLUTION:
+  // By combining the two checks in one `if` statement:
+  // If the user is not found (`!user`) → skip password comparison and return error.
+  // If the user exists but password is wrong (`!await user.correctPassword(...)`) → return error.
+  // This prevents crashes and keeps the login logic concise.
+  //DEBUG: to check if the password has been explicitly selected?
   console.log('return user password', user);
 
   if (!user || !(await user.correctPassword(password, user.password))) {
-    // DEBUG:
     console.log('Incorrect email or password:⛔:', req.body);
-    return next(new AppError('Incorrect email or password', 401));
+    return next(new AppError('Incorrect email or password', 401)); // (401) Unauthorized
   }
 
   // STEP: 3) If everything is ok, send token with status(200)
