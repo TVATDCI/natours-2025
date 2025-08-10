@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
 
-// throw new Error('💥 Test uncaughtException!');
+// throw new Error('🧨 Test uncaughtException!');
 // ======================================
 // Global Uncaught Exception Handler - listen to events even before requiring main app
 // (Synchronous errors outside Express)
@@ -24,7 +24,7 @@ connectDB(); // No catch here — failures go to unhandledRejection
 // Start server
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
-  console.log(`App running on port:🛂: ${port}...`);
+  console.log(`App running on port:🌐: ${port}...`);
 });
 
 // ======================================
