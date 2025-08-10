@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+// const crypto = require('crypto'); // reset password
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
@@ -59,6 +59,10 @@ exports.signup = catchAsync(async (req, res, next) => {
     role: req.body.role, // Optional, only if you want to set role here
   });
 
+  console.log(`User registered successfully:🧟: ${newUser.name}`);
+  console.log(`Email:📧: ${newUser.email}`);
+  console.log(`Password:📗: ${newUser.password}`);
+
   createSendToken(newUser, 201, res);
 });
 
@@ -67,6 +71,10 @@ exports.signup = catchAsync(async (req, res, next) => {
 // ===============================
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
+
+  console.log('Login attempt for user:', email);
+  console.log('Logging in user HIT');
+  console.log('Request body:', req.body);
 
   // 1) Check if email & password exist
   if (!email || !password) {
