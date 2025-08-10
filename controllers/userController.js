@@ -1,12 +1,28 @@
+const User = require('../models/userModel');
+
+const catchAsync = require('../utils/catchAsync');
+
 // ===============================
 // #: GET ALL USERS
 // ===============================
-exports.getAllUsers = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'The route getAllUsers is in progress',
+exports.getAllUsers = catchAsync(async (req, res) => {
+  const users = await User.find();
+
+  // DEBUG: will be removed in production
+  console.log(
+    'Returned users:',
+    users.map((u) => u.name),
+  );
+
+  // Send response
+  res.status(200).json({
+    status: 'success',
+    results: users.length,
+    data: {
+      users,
+    },
   });
-};
+});
 
 // ===============================
 // #: GET A USER
