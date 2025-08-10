@@ -7,17 +7,17 @@ const catchAsync = require('../utils/catchAsync');
 // ===============================
 // Helper: Create JWT Token
 // ===============================
-// Unexpected block statement surrounding arrow body; move the returned value immediately after the `=>`.eslintarrow-body-style!?
+// NOTE: 2019: Unexpected block statement surrounding arrow body - error!
 // const signToken = (id) => {
 //   return jwt.sign({ id }, process.env.JWT_SECRET, {
 //     expiresIn: process.env.JWT_EXPIRES_IN,
 //   });
 // };
-
-// const signToken = (id) =>
-//   jwt.sign({ id }, process.env.JWT_SECRET, {
-//     expiresIn: process.env.JWT_EXPIRES_IN,
-//   });
+// NOTE: 2025: move the returned value immediately after the `=>`arrow to avoid the ESLint complaint
+const signToken = (id) =>
+  jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
 // ===============================
 // Helper: Send JWT + Response
 // ===============================
