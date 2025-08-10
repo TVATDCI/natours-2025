@@ -14,12 +14,17 @@ const catchAsync = require('../utils/catchAsync');
 //   });
 // };
 // NOTE: 2025: move the returned value immediately after the `=>`arrow to avoid the ESLint complaint
+// GITHUB node-jsonwebtoken (https://github.com/auth0/node-jsonwebtoken)
+// npm i jsonwebtoken (https://www.npmjs.com/package/jsonwebtoken)
+// CREATE a new token
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
-console.log('JWT_SECRET:', process.env.JWT_SECRET);
+// DEBUG:
+// NOTE: Check jwt.io for DEBUGGER!
+// console.log('JWT_SECRET:', process.env.JWT_SECRET);
 
 // ===============================
 // Helper: Send JWT + Response
@@ -51,6 +56,8 @@ const createSendToken = (user, statusCode, res) => {
 // SIGN UP
 // ===============================
 exports.signup = catchAsync(async (req, res, next) => {
+  // const newUser = await User.create(req.body) // removed for a new implement below for a security reason!
+  // the newUser is coming here with the whole .body. The admin role can be manipulated at this point!
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -59,10 +66,12 @@ exports.signup = catchAsync(async (req, res, next) => {
     role: req.body.role, // Optional, only if you want to set role here
   });
 
+  // DEBUG:
   console.log(`User registered successfully:🧟: ${newUser.name}`);
   console.log(`Email:📧: ${newUser.email}`);
   console.log(`Password:📗: ${newUser.password}`);
 
+  // Newly created newUser is ready. send the token to the client!
   createSendToken(newUser, 201, res);
 });
 
@@ -70,26 +79,30 @@ exports.signup = catchAsync(async (req, res, next) => {
 // LOGIN
 // ===============================
 exports.login = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
+  // const email = req.body.email; // eslint will give a warning to use obj-destructuring to extract .body!
+  const { email, password } = req.body; // reverse obj-destructuring with the same property(email) and variable(email) name - ES6
 
+  // DEBUG:
   console.log('Login attempt for user:📧:', email);
   console.log('Logging in user HIT:❓:');
-  console.log('Request body:🪪:', req.body);
+  console.log('Request body:🪪:✅:', req.body);
 
-  // 1) Check if email & password exist
+  // STEP: 1) Check if email & password exist
   if (!email || !password) {
+    // DEBUG:
     console.log('Please provide email and password:🚨:');
     return next(new AppError('Please provide email and password!', 400));
   }
 
-  // 2) Check if user exists & password is correct
+  // STEP: 2) Check if user exists & password is correct
   const user = await User.findOne({ email }).select('+password');
 
   if (!user || !(await user.correctPassword(password, user.password))) {
+    // DEBUG:
     console.log('Incorrect email or password:⛔:', req.body);
     return next(new AppError('Incorrect email or password', 401));
   }
 
-  // 3) If everything is ok, send token
+  // STEP: 3) If everything is ok, send token with status(200)
   createSendToken(user, 200, res);
 });
