@@ -13,7 +13,7 @@ const catchAsync = require('../utils/catchAsync');
 //     expiresIn: process.env.JWT_EXPIRES_IN,
 //   });
 // };
-// NOTE: 2025: move the returned value immediately after the `=>`arrow to avoid the ESLint complaint
+// SOLUTION: 2025: move the returned value immediately after the `=>`arrow to avoid the ESLint complaint
 // GITHUB node-jsonwebtoken (https://github.com/auth0/node-jsonwebtoken)
 // npm i jsonwebtoken (https://www.npmjs.com/package/jsonwebtoken)
 // CREATE a new token
@@ -63,7 +63,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    role: req.body.role, // Optional, only if you want to set role here
+    // role: req.body.role, // Optional for learning dev: It SHOULD NOT be in production!
   });
 
   // DEBUG:
@@ -95,7 +95,12 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // STEP: 2) Check if user exists & password is correct
+  // NOTE: The output "(User.findOne({ email })" SHOULD NOT contain the password!
+  // BUT: IMPORTANT - The password is needed to be select ".select('+password');" and verified inside the function!
   const user = await User.findOne({ email }).select('+password');
+
+  // DEBUG: The password
+  console.log('return user password', user);
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     // DEBUG:
