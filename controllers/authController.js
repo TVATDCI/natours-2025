@@ -1,4 +1,5 @@
 // const crypto = require('crypto'); // reset password
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
@@ -119,8 +120,8 @@ exports.login = catchAsync(async (req, res, next) => {
   // If the user is not found (`!user`) → skip password comparison and return error.
   // If the user exists but password is wrong (`!await user.correctPassword(...)`) → return error.
   // This prevents crashes and keeps the login logic concise.
-  //DEBUG: to check if the password has been explicitly selected?
-  console.log('return user password', user);
+  // DEBUG: to check if the password has been explicitly selected?
+  // console.log('return user body', user);
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     console.log('Incorrect email or password:⛔:', req.body);
@@ -129,4 +130,54 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // STEP: 3) If everything is ok, send token with status(200)
   createSendToken(user, 200, res);
+});
+
+// ===============================
+// #: PROTECT - protect (all tours) middleware
+// ===============================
+exports.protect = catchAsync(async (req, res, next) => {
+  // 1) Get token (from Authorization header or cookies)
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies && req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+
+  // console.log('Token:', token);
+
+  if (!token) {
+    return next(
+      new AppError('You are not logged in! Please log in to get access.', 401),
+    );
+  }
+
+  // 2) Verify token (promisify used here)
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  console.log('decoded', decoded);
+
+  // 3) Check if user still exists
+  const currentUser = await User.findById(decoded.id);
+  console.log('Current User:🪪:', currentUser);
+  if (!currentUser) {
+    return next(
+      new AppError('The user belonging to this token no longer exists.', 401),
+    );
+  }
+
+  // 4) Check if user changed password after token was issued
+  //   if (currentUser.changedPasswordAfter(decoded.iat)) {
+  //     return next(
+  //       new AppError('User recently changed password! Please log in again.', 401),
+  //     );
+  //   }
+
+  // 5) Grant access
+  req.user = currentUser; // For route handlers
+  res.locals.user = currentUser; // For views/templates
+  next();
 });
