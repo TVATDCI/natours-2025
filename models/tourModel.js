@@ -155,10 +155,8 @@ tourSchema.pre('save', function (next) {
 // .pre('find'): Runs before any .find() query is executed.(tourController.js/line: 25)
 tourSchema.pre(/^find/, function (next) {
   console.log('Query middleware: About to execute a find operation...');
-  this.find({ secretTour: { $ne: true } }); // $ne= not equal to true - exclude secret tours. Now it is a secrete!
-  console.log(
-    'secretTour is now set to true: now it i a secrete not there if you look for it...uncomment this line to see it!',
-  );
+  // this.find({ secretTour: { $ne: true } }); // $ne= not equal to true - exclude secret tours. Now it is a secrete!
+  // secretTour is now set to true: now it i a secrete not there if you look for it...uncomment this line to see it!
 
   this.start = Date.now(); // just for measuring query time (optional)
   next();
