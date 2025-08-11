@@ -1,5 +1,6 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
+const authController = require('../controllers/authController'); // PROTECT ROUTE
 // const sanitizeQuery = require('../middleware/sanitizeQuery'); // clean query parameters in routes level!
 
 // declare and define the Routers before mounting!
@@ -19,7 +20,7 @@ router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan); // add U
 
 router
   .route('/') // root(/api/v1/tours)
-  .get(tourController.getAllTours) // Get all tours. sanitizeQuery, removed for now
+  .get(authController.protect, tourController.getAllTours) //
   .post(tourController.createTour); // Create a new tour. checkBody is removed!
 
 router
