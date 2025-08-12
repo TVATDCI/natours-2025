@@ -18,10 +18,11 @@ const catchAsync = require('../utils/catchAsync');
 // };
 // ES6 arrow function - use an implicit return to simplify arrow function by removing the curly braces and the return keyword!
 // REASON: Curly braces + return are only needed if your function body has multiple statements.
-// #: CREATE a new token
+// ===============================
+// #: Create JWT token
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    expiresIn: process.env.JWT_EXPIRES_IN, // reset to '1h'
   });
 
 // TEST: TEMP - force a very short expiration for testing
@@ -36,22 +37,33 @@ const signToken = (id) =>
 // console.log('JWT_SECRET:', process.env.JWT_SECRET);
 
 // ===============================
-// Helper: Send JWT + Response
+// #: Create and send JWT token in cookie and response
 // ===============================
 const createSendToken = (user, statusCode, res) => {
-  // 1) Create JWT based on the user's MongoDB _id
+  // 1) Create token with 1 hour expiry, based on the user's MongoDB _id
   // The _id is the unique identifier stored inside the token payload
   const token = signToken(user._id);
 
   // 2) Configure cookie options for storing JWT securely
   const cookieOptions = {
     expires: new Date(
+      // Convert days to milliseconds, e.g. 90 days * 24h * 60m * 60s * 1000ms
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
-    ), // Convert days → ms
+    ),
     httpOnly: true, // Prevents JS from reading the cookie in the browser → XSS protection
+    // Only send cookie over HTTPS in production (for security)
+    // ...(process.env.NODE_ENV === 'production' && { secure: true }),
+    // concise way to conditionally add properties inline without creating the object first
+    // then mutating it or writing a multi-line if block.
+    // If process.env.NODE_ENV === 'production' is true, then the expression evaluates to { secure: true }.
+    // If it’s false, it evaluates to false.The ... spread operator spreads the properties of an object into cookieOptions.
   };
-
-  // If in production, make sure cookie is only sent over HTTPS
+  // However, This ensures cookie is secure and encrypted during transit
+  // NOTE: Stand alone: if statement add properties without cluttering the object literal.
+  // secure should only be added in production if the condition is met (typically when HTTPS is enabled).
+  // Then if statement modifies the object after it's created by adding a new property.
+  // Putting the if statement outside allows it to conditionally add properties without cluttering the object literal.
+  // It makes it very clear what properties are always present vs which are conditionally added.
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
   // 3) Send JWT to the browser as an HTTP cookie
@@ -85,9 +97,9 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
 
   // DEBUG:
-  console.log(`User registered successfully:🧟: ${newUser.name}`);
-  console.log(`Email:📧: ${newUser.email}`);
-  console.log(`Password:📗: ${newUser.password}`);
+  // console.log(`User registered successfully:🧟: ${newUser.name}`);
+  // console.log(`Email:📧: ${newUser.email}`);
+  // console.log(`Password:📗: ${newUser.password}`);
 
   // Newly created newUser is ready. send the token to the client!
   createSendToken(newUser, 201, res);
@@ -155,6 +167,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     token = req.cookies.jwt;
   }
 
+  // DEBUG:
   // console.log('Token:', token);
 
   if (!token) {
@@ -166,11 +179,13 @@ exports.protect = catchAsync(async (req, res, next) => {
   // 2) Verify token (promisify used here)
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  console.log('decoded', decoded);
+  // DEBUG:
+  // console.log('decoded', decoded);
 
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
-  console.log('Current User:🪪:', currentUser);
+  // DEBUG:
+  // console.log('Current User:🪪:', currentUser);
   if (!currentUser) {
     return next(
       new AppError('The user belonging to this token no longer exists.', 401),
