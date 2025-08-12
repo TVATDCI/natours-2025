@@ -8,20 +8,28 @@ const catchAsync = require('../utils/catchAsync');
 // ===============================
 // Helper: Create JWT Token
 // ===============================
+// GITHUB node-jsonwebtoken (https://github.com/auth0/node-jsonwebtoken)
+// npm i jsonwebtoken (https://www.npmjs.com/package/jsonwebtoken)
 // NOTE: 2019: Unexpected block statement surrounding arrow body - error!
 // const signToken = (id) => {
 //   return jwt.sign({ id }, process.env.JWT_SECRET, {
 //     expiresIn: process.env.JWT_EXPIRES_IN,
 //   });
 // };
-// SOLUTION: 2025: move the returned value immediately after the `=>`arrow to avoid the ESLint complaint
-// GITHUB node-jsonwebtoken (https://github.com/auth0/node-jsonwebtoken)
-// npm i jsonwebtoken (https://www.npmjs.com/package/jsonwebtoken)
+// ES6 arrow function - use an implicit return to simplify arrow function by removing the curly braces and the return keyword!
+// REASON: Curly braces + return are only needed if your function body has multiple statements.
 // #: CREATE a new token
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
+
+// TEST: TEMP - force a very short expiration for testing
+// replace process.env.JWT_EXPIRES_IN with testing time (5s)
+// const signToken = (id) =>
+//   jwt.sign({ id }, process.env.JWT_SECRET, {
+//     expiresIn: '5s', // short-lived token for test and don’t forget to revert this to process.env.JWT_EXPIRES_IN after the test.
+//   });
 
 // DEBUG:
 // NOTE: Check jwt.io for DEBUGGER!
@@ -93,9 +101,9 @@ exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body; // reverse obj-destructuring with the same property(email) and variable(email) name - ES6
 
   // DEBUG:
-  console.log('Login attempt for user:📧:', email);
-  console.log('Logging in user HIT:❓:');
-  console.log('Request body:🪪:✅:', req.body);
+  // console.log('Login attempt for user:📧:', email);
+  // console.log('Logging in user HIT:❓:');
+  // console.log('Request body:🪪:✅:', req.body);
 
   // STEP: 1) Check if email & password exist
   if (!email || !password) {
