@@ -53,24 +53,24 @@ const userSchema = new mongoose.Schema(
     },
 
     passwordChangedAt: Date,
-    passwordResetToken: String,
-    passwordResetExpires: Date,
-    active: {
-      type: Boolean,
-      default: true,
-      select: false,
-    },
+    // passwordResetToken: String,
+    // passwordResetExpires: Date,
+    // active: {
+    //   type: Boolean,
+    //   default: true,
+    //   select: false,
+    // },
   },
-  {
-    timestamps: true, // Automatically adds createdAt & updatedAt
-  },
+  //   {
+  //     timestamps: true, // Automatically adds createdAt & updatedAt
+  //   },
 );
 
 // ===============================
 // Document Middleware
-// ===============================
-
+// ==================================
 // Hashing new password before saving
+// ==================================
 userSchema.pre('save', async function (next) {
   // Only run if password is actually modified
   if (!this.isModified('password')) return next();
@@ -82,6 +82,18 @@ userSchema.pre('save', async function (next) {
   this.passwordConfirm = undefined;
   next();
 });
+
+// =====================================
+// 2) Update passwordChangedAt timestamp
+// =====================================
+// Set passwordChangedAt if password was actually modified and user is not new
+// userSchema.pre('save', function (next) {
+//   if (!this.isModified('password') || this.isNew) return next();
+
+//   // Subtract 1 second to avoid token issue being before this timestamp
+//   this.passwordChangedAt = Date.now() - 1000;
+//   next();
+// });
 
 // ===============================
 // Instance Methods
@@ -106,7 +118,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
       10,
     );
 
-    // console.log(this.passwordChangedAt, JWTTimestamp);
+    console.log(this.passwordChangedAt, JWTTimestamp);
     return JWTTimestamp < changedTimestamp;
   }
 
