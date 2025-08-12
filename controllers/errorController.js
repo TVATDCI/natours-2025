@@ -41,7 +41,7 @@ const handleCastErrorDB = (err) => {
 // }
 
 // =======================================
-// Handling MongoDB duplicate field errors
+// Handling MongoDB duplicate field ERROR
 // =======================================
 
 const handleDuplicationFieldsDB = (err) => {
@@ -57,7 +57,7 @@ const handleDuplicationFieldsDB = (err) => {
 };
 
 // =================================
-// Handling MongoDB Validation Error
+// Handling MongoDB Validation ERROR
 // =================================
 
 const handleValidationErrorDB = (err) => {
@@ -65,6 +65,20 @@ const handleValidationErrorDB = (err) => {
   const message = `Invalid input data: ${errors.join('. ')}`; // Join the messages together with .(dot)_(space)
   return new AppError(message, 400);
 };
+
+// =================================
+// Handling invalid JWT ERROR
+// =================================
+// BTW. ES6 arrow function - use an implicit return to simplify arrow function by removing the curly braces and the return keyword!
+// REASON: Curly braces + return are only needed if your function body has multiple statements.
+const handleJWTError = () =>
+  new AppError('Invalid token. Please log in again.', 401);
+
+// =================================
+// Handling expired JWT ERROR
+// =================================
+const handleJWTExpiredError = () =>
+  new AppError('Your token has expired. Please log in again.', 401);
 
 // =====================
 // DEVELOPMENT ERROR
@@ -137,6 +151,14 @@ module.exports = (err, req, res, next) => {
     // =============================================
     // Handling MongoDB Validation Error
     if (err.name === 'ValidationError') error = handleValidationErrorDB(err);
+    // =============================================
+    // Handling JWT errors
+    // =============================================
+    if (err.name === 'JsonWebTokenError') error = handleJWTError();
+    // =================================
+    // Handling invalid JWT ERROR
+    // =================================
+    if (err.name === 'TokenExpiredError') error = handleJWTExpiredError();
     // =============================================
     // To be continued!
 
