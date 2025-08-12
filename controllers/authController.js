@@ -1,5 +1,5 @@
 // const crypto = require('crypto'); // reset password
-const { promisify } = require('util');
+const { promisify } = require('util'); // destructure the object and use directly
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
@@ -93,13 +93,14 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    passwordChangedAt: req.body.passwordChangedAt,
     // role: req.body.role, // Optional for learning dev: It SHOULD NOT be in production!
   });
 
   // DEBUG:
-  // console.log(`User registered successfully:🧟: ${newUser.name}`);
-  // console.log(`Email:📧: ${newUser.email}`);
-  // console.log(`Password:📗: ${newUser.password}`);
+  console.log(`User registered successfully:🧟: ${newUser.name}`);
+  console.log(`Email:📧: ${newUser.email}`);
+  console.log(`Password:📗: ${newUser.password}`);
 
   // Newly created newUser is ready. send the token to the client!
   createSendToken(newUser, 201, res);
@@ -113,9 +114,9 @@ exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body; // reverse obj-destructuring with the same property(email) and variable(email) name - ES6
 
   // DEBUG:
-  // console.log('Login attempt for user:📧:', email);
-  // console.log('Logging in user HIT:❓:');
-  // console.log('Request body:🪪:✅:', req.body);
+  console.log('Login attempt for user:📧:', email);
+  console.log('Logging in user HIT:❓:');
+  console.log('Request body:🪪:✅:', req.body);
 
   // STEP: 1) Check if email & password exist
   if (!email || !password) {
@@ -176,13 +177,13 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  // 2) Verify token (promisify used here)
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  // 2) Verify token (promisify to make it return a promise to the function)
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET); // signature(JWT_SECRET) needed to verify the token
 
   // DEBUG:
   // console.log('decoded', decoded);
 
-  // 3) Check if user still exists
+  // 3) Check if user still exists and the id is inside the payload!
   const currentUser = await User.findById(decoded.id);
   // DEBUG:
   // console.log('Current User:🪪:', currentUser);
@@ -193,13 +194,14 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // 4) Check if user changed password after token was issued
-  //   if (currentUser.changedPasswordAfter(decoded.iat)) {
-  //     return next(
-  //       new AppError('User recently changed password! Please log in again.', 401),
-  //     );
-  //   }
+  currentUser.changedPasswordAfter(decoded.iat);
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError('User recently changed password! Please log in again.', 401),
+    );
+  }
 
-  // 5) Grant access
+  // 5) Grant access to PROTECTED ROUTE (tourRoutes)
   req.user = currentUser; // For route handlers
   res.locals.user = currentUser; // For views/templates
   next();
