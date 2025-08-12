@@ -1,5 +1,7 @@
 const express = require('express');
 
+const cookieParser = require('cookie-parser');
+
 const morgan = require('morgan');
 
 // const sanitizeQuery = require('./middleware/sanitizeQuery'); // clean query parameters in G scope
@@ -21,11 +23,15 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json());
+
+// Cookie parser — parses cookies from incoming requests into req.cookies
+app.use(cookieParser());
 // app.use(sanitizeQuery);
 app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  console.log(req.headers); // req. http header in express
   next();
 });
 
