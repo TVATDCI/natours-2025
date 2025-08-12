@@ -2965,4 +2965,20 @@ This approach makes `server.js` the single point of failure control for your app
 - **Graceful Shutdown** → Gives ongoing requests time to complete before exiting.
 - **Consistent Logging** → Same format for all fatal errors outside Express.
 
+---
+
+[Back to the top](#natours-2025)
+
+---
+
+### Authentication - Authorization - Security
+
+In modern web applications, securing user data and restricting access to resources are critical concerns. This section focuses on **Authentication, Authorization**, and related **Security** measures implemented in the application.
+
+- **Authentication** is the process of verifying the identity of users, typically through login credentials like email and password. Once verified, users receive a token (JWT) that proves their identity for subsequent requests.
+
+- **Authorization** controls what authenticated users are allowed to do. Based on roles or permissions, it restricts access to certain API routes or resources to ensure users can only perform actions they are permitted to.
+
+- **Security** involves protecting sensitive data, such as passwords and tokens, preventing unauthorized access, and mitigating risks like token theft or replay attacks. This includes using secure cookies, setting token expiration times, and handling token errors properly.
+
 [Back to the top](#natours-2025)
