@@ -53,17 +53,17 @@ const userSchema = new mongoose.Schema(
     },
 
     passwordChangedAt: Date,
-    // passwordResetToken: String,
-    // passwordResetExpires: Date,
-    // active: {
-    //   type: Boolean,
-    //   default: true,
-    //   select: false,
-    // },
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
+    },
   },
-  //   {
-  //     timestamps: true, // Automatically adds createdAt & updatedAt
-  //   },
+  {
+    timestamps: true, // Automatically adds createdAt & updatedAt
+  },
 );
 
 // ===============================
@@ -118,7 +118,6 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
       10,
     );
 
-    console.log(this.passwordChangedAt, JWTTimestamp);
     return JWTTimestamp < changedTimestamp;
   }
 
