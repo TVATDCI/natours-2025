@@ -85,14 +85,31 @@ userSchema.pre('save', async function (next) {
 
 // ===============================
 // Instance Methods
-// ===============================
-
+// ===========================================
 // Compare entered password to hashed password
+// ===========================================
 userSchema.methods.correctPassword = async function (
   candidatePassword, // plain text from user input into the body(.body)
   userPassword, // hashed from DB - line 79 - this.password = await bcrypt.hash(this.password, 12);
 ) {
   return await bcrypt.compare(candidatePassword, userPassword); // now both are being compared!
+};
+
+// =====================================================
+// Check if user changed password after token was issued
+// =====================================================
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    // Convert passwordChangedAt to seconds and compare
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10,
+    );
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  // False means password has NOT been changed after the token was issued
+  return false;
 };
 
 const User = mongoose.model('User', userSchema);
