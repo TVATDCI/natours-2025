@@ -93,7 +93,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    passwordChangedAt: req.body.passwordChangedAt,
+    // passwordChangedAt: req.body.passwordChangedAt,
     // role: req.body.role, // Optional for learning dev: It SHOULD NOT be in production!
   });
 
@@ -194,7 +194,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // 4) Check if user changed password after token was issued
-  currentUser.changedPasswordAfter(decoded.iat);
   if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
       new AppError('User recently changed password! Please log in again.', 401),
