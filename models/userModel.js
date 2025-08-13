@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ['user', 'guide', 'lead-guide', 'admin'],
+      enum: ['user', 'guide', 'lead-guide', 'admin'], // enum validator used to specify certain type of of role
       default: 'user',
     },
 
