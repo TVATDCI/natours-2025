@@ -16,7 +16,11 @@ router
   .get(tourController.aliasTopTours, tourController.getAllTours);
 
 router.route('/tour-stats').get(tourController.getTourStats);
-router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan); // add URL params to define the year
+router.route('/monthly-plan/:year').get(
+  authController.protect, // must logged in
+  authController.restrictTo('admin', 'lead-guide'),
+  tourController.getMonthlyPlan,
+); // add URL params to define the year
 
 router
   .route('/') // root(/api/v1/tours)
@@ -28,8 +32,8 @@ router
   .get(tourController.getTour) // Get a single tour by ID
   .patch(tourController.updateTour) // Update a specific tour
   .delete(
-    authController.protect,
-    authController.restrictTo('admin'),
+    authController.protect, // must logged in
+    authController.restrictTo('admin', 'lead-guide'), // admin or lead-guide only
     tourController.deleteTour,
   ); // Delete a specific tour
 
