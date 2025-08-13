@@ -130,10 +130,24 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
-// instance method (add after other methods)
+// =====================================================================================
+// Create password - Reset ans create plain token - Hash the token and send back to user
+// =====================================================================================
 userSchema.methods.createPasswordResetToken = function () {
   // 1) Create plain token (send to user via email)
   const resetToken = crypto.randomBytes(32).toString('hex');
+
+  // 2) Hash the token for DB storage (never store plain token)
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  // 3) Set expiry (10 minutes)
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  // 4) Return plain token so controller can email it
+  return resetToken;
 };
 
 const User = mongoose.model('User', userSchema);
