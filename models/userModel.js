@@ -69,7 +69,7 @@ const userSchema = new mongoose.Schema(
 // ===============================
 // Document Middleware
 // ==================================
-// Hashing new password before saving
+// 1) Hashing new password before saving
 // ==================================
 userSchema.pre('save', async function (next) {
   // Only run if password is actually modified
@@ -86,14 +86,18 @@ userSchema.pre('save', async function (next) {
 // =====================================
 // 2) Update passwordChangedAt timestamp
 // =====================================
-// Set passwordChangedAt if password was actually modified and user is not new
-// userSchema.pre('save', function (next) {
-//   if (!this.isModified('password') || this.isNew) return next();
+// This runs only before saving a user document
+userSchema.pre('save', function (next) {
+  // If password field has NOT been modified, OR this is a new document, skip
+  if (!this.isModified('password') || this.isNew) return next();
 
-//   // Subtract 1 second to avoid token issue being before this timestamp
-//   this.passwordChangedAt = Date.now() - 1000;
-//   next();
-// });
+  // Set the passwordChangedAt property to current time (minus 1 second)
+  // Why minus 1 second? To ensure the JWT issued *after* signup
+  // is always valid (avoids rare token issue if save() finishes slightly later)
+  this.passwordChangedAt = Date.now() - 1000;
+
+  next();
+});
 
 // ===============================
 // Instance Methods
