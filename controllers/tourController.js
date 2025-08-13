@@ -236,7 +236,7 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
     },
     {
       $group: {
-        id: { $month: '$startDates' }, // Group by month number (1–12)
+        _id: { $month: '$startDates' }, // Group by month number (1–12)
         numTourStarts: { $sum: 1 }, // Count how many tours start in that month
         tours: { $push: '$name' }, // Push tour names into an 'array'
       },
