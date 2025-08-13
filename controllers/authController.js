@@ -209,11 +209,15 @@ exports.protect = catchAsync(async (req, res, next) => {
 // ===============================
 // #: Restrict access by role (...roles)
 // ===============================
-// NOTE: Argument is NOT allowed in middleware function
-// SOLUTION: Use spread operator to destructure as wrapper function and return only the middleware function, in this case .restrictTo
-exports.restrictTo = (...roles) => {
-  return (req, res, next) => {
-    // roles = ['admin', 'lead-guide'] etc.
+// NOTE: Argument is NOT allowed directly in middleware function
+// In this case, 'restrictTo' must accept arguments (like 'admin' or 'guide')
+// before the middleware actually runs.
+// SOLUTION: Use spread operator in a wrapper function that returns the real middleware.
+// ES6: Uses an implicit return (no curly braces or 'return' keyword) when the function body is a single expression.
+// REASON: Curly braces + return are only needed if your function body has multiple statements.
+exports.restrictTo =
+  (...roles) =>
+  (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
         new AppError('You do not have permission to perform this action', 403), // 403 = Forbidden
@@ -221,4 +225,3 @@ exports.restrictTo = (...roles) => {
     }
     next();
   };
-};
