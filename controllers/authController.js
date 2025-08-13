@@ -281,29 +281,32 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 // ===============================
 // #: RESET PASSWORD
 // ===============================
-// exports.resetPassword = catchAsync(async (req, res, next) => {
-//   // 1) Hash token from the URL
-//   const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  // 1) Hash token from the URL
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
 
-//   // 2) Find user with matching token & non-expired
-//   const user = await User.findOne({
-//     passwordResetToken: hashedToken,
-//     passwordResetExpires: { $gt: Date.now() },
-//   });
+  // 2) Find user with matching token & non-expired
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
 
-//   if (!user) return next(new AppError('Token is invalid or has expired', 400));
+  if (!user) return next(new AppError('Token is invalid or has expired', 400));
 
-//   // 3) Set the new password
-//   user.password = req.body.password;
-//   user.passwordConfirm = req.body.passwordConfirm;
+  // 3) Set the new password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
 
-//   // 4) Clear reset token fields
-//   user.passwordResetToken = undefined;
-//   user.passwordResetExpires = undefined;
+  // 4) Clear reset token fields
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
 
-//   // 5) Save — triggers hashing + passwordChangedAt
-//   await user.save();
+  // 5) Save — triggers hashing + passwordChangedAt
+  await user.save();
 
-//   // 6) Log the user in with a fresh JWT
-//   createSendToken(user, 200, res);
-// });
+  // 6) Log the user in with a fresh JWT
+  createSendToken(user, 200, res);
+});
