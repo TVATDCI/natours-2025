@@ -131,7 +131,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 };
 
 // =====================================================================================
-// Create password - Reset ans create plain token - Hash the token and send back to user
+// Create NEW Password - Reset ans create plain token - Hash the token and send back to user
 // =====================================================================================
 userSchema.methods.createPasswordResetToken = function () {
   // 1) Create plain token (send to user via email)
