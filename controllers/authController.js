@@ -206,6 +206,10 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+// Logged in user & admin or lead-guide made it to this point
+// authController.protect, // must logged in
+// authController.restrictTo('admin', 'lead-guide'), // admin or lead-guide only
+
 // ===============================
 // #: Restrict access by role (...roles)
 // ===============================
@@ -218,6 +222,8 @@ exports.protect = catchAsync(async (req, res, next) => {
 exports.restrictTo =
   (...roles) =>
   (req, res, next) => {
+    // the middleware is here - req.user = currentUser made it here.
+    // restrictedTo roles ['admin', lead-guide]. if role='user' is NOT in th roles arr? Then it's user last stop!
     if (!roles.includes(req.user.role)) {
       return next(
         new AppError('You do not have permission to perform this action', 403), // 403 = Forbidden
