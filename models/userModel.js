@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 
@@ -127,6 +128,12 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 
   // False means password has NOT been changed after the token was issued
   return false;
+};
+
+// instance method (add after other methods)
+userSchema.methods.createPasswordResetToken = function () {
+  // 1) Create plain token (send to user via email)
+  const resetToken = crypto.randomBytes(32).toString('hex');
 };
 
 const User = mongoose.model('User', userSchema);
