@@ -201,7 +201,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // 5) Grant access to PROTECTED ROUTE (tourRoutes)
-  req.user = currentUser; // For route handlers
+  req.user = currentUser; // For route handlers - It will be checked in restrictedTo !
   res.locals.user = currentUser; // For views/templates
   next();
 });
@@ -211,7 +211,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 // authController.restrictTo('admin', 'lead-guide'), // admin or lead-guide only
 
 // ===============================
-// #: Restrict access by role (...roles)
+// #: RESTRICT access by role (...roles)
 // ===============================
 // NOTE: Argument is NOT allowed directly in middleware function
 // In this case, 'restrictTo' must accept arguments (like 'admin' or 'guide')
@@ -231,3 +231,52 @@ exports.restrictTo =
     }
     next();
   };
+
+// ===============================
+// #: FORGET PASSWORD
+// ===============================
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  // 1) Get user by email
+  const user = await User.findOne({ email: req.body.email });
+  if (!user)
+    return next(new AppError('There is no user with that email address.', 404));
+
+  // 2) Generate reset token and save hashed values to DB
+  const resetToken = user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false }); // we’re not changing password yet
+
+  // 3) Build reset URL (what you'd email)
+  const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+
+  // 4) Send email (DEV: return token/URL in response instead of sending email)
+  try {
+    // TODO: replace with real email util
+    // await sendEmail({ email: user.email, subject: 'Your password reset token (valid 10 min)', message: `Reset here: ${resetURL}` });
+
+    // DEV-ONLY: expose resetURL so you can test in Postman
+    res.status(200).json({
+      status: 'success',
+      message: 'Token generated (DEV: see resetURL).',
+      resetURL, // <— remove in production
+      resetTokenPlain: resetToken, // <— remove in production
+    });
+  } catch (err) {
+    // If email fails, clean fields
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return next(
+      new AppError(
+        'There was an error sending the email. Try again later!',
+        500,
+      ),
+    );
+  }
+});
+
+// ===============================
+// #: RESET PASSWORD
+// ===============================
+//   exports.resetPassword = (req, res, next) => {}
