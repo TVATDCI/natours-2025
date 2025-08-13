@@ -1,4 +1,4 @@
-// const crypto = require('crypto'); // reset password
+const crypto = require('crypto'); // reset password
 const { promisify } = require('util'); // destructure the object and use directly
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
@@ -242,19 +242,19 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   if (!user)
     return next(new AppError('There is no user with that email address.', 404));
 
-  // 2) Generate reset token and save hashed values to DB
+  // 2) Generate reset token and save hashed values to DB (in userModel/instance method)
   const resetToken = user.createPasswordResetToken();
-  await user.save({ validateBeforeSave: false }); // we’re not changing password yet
+  await user.save({ validateBeforeSave: false }); // The password is not being changed yet
 
-  // 3) Build reset URL (what you'd email)
+  // 3) Build reset URL
   const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
 
   // 4) Send email (DEV: return token/URL in response instead of sending email)
   try {
     // TODO: replace with real email util
-    // await sendEmail({ email: user.email, subject: 'Your password reset token (valid 10 min)', message: `Reset here: ${resetURL}` });
+    // await sendEmail({ email: user.email, subject: 'password reset token (valid 10 min)', message: `Reset here: ${resetURL}` });
 
-    // DEV-ONLY: expose resetURL so you can test in Postman
+    // DEV-ONLY: expose resetURL test in Postman
     res.status(200).json({
       status: 'success',
       message: 'Token generated (DEV: see resetURL).',
@@ -276,7 +276,34 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
+// NOTE:
+
 // ===============================
 // #: RESET PASSWORD
 // ===============================
-//   exports.resetPassword = (req, res, next) => {}
+// exports.resetPassword = catchAsync(async (req, res, next) => {
+//   // 1) Hash token from the URL
+//   const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+//   // 2) Find user with matching token & non-expired
+//   const user = await User.findOne({
+//     passwordResetToken: hashedToken,
+//     passwordResetExpires: { $gt: Date.now() },
+//   });
+
+//   if (!user) return next(new AppError('Token is invalid or has expired', 400));
+
+//   // 3) Set the new password
+//   user.password = req.body.password;
+//   user.passwordConfirm = req.body.passwordConfirm;
+
+//   // 4) Clear reset token fields
+//   user.passwordResetToken = undefined;
+//   user.passwordResetExpires = undefined;
+
+//   // 5) Save — triggers hashing + passwordChangedAt
+//   await user.save();
+
+//   // 6) Log the user in with a fresh JWT
+//   createSendToken(user, 200, res);
+// });
