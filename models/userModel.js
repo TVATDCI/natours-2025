@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+const crypto = require('crypto'); // built-in node_model
 const mongoose = require('mongoose');
 const validator = require('validator');
 
@@ -134,14 +134,18 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 // Create NEW Password - Reset ans create plain token - Hash the token and send back to user
 // =====================================================================================
 userSchema.methods.createPasswordResetToken = function () {
-  // 1) Create plain token (send to user via email)
+  // 1) Create PLAIN token (send to user via email)
   const resetToken = crypto.randomBytes(32).toString('hex');
 
+  // ENCRYPTING flow - use crypto to encrypt, then use ('sha256) to createHash, update the resetToken and store it back to ('hex)
   // 2) Hash the token for DB storage (never store plain token)
   this.passwordResetToken = crypto
     .createHash('sha256')
     .update(resetToken)
     .digest('hex');
+
+  // check the object resetToken before sending back to the process!
+  console.log({ resetToken }, this.passwordResetToken);
 
   // 3) Set expiry (10 minutes)
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
