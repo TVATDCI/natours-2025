@@ -305,7 +305,8 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   if (!user) return next(new AppError('Token is invalid or has expired', 400));
 
-  // 3) Set the new password
+  // NOTE: If the matching user found in the database
+  // 3) 📗 Set the new password and confirm it!
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
 
@@ -313,7 +314,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
 
-  // 5) Save — triggers hashing + passwordChangedAt
+  // 5) Save — triggers mongoose pre-save hooks hashing + passwordChangedAt
   await user.save();
 
   // 6) Log the user in with a fresh JWT
