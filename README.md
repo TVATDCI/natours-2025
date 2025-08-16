@@ -2981,4 +2981,74 @@ In modern web applications, securing user data and restricting access to resourc
 
 - **Security** involves protecting sensitive data, such as passwords and tokens, preventing unauthorized access, and mitigating risks like token theft or replay attacks. This includes using secure cookies, setting token expiration times, and handling token errors properly.
 
+---
+
+## Many are missing here
+
+---
+
+## ####Password Reset & Authentication Lifecycle
+
+#### 1) When the user clicks "Forgot Password"
+
+- `createPasswordResetToken()` is called on the user document.
+- This method:
+  - Generates a plain reset token (`resetToken` → random hex string) → this will be in email to the user. but it will be ..
+  - Created as a hashed version of that token using SHA-256 and stores it in `passwordResetToken` in the DB.
+  - THEN: Sets `passwordResetExpires` to 10 minutes in the future.
+  - Returns the `plain token` to the controller (so it can be sent via email).
+
+NOTE: 📌 Why hash before storing?
+**If someone hacked your DB, they wouldn’t be able to use the plain reset token — they’d only see the hashed one**
+
+---
+
+#### 2) When user receives email and sends a PATCH to `/resetPassword/:token`
+
+- The URL contains the plain token from the email.
+  Example: `/api/v1/users/resetPassword/4f9ad7e63fe...`
+
+---
+
+#### 3) The resetPassword controller runs
+
+1. It hashes the incoming token from the URL exactly the same step 1:
+
+```js
+const hashedToken = crypto
+  .createHash('sha256')
+  .update(req.params.token)
+  .digest('hex');
+```
+
+2. It looks up a user in MongoDB where:
+   - `passwordResetToken` matches this hashed token
+   - `passwordResetExpires` is still in the future
+
+3. If no user found → token invalid or expired → throw error.
+
+---
+
+#### 4) Setting the new password
+
+If a matching user is found:
+
+- Assign `req.body.password` and `req.body.passwordConfirm` to the user doc.
+- Clear out `passwordResetToken` and `passwordResetExpires` so they can’t be reused.
+- Call `user.save()`:
+  - This triggers mongoose pre-save hooks:
+    - Hashes the new password
+    - Updates `passwordChangedAt`
+
+- User document in DB now contains **the new hashed password.**
+
+---
+
+#### 5) Logging in the user
+
+- A fresh JWT is created and sent back (via createSendToken).
+- Now the user is authenticated with the new password.
+
+---
+
 [Back to the top](#natours-2025)
