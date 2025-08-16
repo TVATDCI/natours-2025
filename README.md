@@ -83,7 +83,7 @@ I value this project as a deep dive into building a **real-world, production-rea
 26. [Authentication - Authorization - Security](#authentication---authorization---security)
     - [Many are missing here](#many-are-missing-here)
     - [Document Middleware](#document-middleware)
-    - [Many are missing here](#many-are-missing-here)
+    - [Password Reset & Authentication Lifecycle](#password-reset--authentication-lifecycle)
 
 ---
 
