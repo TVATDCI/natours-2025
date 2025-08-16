@@ -2987,9 +2987,89 @@ In modern web applications, securing user data and restricting access to resourc
 
 ---
 
-## ####Password Reset & Authentication Lifecycle
+#### Document Middleware
 
-#### 1) When the user clicks "Forgot Password"
+##### 1) Last stop before the new password is saved to MongoDB
+
+What happens inside Mongoose pre-save middleware in `userModel.js`:
+
+```js
+userSchema.pre('save', async function (next) {
+  // Only run if password was modified
+  if (!this.isModified('password')) return next();
+
+  // Hash the password
+  this.password = await bcrypt.hash(this.password, 12);
+
+  // Remove passwordConfirm field (not persisted)
+  this.passwordConfirm = undefined;
+
+  next();
+});
+
+// =====================================
+// 2) Update passwordChangedAt timestamp
+// =====================================
+// This runs only before saving a user document
+userSchema.pre('save', function (next) {
+  // If password field has NOT been modified, OR this is a new document, skip
+  if (!this.isModified('password') || this.isNew) return next();
+
+  // Set the passwordChangedAt property to current time (minus 1 second)
+  // Why minus 1 second? To ensure the JWT issued *after* signup
+  // is always valid (avoids rare token issue if save() finishes slightly later)
+  this.passwordChangedAt = Date.now() - 1000;
+
+  next();
+});
+
+// ===============================
+// Instance Methods
+// ===========================================
+```
+
+That `Date.now() - 1000` line ensures that **passwordChangedAt** is slightly before the JWT issuance time (avoiding race conditions).
+
+So this is the **“final pit stop”** before the new hashed password and updated passwordChangedAt get persisted to MongoDB.
+
+---
+
+##### Checking if the password was changed after JWT was issued
+
+Later, when the user makes a request with their JWT, you might call:
+
+```js
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10,
+    );
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  // False means NOT changed
+  return false;
+};
+```
+
+Here’s what’s happening:
+
+- This method **does not save anything** — it’s only a check.
+- It’s used during authentication to **invalidate old tokens** issued before the password change.
+- If the JWT’s timestamp is older than passwordChangedAt → **force re-login**.
+
+---
+
+---
+
+#### Notes
+
+- Step 1 and Step 2 are **controller-level** actions (business logic).
+- Step 3 and Step 4 happen **automatically** because of Mongoose hooks.
+- Step 6 is purely a **validation** — no DB writes.
+
+##### 1) When the user clicks "Forgot Password"
 
 - `createPasswordResetToken()` is called on the user document.
 - This method:
@@ -3003,14 +3083,14 @@ NOTE: 📌 Why hash before storing?
 
 ---
 
-#### 2) When user receives email and sends a PATCH to `/resetPassword/:token`
+##### 2) When user receives email and sends a PATCH to `/resetPassword/:token`
 
 - The URL contains the plain token from the email.
   Example: `/api/v1/users/resetPassword/4f9ad7e63fe...`
 
 ---
 
-#### 3) The resetPassword controller runs
+##### 3) The resetPassword controller runs
 
 1. It hashes the incoming token from the URL exactly the same step 1:
 
@@ -3029,7 +3109,7 @@ const hashedToken = crypto
 
 ---
 
-#### 4) Setting the new password
+##### 4) Setting the new password
 
 If a matching user is found:
 
@@ -3044,7 +3124,7 @@ If a matching user is found:
 
 ---
 
-#### 5) Logging in the user
+##### 5) Logging in the user
 
 - A fresh JWT is created and sent back (via createSendToken).
 - Now the user is authenticated with the new password.
