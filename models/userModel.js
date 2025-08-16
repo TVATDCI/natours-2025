@@ -135,7 +135,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 // =====================================================================================
 userSchema.methods.createPasswordResetToken = function () {
   // 1) Create PLAIN token (send to user via email)
-  const resetToken = crypto.randomBytes(32).toString('hex'); // randomBytes will create 32 char "Plain token" save in ('hex')
+  const resetToken = crypto.randomBytes(32).toString('hex'); // randomBytes will create 32 char "Plain token" save in ('hex)
 
   // ENCRYPTING flow - use crypto to encrypt, then use ('sha256) to createHash, update the resetToken and store it back to ('hex)
   // 2) Hash the token for DB storage (never store plain token)
