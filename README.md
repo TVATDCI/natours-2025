@@ -3061,9 +3061,21 @@ Here’s what’s happening:
 
 ---
 
+#### Password Reset & Authentication Lifecycle
+
+| Step | Location in Code                                                                 | What Happens                                                                                                                                                                  | Saves to DB?                         |
+| ---- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| 1    | **User requests forgotPassword** (`authController.forgotPassword`)               | Creates a **plain resetToken**, hashes it with SHA-256, stores hash in `passwordResetToken`, sets `passwordResetExpires` (+10 min), returns plain token via email.            | ✅ Yes — saves hashed token + expiry |
+| 2    | **User clicks email link & sends new password** (`authController.resetPassword`) | Hashes token from URL, finds matching user with valid expiry, sets `password` and `passwordConfirm`, clears `passwordResetToken` + `passwordResetExpires`.                    | ✅ Yes — on `.save()`                |
+| 3    | **pre('save') middleware (hashing)** (`userModel.js`)                            | If password was modified → hash new password with bcrypt, remove `passwordConfirm` field (not stored in DB).                                                                  | ✅ Yes — hashed password saved       |
+| 4    | **pre('save') middleware (timestamp)** (`userModel.js`)                          | If password was modified and user is not new → set `passwordChangedAt = Date.now() - 1000` to avoid JWT timing issues.                                                        | ✅ Yes — saves timestamp             |
+| 5    | **JWT issued** (`createSendToken`)                                               | After successful save, new JWT is signed with current time as `iat` (issued at).                                                                                              | ❌ No — JWT is sent to client        |
+| 6    | **JWT validation** (`protect` middleware)                                        | When a request comes in, `changedPasswordAfter(JWTTimestamp)` checks if `passwordChangedAt` is after token `iat`. If yes → reject request (password was changed after login). | ❌ No — just a check                 |
+| 7    | **User continues authenticated session**                                         | If no password change detected, JWT remains valid until expiry.                                                                                                               | ❌ No                                |
+
 ---
 
-#### Notes
+### Notes
 
 - Step 1 and Step 2 are **controller-level** actions (business logic).
 - Step 3 and Step 4 happen **automatically** because of Mongoose hooks.
