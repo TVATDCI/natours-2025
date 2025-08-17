@@ -65,6 +65,18 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 // ===============================
+// #: DELETE (DEACTIVATE) CURRENT USER
+// ===============================
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
+// ===============================
 // #: GET A SINGLE USER BY ID
 // ===============================
 // GET /api/v1/users/:id
