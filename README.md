@@ -84,6 +84,8 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Many are missing here](#many-are-missing-here)
     - [Document Middleware](#document-middleware)
     - [Password Reset & Authentication Lifecycle](#password-reset--authentication-lifecycle)
+    - [Update Current User Password](#update-current-user-password)
+    - [save() VS findByIdAndUpdate](#save-vs-findbyidandupdate)
 
 ---
 
