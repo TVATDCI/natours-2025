@@ -56,6 +56,7 @@ const userSchema = new mongoose.Schema(
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+    // ...existing fields...
     active: {
       type: Boolean,
       default: true,
