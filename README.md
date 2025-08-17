@@ -3148,3 +3148,90 @@ If a matching user is found:
 ---
 
 [Back to the top](#natours-2025)
+
+---
+
+#### Multi-role or role stacking
+
+---
+
+In the current Natours setup, it uses a simple **single-role model:**
+
+```js
+role: {
+  type: String,
+  enum: ['user', 'guide', 'lead-guide', 'admin'],
+  default: 'user'
+}
+```
+
+It means **one user can only have one role at a time** — stored as a single string. So in this system, one can’t literally be "admin" and "lead-guide" at once unless the `userSchema` is changed!
+
+**Optional**
+Change `role` to an **array** of strings:
+
+```js
+roles: {
+  type: [String],
+  enum: ['user', 'guide', 'lead-guide', 'admin'],
+  default: ['user']
+}
+```
+
+Now **multi-role** could be stored
+
+```js
+roles: ['admin', 'lead-guide'];
+```
+
+// HOWEVER, any place the currently checks role
+
+```js
+// FROM
+if (req.user.role !== 'admin')
+
+// TO
+if (!req.user.roles.includes('admin'))
+
+```
+
+Also in `restrictTo` middleware would need to handle arrays:
+
+```js
+// FROM
+exports.restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have permission to perform this action', 403), // 403 = Forbidden
+      );
+    }
+    next();
+  };
+
+// ---------------------------------------------------------------------------
+
+// TO
+exports.restrictTo = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!allowedRoles.some((role) => req.user.roles.includes(role))) {
+      return next(
+        new AppError('You do not have permission to perform this action', 403),
+      );
+    }
+    next();
+  };
+};
+```
+
+**It could cause complications**
+Info: [Role-Based Access Control](https://medium.com/@eshikashah2001/exploring-role-based-access-control-rbac-32843370e604) (RBAC) in depth.
+
+---
+
+[Back to the top](#natours-2025)
+
+```
+
+```
