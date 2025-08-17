@@ -3151,7 +3151,48 @@ If a matching user is found:
 
 ---
 
-#### Multi-role or role stacking
+#### Update Current User Password
+
+---
+
+##### Update Current User Password (when logged in)
+
+**Concept**
+
+1. **User is logged-in** → is already authenticated (`req.user.id`) in protect middleware.
+2. The user must provide their current password in the request body → to prove it’s them.
+3. The user also send a new `password` and `passwordConfirm`.
+
+**STEPS**
+
+- Check current password against the DB (`user.correctPassword`).
+- If it’s valid → update the password fields.
+- Save user (`.save()` NOT `.findByIdAndUpdate`, so pre - save middleware runs).
+- Log them in again (send new JWT).
+
+```js
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // 1) Get current user from collection and ask for the password from protect middleware
+  const user = await User.findById(req.user.id).select('+password');
+
+  // 2) Check if POSTed current password is correct from `userSchema.methods.correctPassword`
+  if (!(await user.correctPassword(req.body.currentPassword, user.password))) {
+    return next(new AppError('Your current password is wrong.', 401));
+  }
+
+  // 3) If so, update password like in step 3 in resetPassword
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save(); // Use save(),runs the pre-save password hashing. NOT findByIdAndUpdate!
+
+  // 4) Log user in, send JWT
+  createSendToken(user, 200, res);
+});
+```
+
+---
+
+#### Multi-role or role stacking - OPTIONAL
 
 ---
 
