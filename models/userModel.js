@@ -93,8 +93,8 @@ userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next();
 
   // Set the passwordChangedAt property to current time (minus 1 second)
-  // Why minus 1 second? To ensure the JWT issued *after* signup
-  // is always valid (avoids rare token issue if save() finishes slightly later)
+  // NOTE: To ensure the JWT issued *after* signup is always valid (avoids rare token issue if save() finishes slightly later)
+  // SOLUTION: set the time stamp to minus 1 second(1000ms)?
   this.passwordChangedAt = Date.now() - 1000;
 
   next();
