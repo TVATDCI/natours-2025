@@ -27,6 +27,8 @@ router.patch(
 
 // route for update user DATA
 router.patch('/updateMe', authController.protect, userController.updateMe);
+// deleteMe - DEACTIVATE
+router.delete('/deleteMe', authController.protect, userController.deleteMe);
 
 // ===============================
 // # USER - controller - ROUTES
