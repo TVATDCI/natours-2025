@@ -3196,6 +3196,8 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
 #### save() VS findByIdAndUpdate
 
+---
+
 - `user.save()` → does trigger pre-save middleware hooks in the schema.
 - `User.findByIdAndUpdate(...)` → does not trigger `pre('save')` hooks, because no `.save()` actually happens — MongoDB is updated directly.
 
