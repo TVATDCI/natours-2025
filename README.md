@@ -3192,6 +3192,39 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
 ---
 
+#### save() VS findByIdAndUpdate
+
+- `user.save()` → does trigger pre-save middleware hooks in the schema.
+- `User.findByIdAndUpdate(...)` → does not trigger `pre('save')` hooks, because no `.save()` actually happens — MongoDB is updated directly.
+
+In `userModel.js` pre-save middleware
+
+```js
+userSchema.pre('save', async function (next) {
+  // Only run if password was modified
+  if (!this.isModified('password')) return next();
+
+  this.password = await bcrypt.hash(this.password, 12);
+  this.passwordConfirm = undefined;
+  next();
+});
+```
+
+What will happen IF `User.findByIdAndUpdate(...)` is called instead of `await user.save()`
+
+```js
+await User.findByIdAndUpdate(req.user.id, {
+  password: req.body.password,
+  passwordConfirm: req.body.passwordConfirm,
+});
+```
+
+It would update the DB directly. **Password would be saved in plain text**, because the hashing middleware never ran!
+
+**“Use `save()`, NOT `findByIdAndUpdate` — otherwise pre-save hooks will not run!”**
+
+---
+
 #### Multi-role or role stacking - OPTIONAL
 
 ---
