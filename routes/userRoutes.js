@@ -9,7 +9,7 @@ const userController = require('../controllers/userController');
 const router = express.Router();
 
 // ===============================
-// # AUTH ROUTES
+// # AUTH - controller ROUTES
 // ===============================
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
@@ -18,8 +18,15 @@ router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
+// route for password updates must be protected. So only current logged-in users can use it:
+router.patch(
+  '/updateMyPassword',
+  authController.protect,
+  authController.updatePassword,
+);
+
 // ===============================
-// # USER ROUTES
+// # USER - controller - ROUTES
 // ===============================
 router
   .route('/')
