@@ -101,6 +101,16 @@ userSchema.pre('save', function (next) {
   next();
 });
 
+// ============================================
+// Query middleware: filter out inactive users
+// ============================================
+// To this point the inactive user (active: false)
+userSchema.pre(/^find/, function (next) {
+  // "this" points to current query
+  this.find({ active: { $ne: false } }); //  Find & show any user that has active status set not equal($ne) to false!
+  next();
+});
+
 // ===============================
 // Instance Methods
 // ===========================================
