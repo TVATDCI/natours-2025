@@ -46,9 +46,11 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   // 2) Filter out unwanted fields that are not allowed to be updated
   const filteredBody = filterObj(req.body, 'name', 'email');
 
-  // TODO: add 'photo' later if you implement uploads
+  // TODO: add 'photo' later if upload is implemented...
 
   // 3) Update user document
+  // NOTE: Nw findByIdAndUpdate is used here (not save())
+  // Because updating user name, email has nothing to do with password hashing logic.
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true, // return updated document
     runValidators: true, // run schema validators
