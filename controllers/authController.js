@@ -52,7 +52,7 @@ const createSendToken = (user, statusCode, res) => {
       // Convert days to milliseconds, e.g. 90 days * 24h * 60m * 60s * 1000ms
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
-    httpOnly: true, // Prevents JS from reading the cookie in the browser → XSS protection
+    httpOnly: true, // Prevents JS from reading the cookie in the browser → XSS PROTECTION
     // Only send cookie over HTTPS in production (for security)
     // ...(process.env.NODE_ENV === 'production' && { secure: true }),
     // concise way to conditionally add properties inline without creating the object first
@@ -66,13 +66,13 @@ const createSendToken = (user, statusCode, res) => {
   // Then if statement modifies the object after it's created by adding a new property.
   // Putting the if statement outside allows it to conditionally add properties without cluttering the object literal.
   // It makes it very clear what properties are always present vs which are conditionally added.
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // it secure will be false in development!
 
   // 3) Send JWT to the browser as an HTTP cookie
   // This allows automatic sending of token with every request (good for web apps, not mobile APIs)
   res.cookie('jwt', token, cookieOptions);
 
-  // 4) Remove the password field before sending the user back to the client
+  // 4) Remove the password from the output field before sending back to the client
   // NOTE: Never leak password hashes (even if hashed, it’s sensitive info)
   user.password = undefined;
 
@@ -85,7 +85,7 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 // ===============================
-// #: SIGN UP
+// #: SIGN UP - CREATE NEW DOCUMENT!
 // ===============================
 exports.signup = catchAsync(async (req, res, next) => {
   // const newUser = await User.create(req.body) // removed for a new implement below for a security reason!
@@ -94,6 +94,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
+    // select: false (userSchema) doesn’t apply on newly created docs, only on queries.
+    // To avoid password output in postman(any where else) set "user.password = undefined;" in createSendToken to avoid
     passwordConfirm: req.body.passwordConfirm,
     // passwordChangedAt: req.body.passwordChangedAt,
     // role: req.body.role, // Optional for learning dev: It SHOULD NOT be in production!
