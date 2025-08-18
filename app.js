@@ -24,7 +24,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // ==== Limit 100 requests from the same IP in 1 Hour ====
-
 const limiter = rateLimit({
   max: 100, // max number of requests depends on project perspective
   windowMs: 60 * 60 * 1000, // 1 hour window
