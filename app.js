@@ -1,8 +1,8 @@
 const express = require('express');
-
 const cookieParser = require('cookie-parser');
 
 const morgan = require('morgan');
+const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 // const sanitizeQuery = require('./middleware/sanitizeQuery'); // clean query parameters in G scope
@@ -18,31 +18,43 @@ const app = express();
 // ======================================
 // #: GLOBAL MIDDLEWARES
 // ======================================
-// console.log('NODE_ENV:', process.env.NODE_ENV); // DEBUG: Check, which ENV it's running on!
+
+// Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// ==== Limit 100 requests from the same IP in 1 Hour ====
+// Security: Set secure HTTP headers
+app.use(helmet());
+
+// Rate limiting: Limit 100 requests per IP / hour (applies to /api)
 const limiter = rateLimit({
-  max: 100, // max number of requests depends on project perspective
-  windowMs: 60 * 60 * 1000, // 1 hour window
+  max: 100,
+  windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour!',
 });
-
-// NOTE: Apply to all routes starting with /api
 app.use('/api', limiter);
 
-app.use(express.json());
+// ======================================
+// #: UTILITY MIDDLEWARES
+// ======================================
 
-// Cookie parser — parses cookies from incoming requests into req.cookies
+// Body parser, reading data from body (limit payload to 10kb) to req.body
+app.use(express.json({ limit: '10kb' }));
+
+// Cookie parser: parses cookies into req.cookies
 app.use(cookieParser());
+
+// (Optional) Query sanitization
 // app.use(sanitizeQuery);
+
+// Serving static files
 app.use(express.static(`${__dirname}/public`));
 
+// Add request timestamp for debugging
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log(req.headers); // req. http header in express
+  console.log(req.headers); // DEBUG: log request headers
   next();
 });
 
