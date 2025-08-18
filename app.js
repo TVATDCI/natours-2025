@@ -3,6 +3,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 
 // const sanitizeQuery = require('./middleware/sanitizeQuery'); // clean query parameters in G scope
 
@@ -15,7 +16,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const app = express();
 
 // ======================================
-// #: MIDDLEWARES
+// #: 1) GLOBAL MIDDLEWARES
 // ======================================
 // console.log('NODE_ENV:', process.env.NODE_ENV); // DEBUG: Check, which ENV it's running on!
 if (process.env.NODE_ENV === 'development') {
