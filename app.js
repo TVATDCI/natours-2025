@@ -16,12 +16,23 @@ const globalErrorHandler = require('./controllers/errorController');
 const app = express();
 
 // ======================================
-// #: 1) GLOBAL MIDDLEWARES
+// #: GLOBAL MIDDLEWARES
 // ======================================
 // console.log('NODE_ENV:', process.env.NODE_ENV); // DEBUG: Check, which ENV it's running on!
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// ==== Limit 100 requests from the same IP in 1 Hour ====
+
+const limiter = rateLimit({
+  max: 100, // max number of requests depends on project perspective
+  windowMs: 60 * 60 * 1000, // 1 hour window
+  message: 'Too many requests from this IP, please try again in an hour!',
+});
+
+// NOTE: Apply to all routes starting with /api
+app.use('/api', limiter);
 
 app.use(express.json());
 
