@@ -38,7 +38,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide a password'],
       minlength: 8, // password should have a 8 char
-      select: false, // Never send back password in queries
+      select: false, // Never send back password in queries.
+      // NOTE: select: false (userSchema) doesn’t apply on newly created docs, only on queries!
+      // SOLUTION: user.password = undefined; in createSendToken during sending the cookies process!
     },
 
     passwordConfirm: {
