@@ -130,6 +130,14 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // STEP: 2) Check if user exists & password is correct
+  // Incorrect: "const user = await User.findOne({ email: req.body.email, password: req.body.password });"
+  // If anyone passed "NoSQL injection" { "email": { "$gt": "" }, "password": "pass1234" }
+  // MongoDB would treat it as a condition (email > "") and return any user, bypassing login.
+
+  // SOLUTION:   const user = await User.findOne({ email }).select('+password');
+  // email is just a string from req.body.email.Mongoose doesn’t allow query operators like $gt inside plain string fields,
+  // so { "$gt": "" } just gets treated as "object" (not a valid email).
+  // ==================================================================
   // NOTE: The output "(User.findOne({ email })" SHOULD NOT contain the password!
   // However, password is explicitly selected (.select('+password');)here.
   // Because it's excluded by default in the schema, but is needed for bcrypt comparison for verification!
