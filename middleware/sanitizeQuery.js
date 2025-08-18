@@ -1,4 +1,37 @@
-// query-sanitization
+module.exports = (req, res, next) => {
+  const allowed = ['sort', 'page', 'limit', 'fields', 'difficulty', 'order'];
+
+  Object.entries(req.query).forEach(([key, value]) => {
+    if (!allowed.includes(key)) {
+      delete req.query[key]; // drop unknown params
+      return;
+    }
+
+    if (typeof value === 'string') {
+      let cleaned = value.trim();
+
+      // lowercase normalization
+      if (['difficulty', 'sort', 'order'].includes(key)) {
+        cleaned = cleaned.toLowerCase();
+      }
+
+      // number conversion for numeric fields
+      if (['page', 'limit'].includes(key)) {
+        const num = Number(cleaned);
+        if (!Number.isNaN(num) && cleaned !== '') {
+          cleaned = num;
+        }
+      }
+
+      // strip potentially harmful characters
+      cleaned = cleaned.replace(/[$<>]/g, '');
+
+      req.query[key] = cleaned;
+    }
+  });
+
+  next();
+};
 
 // module.exports = (req, res, next) => {
 //   Object.entries(req.query).forEach(([key, value]) => {
