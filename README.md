@@ -3311,6 +3311,47 @@ Info: [Role-Based Access Control](https://medium.com/@eshikashah2001/exploring-r
 
 ---
 
+### More about Rate Limiting, Setting Security HTTP Headers, Data Sanitization and Preventing Parameter Pollution.
+
+#### To be continued!
+
+---
+
+### Modelling Data and Advanced Mongoose
+
+There are **two main methods** to **model data in MongoDB**. [Data Modelling MongoBD](https://www.mongodb.com/docs/manual/data-modeling/)
+
+**1. Embedding (Denormalization)** → Storing related data inside a document.
+
+- Example: storing tour reviews inside the Tour document.
+- Pros: fewer queries, fast reads.
+- Cons: duplication, bigger documents, harder to update consistently.
+
+**Referencing (Normalization)** → You store related data in separate collections and reference them with IDs (ObjectId).
+
+- Example: a `Tour` just stores `guide: ObjectId` instead of embedding the whole guide.
+- Pros: no duplication, consistent data, smaller documents.
+- Cons: requires additional queries or `populate()`.
+
+**Example in this project:**
+
+- **Guides** (users leading tours) → better as references.
+- **Locations** (tour stops) → better as embedded sub-documents.
+- **Reviews** → stored separately and linked via references.
+
+---
+
+- **Embedding vs. Referencing** → Theory + examples.
+- **Modelling Tours, Users, and Reviews** with the correct approach.
+- **Populating References** (using .populate() in queries).
+- **Embedding Sub-documents** for tour locations.
+- **Child Referencing** (e.g., reviews referencing tours & users).
+- Some **Advanced** stuff like:
+  - Indexes
+  - Virtual properties
+  - Virtual populate
+  - Middleware for queries and documents.
+
 [Back to the top](#natours-2025)
 
 ```
