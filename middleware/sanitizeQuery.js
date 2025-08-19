@@ -1,5 +1,13 @@
 module.exports = (req, res, next) => {
-  const allowed = ['sort', 'page', 'limit', 'fields', 'difficulty', 'order'];
+  const allowed = [
+    'sort',
+    'page',
+    'limit',
+    'fields',
+    'difficulty',
+    'order',
+    'duration',
+  ];
 
   Object.entries(req.query).forEach(([key, value]) => {
     if (!allowed.includes(key)) {
