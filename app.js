@@ -4,6 +4,9 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const sanitizeHtmlMiddleware = require('./middleware/sanitizeHtml'); // replace xss with sanitizeHtml
+const sanitizeQueryMiddleware = require('./middleware/sanitizeQuery');
 
 // const sanitizeQuery = require('./middleware/sanitizeQuery'); // clean query parameters in G scope
 
@@ -38,15 +41,20 @@ app.use('/api', limiter);
 // ======================================
 // #: UTILITY MIDDLEWARES
 // ======================================
-
 // Body parser, reading data from body (limit payload to 10kb) to req.body
 app.use(express.json({ limit: '10kb' }));
-
+// ======================================
 // Cookie parser: parses cookies into req.cookies
 app.use(cookieParser());
-
-// (Optional) Query sanitization
-// app.use(sanitizeQuery);
+// ======================================
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+// ======================================
+// Query sanitization
+app.use(sanitizeQueryMiddleware); // Query sanitization
+// ======================================
+// Data sanitization against XSS
+app.use(sanitizeHtmlMiddleware);
 
 // Serving static files
 app.use(express.static(`${__dirname}/public`));
@@ -55,6 +63,7 @@ app.use(express.static(`${__dirname}/public`));
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   console.log(req.headers); // DEBUG: log request headers
+  // console.log(req.body, req.query);
   next();
 });
 
