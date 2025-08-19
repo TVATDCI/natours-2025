@@ -3319,6 +3319,77 @@ Info: [Role-Based Access Control](https://medium.com/@eshikashah2001/exploring-r
 
 ### Modelling Data and Advanced Mongoose
 
+#### 1. What is Data Modelling?
+
+Data modelling is about **structuring data** in a way that:
+
+- Represents the **real-world entities** (like Tours, Users, Reviews).
+- Defines how these entities **relate** to each other.
+- Balances **performance** (fast queries) with **flexibility** (easy to evolve).
+
+In MongoDB, because it’s **NoSQL** and document-based, there is NO strict schemas like `SQL`. Instead, there flexibility → but that means it must be carefully designed the shape of documents as framework!
+
+---
+
+#### 2. Real-World Scenario → Unstructured Data
+
+Imagine if the model data is not modeled properly:
+
+Each `Tour` document might store:
+
+```js
+{
+  "name": "The Forest Hiker",
+  "price": 497,
+  "guides": [
+    { "name": "Jonas", "email": "jonas@test.com" },
+    { "name": "Martha", "email": "martha@test.com" }
+  ],
+  "reviews": [
+    { "review": "Amazing!", "rating": 5 },
+    { "review": "Too long", "rating": 3 }
+  ]
+}
+```
+
+- This is **unstructured** and becomes messy fast:
+  - Guides duplicated across tours.
+  - Hard to update if a guide’s email changes.
+  - Reviews are stuck inside tours — can’t easily query “all reviews by Martha”.
+
+So → unstructured = flexible at first, but **painful at scaling!**
+
+---
+
+#### 3. Structured Data
+
+Instead, we create separate collections for `users`, `tours`, `reviews`:
+
+- `users` → keep user info in one place.
+- `tours` → reference users (guides) with their IDs.
+- `reviews` → reference both `tours` and `users`.
+
+This is called a **Logical Data Model**:
+
+- Defines entities (`Tour`, `User`, `Review`).
+- Defines relationships (1-to-many, many-to-many).
+- Prevents duplication, makes queries more consistent.
+
+---
+
+#### 4. Relationships in MongoDB
+
+Unlike SQL (which has joins), MongoDB uses two strategies:
+
+1. **Embedding** → put related data inside a document (fast reads, denormalized).
+2. **Referencing** → keep in separate collections and connect via `ObjectId` (normalized, flexible).
+
+---
+
+The **art of modelling** = deciding **when to embed and when to reference.**
+
+---
+
 There are **two main methods** to **model data in MongoDB**. [Data Modelling MongoBD](https://www.mongodb.com/docs/manual/data-modeling/)
 
 **1. Embedding (Denormalization)** → Storing related data inside a document.
