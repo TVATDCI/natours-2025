@@ -131,7 +131,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // STEP: 2) Check if user exists & password is correct
   // Incorrect: "const user = await User.findOne({ email: req.body.email, password: req.body.password });"
-  // If anyone passed "NoSQL injection" { "email": { "$gt": "" }, "password": "pass1234" }
+  // If anyone passed "NoSQL injection" { "email": { "$gt": "" }, "password": "existingPassword" }
   // MongoDB would treat it as a condition (email > "") and return any user, bypassing login.
 
   // SOLUTION:   const user = await User.findOne({ email }).select('+password');
