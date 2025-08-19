@@ -92,6 +92,7 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Structured Data](#3-structured-data)
     - [Relationships in MongoDB](#4-relationships-in-mongodb)
     - [Two main methods to model data in MongoDB](#two-main-methods-to-model-data-in-mongodb)
+    - [Types of relationships in MongoDB data modelling](#types-of-relationships-in-mongodb-data-modelling)
     - [Many are missing here](#many-are-missing-here)
 
 ---
@@ -3411,7 +3412,7 @@ There are **two main methods** to **model data in MongoDB**.
 - Pros: fewer queries, fast reads.
 - Cons: duplication, bigger documents, harder to update consistently.
 
-**Referencing (Normalization)** → You store related data in separate collections and reference them with IDs (ObjectId).
+**Referencing (Normalization)** → Storing related data in separate collections and reference them with IDs (ObjectId).
 
 - Example: a `Tour` just stores `guide: ObjectId` instead of embedding the whole guide.
 - Pros: no duplication, consistent data, smaller documents.
@@ -3435,6 +3436,50 @@ There are **two main methods** to **model data in MongoDB**.
   - Virtual properties
   - Virtual populate
   - Middleware for queries and documents.
+
+---
+
+### Types of relationships in MongoDB data modelling
+
+#### 1. One-to-One (1:1)
+
+- **Definition**: One document in a collection relates to **exactly one document** in another collection.
+- **Example in Natours**:
+  - A `Tour` might have **one main guide profile** (it can be modelled that way, though often there are multiple guides).
+- **Implementation**:
+  - Can embed the data inside the document.
+  - Or reference by storing the other document’s `_id`.
+
+---
+
+#### 2. One-to-Many (1:N)
+
+- **Definition**: One document relates to **many documents** in another collection.
+- **Examples in Natours**:
+  - A `Tour` has many `Reviews`.
+  - A `User` can write many `Reviews`.
+- **Implementation Options**:
+  1. **Embedding**: If the “many” side is small and doesn’t grow unbounded, you can embed documents (like a few locations in a tour).
+  2. **Referencing**: If the “many” side grows large (like hundreds of reviews), store them separately and reference via IDs (`ObjectId`).
+
+---
+
+#### 3. Many-to-Many (M:N)
+
+- **Definition**: Many documents in one collection relate to **many documents** in another collection.
+- **Example in Natours**:
+  - Tours and Guides → each `Tour` can have multiple `Guides`, and each `User` (guide) can lead multiple `Tours`.
+- **Implementation**:
+  - Usually handled with referencing.
+  - Store arrays of `_ids` on one side (or both sides).
+
+  ***
+
+🔹 **Key MongoDB**
+
+- **Embedding = great for 1:1 or small 1:N relationships** where fast read is important.
+- **Referencing = better for large 1:N or M:N relationships** to avoid duplication and keep documents small.
+- **The art is in knowing the data and how it will be queried** — speed vs. storage vs. consistency.
 
 [Back to the top](#natours-2025)
 
