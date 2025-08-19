@@ -163,7 +163,7 @@ project-root/
 │ │ ├── tours.json
 │ │ └── users.json
 │ ├── img/
-│ │ ├── arrav.jpg
+│ │ ├── aarav.jpg
 │ │ ├── leo.jpg
 │ │ ├── monica.jpg
 │ │ ├── new-tour-1.jpg
@@ -177,6 +177,9 @@ project-root/
 │ ├── loginTemplate.pug
 │ ├── tourCardTemplate.pug
 │ └── tourTemplate.pug
+├── middleware/
+│ ├── sanitizeHtml.js
+│ └── sanitizeQuery.js
 ├── models/
 │ ├── tourModel.js
 │ └── userModel.js
