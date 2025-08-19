@@ -1,18 +1,20 @@
+// ======================================
+// #: DEPENDENCIES
+// ======================================
 const express = require('express');
 const cookieParser = require('cookie-parser');
-
 const morgan = require('morgan');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
-const sanitizeHtmlMiddleware = require('./middleware/sanitizeHtml'); // replace xss with sanitizeHtml
-const sanitizeQueryMiddleware = require('./middleware/sanitizeQuery');
+const hpp = require('hpp');
 
-// const sanitizeQuery = require('./middleware/sanitizeQuery'); // clean query parameters in G scope
+const sanitizeQueryMiddleware = require('./middleware/sanitizeQuery');
+const sanitizeHtmlMiddleware = require('./middleware/sanitizeHtml');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
-// ======================================
+
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -30,16 +32,16 @@ if (process.env.NODE_ENV === 'development') {
 // Security: Set secure HTTP headers
 app.use(helmet());
 
-// Rate limiting: Limit 100 requests per IP / hour (applies to /api)
+// Rate limiting: Limit 100 requests per IP per hour (applies to /api routes)
 const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
+  max: 100, // limit each IP
+  windowMs: 60 * 60 * 1000, // 1 hour
   message: 'Too many requests from this IP, please try again in an hour!',
 });
 app.use('/api', limiter);
 
 // ======================================
-// #: UTILITY MIDDLEWARES
+// #: SECURITY & SANITIZATION MIDDLEWARES
 // ======================================
 // Body parser, reading data from body (limit payload to 10kb) to req.body
 app.use(express.json({ limit: '10kb' }));
@@ -48,67 +50,66 @@ app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
 // ======================================
 // Data sanitization against NoSQL query injection
+// mongoSanitize → protects from NoSQL injection ($gt, $ne, etc.).
 app.use(mongoSanitize());
 // ======================================
+// Data sanitization against HTTP Parameter Pollution
+// hpp → prevents duplicate param exploitation, pollution, allow certain whitelisted params
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsQuantity',
+      'ratingsAverage',
+      'maxGroupSize',
+      'difficulty',
+      'price',
+    ],
+  }),
+);
+// ======================================
 // Query sanitization
+// sanitizeQueryMiddleware → cleans query params & enforces what’s allowed.
 app.use(sanitizeQueryMiddleware); // Query sanitization
 // ======================================
 // Data sanitization against XSS
+// sanitizeHtmlMiddleware → protects from XSS / HTML injection.
 app.use(sanitizeHtmlMiddleware);
+// ======================================
 
-// Serving static files
+// ======================================
+// #: STATIC FILES & DEBUGGING
+// ======================================
+
+// Serve static files from public folder
 app.use(express.static(`${__dirname}/public`));
 
-// Add request timestamp for debugging
+// Debugging: attach request time + log headers
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log(req.headers); // DEBUG: log request headers
-  // console.log(req.body, req.query);
+  console.log(req.headers); // DEBUG
   next();
 });
 
 // ======================================
-// #: Mounted Routers from routes/ to the base path
+// #: ROUTES
 // ======================================
+
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
-// ======================================
-// #: Refactored Operational Error handler
-// ======================================
-// Handle undefined routes (this must go AFTER all route handlers)
+// Handle undefined routes
 app.all('*', (req, res, next) => {
-  next(
-    new AppError(
-      `err handler can't find ${req.originalUrl} on this server!`,
-      404,
-    ),
-  );
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
 // ======================================
-// #: Global Error Handling Middleware (in controllers/errorController.js)
+// #: GLOBAL ERROR HANDLER
 // ======================================
 
 app.use(globalErrorHandler);
 
-// ======================================
-// moved to be refactored in controllers/errorController.js
-// ======================================
-
-// app.use((err, req, res, next) => {
-//   console.log(err.stack); // DEBUG:
-
-//   err.statusCode = err.statusCode || 500;
-//   err.status = err.status || 'err';
-
-//   res.status(err.statusCode).json({
-//     status: err.status,
-//     message: err.message,
-//   });
-// });
+module.exports = app;
 // ======================================
 // #: SERVER: server.js >>
 // ======================================
-
-module.exports = app;
