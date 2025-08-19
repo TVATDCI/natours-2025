@@ -86,6 +86,8 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Password Reset & Authentication Lifecycle](#password-reset--authentication-lifecycle)
     - [Update Current User Password](#update-current-user-password)
     - [save() VS findByIdAndUpdate](#save-vs-findbyidandupdate)
+27. [Modelling Data and Advanced Mongoose](#modelling-data-and-advanced-mongoose)
+    - [Many are missing here](#many-are-missing-here)
 
 ---
 
