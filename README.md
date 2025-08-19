@@ -87,6 +87,11 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Update Current User Password](#update-current-user-password)
     - [save() VS findByIdAndUpdate](#save-vs-findbyidandupdate)
 27. [Modelling Data and Advanced Mongoose](#modelling-data-and-advanced-mongoose)
+    - [What is Data Modelling?](#1-what-is-data-modelling)
+    - [Real-World Scenario → Unstructured Data](#2-real-world-scenario--unstructured-data)
+    - [Structured Data](#3-structured-data)
+    - [Relationships in MongoDB](#4-relationships-in-mongodb)
+    - [Two main methods to model data in MongoDB](#two-main-methods-to-model-data-in-mongodb)
     - [Many are missing here](#many-are-missing-here)
 
 ---
@@ -3317,6 +3322,8 @@ Info: [Role-Based Access Control](https://medium.com/@eshikashah2001/exploring-r
 
 #### To be continued!
 
+[Back to the top](#natours-2025)
+
 ---
 
 ### Modelling Data and Advanced Mongoose
@@ -3392,7 +3399,11 @@ The **art of modelling** = deciding **when to embed and when to reference.**
 
 ---
 
-There are **two main methods** to **model data in MongoDB**. [Data Modelling MongoBD](https://www.mongodb.com/docs/manual/data-modeling/)
+#### Two main methods to `model data` in `MongoDB`
+
+[Data Modelling MongoBD](https://www.mongodb.com/docs/manual/data-modeling/)
+
+There are **two main methods** to **model data in MongoDB**.
 
 **1. Embedding (Denormalization)** → Storing related data inside a document.
 
