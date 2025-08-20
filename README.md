@@ -99,7 +99,10 @@ I value this project as a deep dive into building a **real-world, production-rea
       - [1. Relationship Type](#1-relationship-type)
       - [2. Data Access Patterns](#2-data-access-patterns)
       - [3. Data Closeness](#3-data-closeness)
-    - [Many are missing here](#many-are-missing-here)
+    - [Natours Data Model](#natours-data-model)
+      - [1. User](#1user)
+      - [2. Tour](#2tour)
+      - [3. User](#3review)
 
 ---
 
@@ -3736,6 +3739,115 @@ it in MongoDB.
 
 If in doubt: **start with referencing** for flexibility, then embed
 later for performance if needed.
+
+---
+
+### Natours Data Model
+
+---
+
+#### 1.User
+
+- A user can be a **customer**, **guide**, or **admin**.
+- Users can write reviews, and some are assigned as tour guides.
+
+**Fields (simplified)**:
+
+```js
+User {
+  name: String,
+  email: String,
+  role: ['user', 'guide', 'lead-guide', 'admin'],
+  password: String,
+  passwordChangedAt: Date
+}
+```
+
+---
+
+#### 2. Tour
+
+- The central collection.
+- Has locations, guides, reviews, and key tour info.
+
+**Fields (simplified)**:
+
+```js
+Tour {
+  name: String,
+  duration: Number,
+  maxGroupSize: Number,
+  difficulty: ['easy', 'medium', 'difficult'],
+  price: Number,
+  startLocation: {   // GeoJSON
+    type: 'Point',
+    coordinates: [Number],
+    description: String,
+    address: String
+  },
+  locations: [       // Embedded (1:N, few items)
+    {
+      type: 'Point',
+      coordinates: [Number],
+      description: String,
+      day: Number
+    }
+  ],
+  guides: [          // Referenced (M:N)
+    ObjectId(User)
+  ]
+}
+```
+
+---
+
+#### 3. Review
+
+- Independent collection.
+- Linked to both `User` and `Tour` via referencing (child referencing).
+- One review belongs to exactly **one user** and **one tour**.
+
+**Fields:**
+
+```js
+Review {
+  review: String,
+  rating: Number,
+  createdAt: Date,
+  tour: ObjectId(Tour),
+  user: ObjectId(User)
+}
+```
+
+---
+
+#### Relationships in Natours
+
+**1. Tour → Locations**
+
+- Embedded sub-documents (because they’re few and always needed with the tour).
+  **2. Tour → Guides (Users)**
+- **Referenced** (M:N relationship). Tours reference users via their IDs.
+  **3. Tour ↔ Reviews**
+- Child Referencing (reviews reference tours and users).
+- Virtual populate can be used to connect tours back to their reviews without embedding.
+
+---
+
+#### Suitable Design?
+
+- **Reviews separate** → avoids bloating Tour docs (can be 1000s).
+- **Guides referenced** → avoids duplicating user data across tours.
+- **Locations embedded** → small, dependent, and always queried with the tour.
+
+---
+
+### Geospatial Data in MongoDB
+
+MongoDB has **native support for geospatial data** using the **GeoJSON format**.
+The most common type is a **Point**, which represents a single location with coordinates.
+
+---
 
 [Back to the top](#natours-2025)
 
