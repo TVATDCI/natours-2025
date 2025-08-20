@@ -3406,6 +3406,10 @@ The **art of modelling** = deciding **when to embed and when to reference.**
 
 ---
 
+[Back to the top](#natours-2025)
+
+---
+
 #### Two main methods to `model data` in `MongoDB`
 
 [Data Modelling MongoBD](https://www.mongodb.com/docs/manual/data-modeling/)
