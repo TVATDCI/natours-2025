@@ -3422,7 +3422,92 @@ There are **two main methods** to **model data in MongoDB**.
 - Pros: no duplication, consistent data, smaller documents.
 - Cons: requires additional queries or `populate()`.
 
-**Example in this project:**
+##### Embedding (Denormalization) Examples
+
+**1.1 One-to-Few (Best Case for Embedding)**
+
+When the child data is **small in number**, tightly coupled, and always queried with the parent.
+
+**Example in Natours**: `Tour` locations (start and stop points along a route).
+
+**Schema**
+
+```js
+const tourSchema = new mongoose.Schema({
+  name: String,
+  duration: Number,
+  locations: [
+    {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number], // [longitude, latitude]
+      description: String,
+      day: Number,
+    },
+  ],
+});
+```
+
+- Pros: All location data comes directly with the tour — no extra query or populate needed.
+- Cons: If locations changed often (unlikely), you’d have to update them inside every tour.
+
+---
+
+**1.2 Embedding User Data into a Tour (for denormalization)**
+
+Suppose you want **performance** and don’t care about data duplication. You might embed guides directly inside the `Tour` instead of referencing them.
+
+**Schema:**
+
+```js
+const tourSchema = new mongoose.Schema({
+  name: String,
+  guides: [
+    {
+      name: String,
+      email: String,
+      role: {
+        type: String,
+        enum: ['guide', 'lead-guide'],
+      },
+    },
+  ],
+});
+```
+
+- Pros: No populate(), faster reads.
+- Cons: If a guide changes their email, you must update it in every tour they lead.
+
+---
+
+**1.3 Embedding Reviews in a `Tour` (not recommended at scale)**
+
+Imagine storing all reviews directly inside the Tour document.
+
+Schema:
+
+```js
+const tourSchema = new mongoose.Schema({
+  name: String,
+  reviews: [
+    {
+      review: String,
+      rating: Number,
+      user: String,
+    },
+  ],
+});
+```
+
+- Pros: Super fast if you always fetch reviews together with tours.
+- Cons: Tours with hundreds/thousands of reviews → bloated documents, slow writes, duplication issues.
+
+---
+
+**More example in this project:**
 
 - **Guides** (users leading tours) → better as references.
 - **Locations** (tour stops) → better as embedded sub-documents.
