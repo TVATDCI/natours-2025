@@ -3481,6 +3481,69 @@ There are **two main methods** to **model data in MongoDB**.
 - **Referencing = better for large 1:N or M:N relationships** to avoid duplication and keep documents small.
 - **The art is in knowing the data and how it will be queried** — speed vs. storage vs. consistency.
 
+---
+
+### MongoDB Data Modelling: Embed vs Reference Framework
+
+A practical guide for deciding when to **embed** data or **reference**
+it in MongoDB.
+
+---
+
+#### 1. Relationship Type
+
+- **One-to-few (1:1 or small 1:N): → Embed**
+  - Example: A `Tour` has a few `locations`.
+- **One-to-many (large or growing): → Reference**
+  - Example: A `Tour` has hundreds of `Reviews`.
+- **Many-to-many (M:N): → Reference**
+  - Example: `Tours` and `Guides` (Users).
+
+---
+
+#### 2. Data Access Patterns
+
+- **If always queried together → Embed**
+  - Example: `Tour` + `locations` (whenever you fetch a tour, you
+    also want its locations).
+- **If often queried separately → Reference**
+  - Example: `Reviews` → Sometimes you want "all reviews by a user"
+    without needing the tour.
+
+---
+
+#### 3. Data Closeness
+
+- **Strong ownership / dependency → Embed**
+  - Example: `location` exists only as part of a `Tour`. If the tour
+    is deleted, the location has no meaning.
+- **Weak ownership / independence → Reference**
+  - Example: `User` exists independently of `Tour`. A `Review`
+    belongs to both `User` and `Tour`.
+
+---
+
+#### Natours Examples
+
+- **Embed:**
+  - Tour `locations` (strong ownership, small 1:N, always queried
+    with tour).
+- **Reference:**
+  - Tour `guides` (M:N, independent, queried separately).
+  - Tour `reviews` (large 1:N, independent, queried separately).
+
+---
+
+### Decision Checklist
+
+1.  What is the relationship type? (1:1, 1:N, M:N)
+2.  How will the data be accessed? (always together or often
+    separately?)
+3.  How close is the relationship? (strongly dependent or independent?)
+
+If in doubt: **start with referencing** for flexibility, then embed
+later for performance if needed.
+
 [Back to the top](#natours-2025)
 
 ```
