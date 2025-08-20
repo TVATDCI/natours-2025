@@ -94,6 +94,30 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      // GeoJSON requires a "type" and "coordinates" in the Object.
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number], // [1st longitude, 2nd latitude], expected to be an array of number!
+      address: String,
+      description: String,
+    },
+    // Create a new document as an array of object inside the parent document (tour)
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        description: String,
+        day: Number, // Day of the tour when this location is visited
+      },
+    ],
   },
   // NOTE: Insert Obj schema option to virtual property
   // 2. Implement it inside tourSchema(.schema)
