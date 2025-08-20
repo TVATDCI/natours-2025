@@ -3430,6 +3430,101 @@ There are **two main methods** to **model data in MongoDB**.
 
 ---
 
+#### Types of Referencing in MongoDB
+
+---
+
+**2.1 Child Referencing**
+
+The child document stores a reference (ObjectId) to the parent document.
+
+- Example: In Natours, each `Review` stores the `tourId` and ``userId`.
+- Schema:
+
+```js
+const reviewSchema = new mongoose.Schema({
+  review: String,
+  rating: Number,
+  tour: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Tour',
+  },
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+  },
+});
+```
+
+- Pros: The `Tour` document stays small. Reviews can be queried independently.
+- Cons: You need `populate()` to fetch review details with tours.
+
+---
+
+**2.2 Parent Referencing**
+
+```js
+const tourSchema = new mongoose.Schema({
+  name: String,
+  guides: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+    },
+  ],
+});
+```
+
+- Pros: Easy to get all guides for a tour in one query.
+- Cons: If the child list grows too big (hundreds/thousands), the parent document can become bloated.
+
+---
+
+**2.3 Two-Way Referencing**
+
+Both parent and child documents store references to each other.
+
+- Example:
+  - A `Tour` references its `Reviews`.
+  - Each `Review` also references its `Tour`.
+- Schema (Tour side):
+
+```js
+const tourSchema = new mongoose.Schema({
+  name: String,
+  reviews: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Review',
+    },
+  ],
+});
+```
+
+- Schema (Review side):
+
+```js
+const reviewSchema = new mongoose.Schema({
+  review: String,
+  rating: Number,
+  tour: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Tour',
+  },
+});
+```
+
+- Pros: Makes queries flexible both ways (easy to fetch tour → reviews, or review → tour).
+- Cons: Can lead to duplication of references and harder consistency management (must keep both sides updated).
+
+---
+
+#### In Natours
+
+Practically, It is usually recommended **child referencing** as the main strategy (especially for 1:N like Reviews), because MongoDB docs stay smaller and it avoids bloating the parent document.
+
+Or More in this project!
+
 - **Embedding vs. Referencing** → Theory + examples.
 - **Modelling Tours, Users, and Reviews** with the correct approach.
 - **Populating References** (using .populate() in queries).
@@ -3440,6 +3535,7 @@ There are **two main methods** to **model data in MongoDB**.
   - Virtual properties
   - Virtual populate
   - Middleware for queries and documents.
+    1
 
 ---
 
