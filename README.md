@@ -103,6 +103,10 @@ I value this project as a deep dive into building a **real-world, production-rea
       - [1. User](#1user)
       - [2. Tour](#2tour)
       - [3. User](#3review)
+    - [Geospatial Data in MongoDB](#geospatial-data-in-mongodb)
+      - [1. Start Location (Single Point)](#1-start-location-single-point)
+      - [2. Locations (Array of Points)](#2-locations-array-of-points)
+      - [3. Why Embed Locations?](#3-why-embed-locations)
 
 ---
 
@@ -3769,7 +3773,7 @@ User {
 
 ---
 
-#### 2. Tour
+#### 2.Tour
 
 - The central collection.
 - Has locations, guides, reviews, and key tour info.
@@ -3805,7 +3809,7 @@ Tour {
 
 ---
 
-#### 3. Review
+#### 3.Review
 
 - Independent collection.
 - Linked to both `User` and `Tour` via referencing (child referencing).
