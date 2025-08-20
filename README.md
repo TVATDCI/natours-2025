@@ -102,7 +102,7 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Natours Data Model](#natours-data-model)
       - [1. User](#1user)
       - [2. Tour](#2tour)
-      - [3. User](#3review)
+      - [3. Review](#3review)
     - [Geospatial Data in MongoDB](#geospatial-data-in-mongodb)
       - [1. Start Location (Single Point)](#1-start-location-single-point)
       - [2. Locations (Array of Points)](#2-locations-array-of-points)
