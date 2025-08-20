@@ -93,6 +93,10 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Relationships in MongoDB](#4-relationships-in-mongodb)
     - [Two main methods to model data in MongoDB](#two-main-methods-to-model-data-in-mongodb)
     - [Types of relationships in MongoDB data modelling](#types-of-relationships-in-mongodb-data-modelling)
+    - [MongoDB Data Modelling: Embed vs Reference Framework](#mongodb-data-modelling-embed-vs-reference-framework)
+      - [1. Relationship Type](#1-relationship-type)
+      - [2. Data Access Patterns](#2-data-access-patterns)
+      - [3. Data Closeness](#3-data-closeness)
     - [Many are missing here](#many-are-missing-here)
 
 ---
