@@ -92,6 +92,8 @@ I value this project as a deep dive into building a **real-world, production-rea
     - [Structured Data](#3-structured-data)
     - [Relationships in MongoDB](#4-relationships-in-mongodb)
     - [Two main methods to model data in MongoDB](#two-main-methods-to-model-data-in-mongodb)
+      - [Embedding (Denormalization)](#embedding-denormalization)
+      - [Referencing Types in MongoDB (Normalization)](#referencing-types-in-mongodb)
     - [Types of relationships in MongoDB data modelling](#types-of-relationships-in-mongodb-data-modelling)
     - [MongoDB Data Modelling: Embed vs Reference Framework](#mongodb-data-modelling-embed-vs-reference-framework)
       - [1. Relationship Type](#1-relationship-type)
@@ -3416,13 +3418,7 @@ There are **two main methods** to **model data in MongoDB**.
 - Pros: fewer queries, fast reads.
 - Cons: duplication, bigger documents, harder to update consistently.
 
-**2. Referencing (Normalization)** → Storing related data in separate collections and reference them with IDs (ObjectId).
-
-- Example: a `Tour` just stores `guide: ObjectId` instead of embedding the whole guide.
-- Pros: no duplication, consistent data, smaller documents.
-- Cons: requires additional queries or `populate()`.
-
-##### Embedding (Denormalization) Examples
+##### Embedding (Denormalization):
 
 **1.1 One-to-Few (Best Case for Embedding)**
 
@@ -3515,7 +3511,15 @@ const tourSchema = new mongoose.Schema({
 
 ---
 
-#### Types of Referencing in MongoDB
+**2. Referencing (Normalization)** → Storing related data in separate collections and reference them with IDs (ObjectId).
+
+- Example: a `Tour` just stores `guide: ObjectId` instead of embedding the whole guide.
+- Pros: no duplication, consistent data, smaller documents.
+- Cons: requires additional queries or `populate()`.
+
+---
+
+#### Referencing Types in MongoDB
 
 ---
 
