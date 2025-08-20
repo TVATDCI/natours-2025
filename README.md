@@ -3679,6 +3679,10 @@ Or More in this project!
 
 ---
 
+[Back to the top](#natours-2025)
+
+---
+
 ### MongoDB Data Modelling: Embed vs Reference Framework
 
 A practical guide for deciding when to **embed** data or **reference**
@@ -3842,12 +3846,122 @@ Review {
 
 ---
 
+[Back to the top](#natours-2025)
+
+---
+
 ### Geospatial Data in MongoDB
 
 MongoDB has **native support for geospatial data** using the **GeoJSON format**.
 The most common type is a **Point**, which represents a single location with coordinates.
 
 ---
+
+#### 1. Start Location (Single Point)
+
+Each Tour has **one start location** is modelled as a **GeoJSON Point**.
+
+**Schema:**
+
+```js
+const tourSchema = new mongoose.Schema({
+  // other fields ...
+  startLocation: {
+    // GeoJSON requires a "type" and "coordinates"
+    type: {
+      type: String,
+      default: 'Point',
+      enum: ['Point'],
+    },
+    coordinates: [Number], // [longitude, latitude]
+    address: String,
+    description: String,
+  },
+});
+```
+
+**Notes:**
+
+- Coordinates are always stored as [longitude, latitude] (not [lat, long]).
+- **geospatial queries** can be run with many possibilities (e.g., “find tours within 10km of this point”).
+
+---
+
+#### 2. Locations (Array of Points)
+
+Each tour can have **multiple stops** (like checkpoints on different days).
+These are best modelled as **embedded documents** because:
+
+- There are only a few (not thousands).
+- They’re dependent on the tour.
+- Always needed when fetching the tour.
+
+  **Schema:**
+
+```js
+const tourSchema = new mongoose.Schema({
+  // other fields ...
+  locations: [
+    {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      description: String,
+      day: Number, // Day of the tour when this location is visited
+    },
+  ],
+});
+```
+
+---
+
+#### 3. Why Embed Locations?
+
+✔ Few per tour (not unbounded)
+✔ Always fetched with the tour
+✔ Conceptually belong to the tour
+
+If we referenced them in a separate collection, queries would be more complex without real benefit.
+
+---
+
+#### 4. Example Document (Tour with Geospatial Data)
+
+```js
+{
+  "name": "The Forest Hiker",
+  "duration": 5,
+  "startLocation": {
+    "type": "Point",
+    "coordinates": [-80.185942, 25.774772],
+    "address": "Miami, USA",
+    "description": "Tour starting point"
+  },
+  "locations": [
+    {
+      "type": "Point",
+      "coordinates": [-80.185942, 25.774772],
+      "description": "Day 1: Hiking in the forest",
+      "day": 1
+    },
+    {
+      "type": "Point",
+      "coordinates": [-80.210000, 25.790000],
+      "description": "Day 2: Lake visit",
+      "day": 2
+    }
+  ]
+}
+```
+
+---
+
+```js
+
+```
 
 [Back to the top](#natours-2025)
 
