@@ -18,9 +18,7 @@ const connectDB = async () => {
 
 let tours = [];
 try {
-  tours = JSON.parse(
-    fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'),
-  );
+  tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 } catch (err) {
   console.error('Failed to read or parse tours JSON:', err.message);
   process.exit(1);
