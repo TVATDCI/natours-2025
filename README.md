@@ -3412,7 +3412,7 @@ There are **two main methods** to **model data in MongoDB**.
 - Pros: fewer queries, fast reads.
 - Cons: duplication, bigger documents, harder to update consistently.
 
-**Referencing (Normalization)** → Storing related data in separate collections and reference them with IDs (ObjectId).
+**2. Referencing (Normalization)** → Storing related data in separate collections and reference them with IDs (ObjectId).
 
 - Example: a `Tour` just stores `guide: ObjectId` instead of embedding the whole guide.
 - Pros: no duplication, consistent data, smaller documents.
