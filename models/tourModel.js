@@ -171,21 +171,21 @@ tourSchema.pre('save', function (next) {
 // 2. It then REPLACES the IDs with the actual User objects.
 // → Effectively embedding the guide documents into the new Tour document.
 //
-// NOTE: This is ONLY to demonstrate the embedding approach.
+// NOTE: This is ONLY to demonstrate the embedding approach. I will be commented out!
 // In real-world apps, referencing (with populate()) is usually better.
 // Because: If a User is updated (e.g. email), embedded copies won’t auto-sync across tours.
 // Also, querying all guides on every save is inefficient at scale.
 
-tourSchema.pre('save', async function (next) {
-  // `this.guides` is currently an array of user IDs
-  const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+// tourSchema.pre('save', async function (next) {
+//   // `this.guides` is currently an array of user IDs
+//   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
 
-  // Replace each ID with the full user document
-  this.guides = await Promise.all(guidesPromises);
+//   // Replace each ID with the full user document
+//   this.guides = await Promise.all(guidesPromises);
 
-  next();
-});
-
+//   next();
+// });
+// ======================================
 // ======================================
 // PRE-SAVE HOOK — extra logging or prep work
 // ======================================
