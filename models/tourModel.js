@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const slugify = require('slugify');
 
-const User = require('./userModel');
+// const User = require('./userModel'); // Model Tour Guides (Embedding Code)
 
 //const validator = require('validator');
 
@@ -120,7 +120,13 @@ const tourSchema = new mongoose.Schema(
         day: Number, // Day of the tour when this location is visited
       },
     ],
-    guides: Array,
+    // guides: Array, // Model Tour Guides (Embedding Code). It will only create new object document in tourModel
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User', // Reference to the User model
+      },
+    ],
   },
   // NOTE: Insert Obj schema option to virtual property
   // 2. Implement it inside tourSchema(.schema)
@@ -159,7 +165,7 @@ tourSchema.pre('save', function (next) {
 });
 
 // ======================================
-// Modelling Tour Guides (Embedding)
+// Modelling Tour Guides (Embedding) -> switched to Child referencing (below)
 // ======================================
 
 // In this schema, `guides` is an array of IDs (ObjectId from User).
@@ -186,6 +192,23 @@ tourSchema.pre('save', function (next) {
 //   next();
 // });
 // ======================================
+// Child Referencing
+// ======================================
+//
+// For guides, Storing only their ObjectIds in the tour document.
+// No need to import User model here (no: const User = require('./userModel')).
+// Instead, define the field as:
+//    type: mongoose.Schema.ObjectId
+//    ref: 'User'
+// This creates a reference directly to the User collection using only the user IDs. (Array of ref 🤓)
+//
+// ✔️ Benefits:
+// - No duplication → user data is stored only once in the users collection.
+// - Consistency → if a user updates (e.g. email), it’s reflected everywhere automatically.
+// - Flexible queries → fetch tours with guides (using .populate()), or just tours alone (faster).
+//
+//  Note: - Using .populate() runs an extra query behind the scenes → small performance cost.
+
 // ======================================
 // PRE-SAVE HOOK — extra logging or prep work
 // ======================================
