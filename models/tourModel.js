@@ -231,21 +231,16 @@ tourSchema.pre('save', function (next) {
 // tourSchema.pre('find', function (next){}
 // /^find/: Regex matches find, findOne, findOneAndUpdate, OR /^find/ = all start with find
 // .pre('find'): Runs before any .find() query is executed.(tourController.js/line: 25)
+
+// ======================================
+// PRE-QUERY MIDDLEWARE
+// ======================================
 tourSchema.pre(/^find/, function (next) {
   console.log('Query middleware: About to execute a find operation...');
   // this.find({ secretTour: { $ne: true } }); // $ne= not equal to true - exclude secret tours. Now it is a secrete!
   // secretTour is now set to true: now it i a secrete not there if you look for it...uncomment this line to see it!
 
   this.start = Date.now(); // just for measuring query time (optional)
-  next();
-});
-
-tourSchema.post(/^find/, function (docs, next) {
-  // DEBUG:
-  console.log(`Query took ${Date.now() - this.start} ms`); // ms = milliseconds!
-
-  // DEBUG:
-  //  console.log(`Returned ${docs.length} documents`);
   next();
 });
 
@@ -266,6 +261,18 @@ tourSchema.pre(/^find/, function (next) {
     select: '-__v -passwordChangedAt', // exclude fields
   });
 
+  next();
+});
+
+// ======================================
+// POST-QUERY MIDDLEWARE
+// ======================================
+tourSchema.post(/^find/, function (docs, next) {
+  // DEBUG:
+  console.log(`Query took ${Date.now() - this.start} ms`); // ms = milliseconds!
+
+  // DEBUG:
+  //  console.log(`Returned ${docs.length} documents`);
   next();
 });
 
