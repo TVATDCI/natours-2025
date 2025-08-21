@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const slugify = require('slugify');
 
+const User = require('./userModel');
+
 //const validator = require('validator');
 
 // ======================================
@@ -118,6 +120,7 @@ const tourSchema = new mongoose.Schema(
         day: Number, // Day of the tour when this location is visited
       },
     ],
+    guides: Array,
   },
   // NOTE: Insert Obj schema option to virtual property
   // 2. Implement it inside tourSchema(.schema)
@@ -152,6 +155,34 @@ tourSchema.pre('save', function (next) {
   // 'this' refers to the document being saved
   this.slug = slugify(this.name, { lower: true });
   // console.log('Document middleware: Will save document with .slug...');
+  next();
+});
+
+// ======================================
+// Modelling Tour Guides (Embedding)
+// ======================================
+
+// In this schema, `guides` is an array of IDs (ObjectId from User).
+// Example POSTMAN payload when creating a tour:
+// { "guides": ["68a654867e534e9dc3362b0a", "68a655907e534e9dc3362b0d"] }
+//
+// This pre-save hook runs BEFORE saving the new tour:
+// 1. For each ID in `guides`, it fetches the full User document from the DB.
+// 2. It then REPLACES the IDs with the actual User objects.
+// → Effectively embedding the guide documents into the new Tour document.
+//
+// NOTE: This is ONLY to demonstrate the embedding approach.
+// In real-world apps, referencing (with populate()) is usually better.
+// Because: If a User is updated (e.g. email), embedded copies won’t auto-sync across tours.
+// Also, querying all guides on every save is inefficient at scale.
+
+tourSchema.pre('save', async function (next) {
+  // `this.guides` is currently an array of user IDs
+  const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+
+  // Replace each ID with the full user document
+  this.guides = await Promise.all(guidesPromises);
+
   next();
 });
 
