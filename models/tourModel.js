@@ -212,7 +212,7 @@ tourSchema.pre('save', function (next) {
 // ======================================
 // PRE-SAVE HOOK — extra logging or prep work
 // ======================================
-// tourSchema.pre('save', function (next) {
+// tourSchema.pre('save', function (next) {:
 //   console.log('Document middleware: Will save document ...');
 //   next();
 // });
