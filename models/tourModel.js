@@ -200,7 +200,7 @@ tourSchema.pre('save', function (next) {
 // Instead, define the field as:
 //    type: mongoose.Schema.ObjectId
 //    ref: 'User'
-// This creates a reference directly to the User collection using only the user IDs. (Array of ref 🤓)
+// This creates a reference directly to the User collection using only the user IDs to create objectIds. (Array of refIds 🤓)
 //
 // ✔️ Benefits:
 // - No duplication → user data is stored only once in the users collection.
@@ -242,10 +242,30 @@ tourSchema.pre(/^find/, function (next) {
 
 tourSchema.post(/^find/, function (docs, next) {
   // DEBUG:
-  console.log(`Query took ${Date.now() - this.start} ms`);
+  console.log(`Query took ${Date.now() - this.start} ms`); // ms = milliseconds!
 
   // DEBUG:
   //  console.log(`Returned ${docs.length} documents`);
+  next();
+});
+
+// ======================================
+// Auto-populate guides (Query Middleware)
+// ======================================
+//
+// This middleware runs automatically before any find query
+// (find, findOne, findById, etc.)
+//
+// It populates the `guides` field with user data
+// and excludes sensitive/unnecessary fields.
+// NOTE: This adds one extra query behind the scenes.
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt', // exclude fields
+  });
+
   next();
 });
 
