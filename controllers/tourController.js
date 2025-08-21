@@ -51,7 +51,14 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 // #: GET /api/v1/tours/:id - Get a specific tour by ID
 // ======================================
 exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id);
+  // after adding child ref into tourModel doc, there is only ref (id) of the guides!
+  //   const tour = await Tour.findById(req.params.id);
+  // implement .populate, when querying tours, it will fetch the full user info(doc) into by calling .populate()
+  const tour = await Tour.findById(req.params.id).populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt', // exclude fields
+  });
+  // However,  calling .populate() manually in every controller is repetitive and will eventually fuck up many things!
 
   if (!tour) {
     return next(new AppError('Tour not found', 404));
