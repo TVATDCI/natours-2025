@@ -58,7 +58,8 @@ exports.getTour = catchAsync(async (req, res, next) => {
     path: 'guides',
     select: '-__v -passwordChangedAt', // exclude fields
   });
-  // However,  calling .populate() manually in every controller is repetitive and will eventually fuck up many things!
+  // However,  calling .populate() will create new query!
+  // Note: In the HUGE APP, manually calling .populate in every controller is repetitive and will fuck things up, eventually!
 
   if (!tour) {
     return next(new AppError('Tour not found', 404));
