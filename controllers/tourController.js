@@ -52,15 +52,16 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 // ======================================
 exports.getTour = catchAsync(async (req, res, next) => {
   // after adding child ref into tourModel doc, there is only ref (id) of the guides!
-  //   const tour = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.id);
   // implement .populate, when querying tours, it will fetch the full user info(doc) into by calling .populate()
-  const tour = await Tour.findById(req.params.id).populate({
-    path: 'guides',
-    select: '-__v -passwordChangedAt', // exclude fields
-  });
+  // NOTE: Removed to pre-query middleware (tourModel)
+  //   const tour = await Tour.findById(req.params.id).populate({
+  //     path: 'guides',
+  //     select: '-__v -passwordChangedAt', // exclude fields
+  //   });
   // However,  calling .populate() will create new query!
   // Note: In the HUGE APP, manually calling .populate in every controller is repetitive and will fuck things up, eventually!
-  // SOLUTION: go to -> Query Middleware
+  // SOLUTION: go to -> Query Middleware and build one, then come back here and replace .populate()
 
   if (!tour) {
     return next(new AppError('Tour not found', 404));
