@@ -60,6 +60,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
   // However,  calling .populate() will create new query!
   // Note: In the HUGE APP, manually calling .populate in every controller is repetitive and will fuck things up, eventually!
+  // SOLUTION: go to -> Query Middleware
 
   if (!tour) {
     return next(new AppError('Tour not found', 404));
