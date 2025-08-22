@@ -15,6 +15,9 @@ const reviewSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    // NOTE: This is Parent Referencing → Review is the child, and it points up to its parents.
+    // The Review document stores the reference IDs of those parents.
+    // Each Review belongs to exactly one Tour and one User. It holds ID of parent Tour + parent User
     tour: {
       // Parent referencing: each review knows which tour it belongs to
       type: mongoose.Schema.ObjectId,
