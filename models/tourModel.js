@@ -120,7 +120,13 @@ const tourSchema = new mongoose.Schema(
         day: Number, // Day of the tour when this location is visited
       },
     ],
-    // guides: Array, // Model Tour Guides (Embedding Code). It will only create new object document in tourModel
+    // ========================================================================================
+    // Model Tour Guides (Embedding Code). It will only create new object document in tourModel
+    // guides: Array,
+    // ========================================================================================
+    // NOTE: This is Child Referencing → Tour is the parent, Guides are the children.
+    // The guides field is an array of references to User.
+    // Guides in Tour: child referencing (Tour holds IDs of children).
     guides: [
       {
         type: mongoose.Schema.ObjectId,
