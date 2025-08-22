@@ -174,6 +174,7 @@ project-root/
 ├── controllers/
 │ ├── authController.js
 │ ├── errorController.js
+│ ├── reviewController.js
 │ ├── tourController.js
 │ └── userController.js
 ├── dev-data/
@@ -202,6 +203,7 @@ project-root/
 │ ├── sanitizeHtml.js
 │ └── sanitizeQuery.js
 ├── models/
+│ ├── reviewModel.js
 │ ├── tourModel.js
 │ └── userModel.js
 ├── public/
@@ -220,6 +222,7 @@ project-root/
 │ ├── overview.html
 │ └── tour.html
 ├── routes/
+│ ├── reviewRoutes.js
 │ ├── tourRoutes.js
 │ └── userRoutes.js
 ├── utils/
