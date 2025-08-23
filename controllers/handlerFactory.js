@@ -21,6 +21,23 @@ exports.deleteOne = (Model) =>
   });
 
 // ======================================
+// #: DELETE /api/v1/tours/:id - REFACTORED Delete a tour
+// ======================================
+//   exports.deleteTour = catchAsync(async (req, res, next) => {
+//     const tour = await Tour.findByIdAndDelete(req.params.id);
+
+//     if (!tour) {
+//       return next(new AppError('Tour not found', 404));
+//     }
+
+// NOTE: 204 = No Content (successful, but nothing to send back)
+//     res.status(204).json({
+//       status: 'success',
+//       data: null,
+//     });
+//   });
+
+// ======================================
 // UPDATE ONE
 // ======================================
 exports.updateOne = (Model) =>
@@ -86,6 +103,10 @@ exports.getAll = (Model) =>
     // To allow nested GET reviews on tour (hack)
     let filter = {};
     if (req.params.tourId) filter = { tour: req.params.tourId };
+    // Option: It will also work (tested) But to keep the learning in the same level i switched back to original
+    // If the request came from /tours/:tourId/reviews, then only return reviews for that tour
+    // With ternary opt: This way is more concise than declaring let filter = {} and updating later!
+    // const filter = req.params.tourId ? { tour: req.params.tourId } : {};
 
     const features = new APIFeatures(Model.find(filter), req.query)
       .filter()
