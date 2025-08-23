@@ -60,7 +60,7 @@ exports.updateOne = (Model) =>
   });
 
 // ======================================
-// CREATE ONE
+// CREATE ONE (base generic handler)
 // ======================================
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
