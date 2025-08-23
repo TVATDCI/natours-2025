@@ -3,6 +3,7 @@ const express = require('express');
 // Import controller
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
+// const reviewController = require('../controllers/reviewController');
 
 // declare and define the Routers before mounting!
 // logic: create routers for all routes and turn them into mini Express apps then mount them into the ROUTER below!
