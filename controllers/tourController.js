@@ -117,31 +117,32 @@ exports.createTour = catchAsync(async (req, res, next) => {
 // ======================================
 // #: PATCH /api/v1/tours/:id - REFACTORED Update an existing tour
 // ======================================
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+// exports.updateTour = catchAsync(async (req, res, next) => {
+//   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+//     new: true,
+//     runValidators: true,
+//   });
 
-  if (!updatedTour) {
-    return next(new AppError('Tour not found', 404));
-  }
+//   if (!updatedTour) {
+//     return next(new AppError('Tour not found', 404));
+//   }
 
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Updated tour:', {
-      id: updatedTour._id,
-      name: updatedTour.name,
-      price: updatedTour.price,
-    });
-  }
+//   if (process.env.NODE_ENV === 'development') {
+//     console.log('Updated tour:', {
+//       id: updatedTour._id,
+//       name: updatedTour.name,
+//       price: updatedTour.price,
+//     });
+//   }
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: updatedTour,
-    },
-  });
-});
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       tour: updatedTour,
+//     },
+//   });
+// });
+exports.updateTour = factory.updateOne(Tour); // refactored by updateOne in handlerFactory
 
 // ======================================
 // #: DELETE /api/v1/tours/:id - REFACTORED Delete a tour
