@@ -35,7 +35,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
 
 // ==================================================================
 
-// reviewController.js
+// additional info for reviewWithTour info!
 exports.getReviewWithTour = catchAsync(async (req, res, next) => {
   const review = await Review.findById(req.params.id).populate({
     path: 'tour',
