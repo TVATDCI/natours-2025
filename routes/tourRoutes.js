@@ -1,7 +1,7 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController'); // PROTECT ROUTE
-const reviewRouter = require('../routes/reviewRoutes');
+const reviewRouter = require('./reviewRoutes');
 // const reviewController = require('../controllers/reviewController');
 // const sanitizeQuery = require('../middleware/sanitizeQuery'); // clean query parameters in routes level!
 
