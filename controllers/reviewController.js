@@ -10,7 +10,11 @@ const catchAsync = require('../utils/catchAsync');
 // exports.deleteReview = factory.deleteOne(Review);
 
 exports.getAllReviews = catchAsync(async (req, res, next) => {
-  const reviews = await Review.find();
+  let filter = {}; // implementing filter for all review of each tour with tourId.
+  // Check (filter) if there is tourId in the req. Then, put the object into the filter
+  if (req.params.tourId) filter = { tour: req.params.tourId };
+
+  const reviews = await Review.find(filter);
 
   res.status(200).json({
     status: 'success',
