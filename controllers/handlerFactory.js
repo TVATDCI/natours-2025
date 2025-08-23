@@ -74,6 +74,26 @@ exports.createOne = (Model) =>
     });
   });
 
+// ============================================================================================
+// EXPERIMENT VERSION OF CREATE ONE, Used only in createTour + DEV logging. It will be deleted!
+// ============================================================================================
+
+exports.createOneWithLogging = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.create(req.body);
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Created:', { id: doc._id, name: doc.name });
+    }
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        data: doc,
+      },
+    });
+  });
+
 // ======================================
 // GET ONE (optionally populate)
 // ======================================
