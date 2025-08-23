@@ -95,25 +95,29 @@ exports.getTour = catchAsync(async (req, res, next) => {
 // With catchAsync(async (req, res, next) => {const newTour = await Tour.create(req.body);
 // ======================================
 
-exports.createTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
+// exports.createTour = catchAsync(async (req, res, next) => {
+//   const newTour = await Tour.create(req.body);
 
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Created tour:', {
-      name: newTour.name,
-      _id: newTour._id,
-      price: newTour.price,
-    });
-  }
+//   if (process.env.NODE_ENV === 'development') {
+//     console.log('Created tour:', {
+//       name: newTour.name,
+//       _id: newTour._id,
+//       price: newTour.price,
+//     });
+//   }
 
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
-});
-
+//   res.status(201).json({
+//     status: 'success',
+//     data: {
+//       tour: newTour,
+//     },
+//   });
+// });
+// ============================================================================================
+// NOTE: EXPERIMENT VERSION OF CREATE ONE, Used only in createTour + DEV logging. It will be replaced!
+exports.createTour = factory.createOneWithLogging(Tour);
+// ============================================================================================
+// exports.createTour = factory.createOne(Tour);
 // ======================================
 // #: PATCH /api/v1/tours/:id - REFACTORED Update an existing tour
 // ======================================
