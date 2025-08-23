@@ -4,6 +4,8 @@ const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
+const factory = require('./handlerFactory');
+
 // ======================================
 // #: Middleware:
 // ======================================
@@ -144,19 +146,21 @@ exports.updateTour = catchAsync(async (req, res, next) => {
 // ======================================
 // #: DELETE /api/v1/tours/:id - REFACTORED Delete a tour
 // ======================================
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id);
+// exports.deleteTour = catchAsync(async (req, res, next) => {
+//   const tour = await Tour.findByIdAndDelete(req.params.id);
 
-  if (!tour) {
-    return next(new AppError('Tour not found', 404));
-  }
+//   if (!tour) {
+//     return next(new AppError('Tour not found', 404));
+//   }
 
-  // NOTE: 204 = No Content (successful, but nothing to send back)
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+//   // NOTE: 204 = No Content (successful, but nothing to send back)
+//   res.status(204).json({
+//     status: 'success',
+//     data: null,
+//   });
+// });
+
+exports.deleteTour = factory.deleteOne(Tour);
 
 // ======================================
 // #: GET /api/v1/tours/tour-stats - Aggregated Tour Statistics
