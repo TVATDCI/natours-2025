@@ -52,7 +52,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 // ======================================
 exports.getTour = catchAsync(async (req, res, next) => {
   // after adding child ref into tourModel doc, there is only ref (id) of the guides!
-  const tour = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.id).populate('reviews'); // this pulls in virtual reviews from tourModel!
   // implement .populate, when querying tours, it will fetch the full user info(doc) into by calling .populate()
   // NOTE: Removed to pre-query middleware (tourModel)
   //   const tour = await Tour.findById(req.params.id).populate({

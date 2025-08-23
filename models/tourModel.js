@@ -155,6 +155,15 @@ tourSchema.virtual('durationWeeks').get(function () {
 });
 
 // ======================================
+// Use virtual populate to connect 2 models and then take it review id from tour field.
+// ======================================
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour', // Specify the name of field (tour) to connect the 2 models = tour(in reviewSchema)
+  localField: '_id', // Once connected take the id of the Review, which ius stored in tour field!
+});
+
+// ======================================
 // #: Document Middleware (.save() & .create() only)
 // Note: Does NOT run on updateOne(), findByIdAndUpdate(), or insertMany()
 // Remember to define: slug: String in the schema!

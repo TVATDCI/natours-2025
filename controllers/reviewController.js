@@ -32,3 +32,14 @@ exports.createReview = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+// ==================================================================
+
+// reviewController.js
+exports.getReviewWithTour = catchAsync(async (req, res, next) => {
+  const review = await Review.findById(req.params.id).populate({
+    path: 'tour',
+    select: 'name',
+  });
+  res.status(200).json({ status: 'success', data: { review } });
+});
