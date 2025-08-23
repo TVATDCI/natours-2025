@@ -174,6 +174,7 @@ project-root/
 ├── controllers/
 │ ├── authController.js
 │ ├── errorController.js
+│ ├── handlerFactory.js
 │ ├── reviewController.js
 │ ├── tourController.js
 │ └── userController.js
