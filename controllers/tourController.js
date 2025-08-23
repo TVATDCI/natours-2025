@@ -115,9 +115,9 @@ exports.getTour = catchAsync(async (req, res, next) => {
 // });
 // ============================================================================================
 // NOTE: EXPERIMENT VERSION OF CREATE ONE, Used only in createTour + DEV logging. It will be replaced!
-exports.createTour = factory.createOneWithLogging(Tour);
+// exports.createTour = factory.createOneWithLogging(Tour);
 // ============================================================================================
-// exports.createTour = factory.createOne(Tour);
+exports.createTour = factory.createOne(Tour);
 // ======================================
 // #: PATCH /api/v1/tours/:id - REFACTORED Update an existing tour
 // ======================================
