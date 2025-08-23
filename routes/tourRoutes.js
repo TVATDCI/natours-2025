@@ -1,7 +1,8 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController'); // PROTECT ROUTE
-const reviewController = require('../controllers/reviewController');
+const reviewRouter = require('../routes/reviewRoutes');
+// const reviewController = require('../controllers/reviewController');
 // const sanitizeQuery = require('../middleware/sanitizeQuery'); // clean query parameters in routes level!
 
 // declare and define the Routers before mounting!
@@ -11,6 +12,22 @@ const router = express.Router(); // modular router
 // Param MIDDLEWARES to check the id
 // Register param middleware from tourController
 // router.param('id', tourController.checkID);
+
+// ===================================================================
+// # tours reviews ROUTES - check double block of code in reviewRoutes
+// Solution: removed this code and go into merging params!
+// ===================================================================
+// Redirect any /:tourId/reviews to reviewRouter because it is using the same block of code!
+router.use('/:tourId/reviews', reviewRouter);
+// ===================================================================
+// router
+//   .route('/:tourId/reviews')
+//   .post(
+//     authController.protect,
+//     authController.restrictTo('user'),
+//     reviewController.createReview,
+//   );
+// ===================================================================
 
 router
   .route('/top-5-cheap')
@@ -37,17 +54,6 @@ router
     authController.restrictTo('admin', 'lead-guide'), // admin or lead-guide only
     tourController.deleteTour,
   ); // Delete a specific tour
-
-// ===============================
-// # tours reviews ROUTES
-// ===============================
-router
-  .route('/:tourId/reviews')
-  .post(
-    authController.protect,
-    authController.restrictTo('user'),
-    reviewController.createReview,
-  );
 
 module.exports = router;
 
