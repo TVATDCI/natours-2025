@@ -1,6 +1,7 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController'); // PROTECT ROUTE
+const reviewController = require('../controllers/reviewController');
 // const sanitizeQuery = require('../middleware/sanitizeQuery'); // clean query parameters in routes level!
 
 // declare and define the Routers before mounting!
@@ -36,6 +37,17 @@ router
     authController.restrictTo('admin', 'lead-guide'), // admin or lead-guide only
     tourController.deleteTour,
   ); // Delete a specific tour
+
+// ===============================
+// # tours reviews ROUTES
+// ===============================
+router
+  .route('/:tourId/reviews')
+  .post(
+    authController.protect,
+    authController.restrictTo('user'),
+    reviewController.createReview,
+  );
 
 module.exports = router;
 
