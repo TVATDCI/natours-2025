@@ -10,9 +10,15 @@ const catchAsync = require('../utils/catchAsync');
 // exports.deleteReview = factory.deleteOne(Review);
 
 exports.getAllReviews = catchAsync(async (req, res, next) => {
-  let filter = {}; // implementing filter for all review of each tour with tourId.
+  // let filter = {};
+  // implementing filter for all review of each tour with tourId.
   // Check (filter) if there is tourId in the req. Then, put the object into the filter
-  if (req.params.tourId) filter = { tour: req.params.tourId };
+  // if (req.params.tourId) filter = { tour: req.params.tourId };
+
+  // Option:
+  // If the request came from /tours/:tourId/reviews, then only return reviews for that tour
+  // This way is more concise than declaring let filter = {} and updating later!
+  const filter = req.params.tourId ? { tour: req.params.tourId } : {};
 
   const reviews = await Review.find(filter);
 
