@@ -44,14 +44,20 @@ const reviewSchema = new mongoose.Schema(
 // Watch out Double .populate() in one document(this)
 
 reviewSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'tour',
-    select: 'name', // include field
-  }).populate({
-    path: 'user',
-    select: 'name photo', // include fields
-  });
+  //   this.populate({
+  //     path: 'tour',
+  //     select: 'name', // include field
+  //   }).populate({
+  //     path: 'user',
+  //     select: 'name photo', // include fields
+  //   });
 
+  //   next();
+  // });
+  this.populate({
+    path: 'user',
+    select: 'name photo -_id',
+  });
   next();
 });
 
