@@ -52,30 +52,32 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 // ======================================
 // #: GET /api/v1/tours/:id - Get a specific tour by ID
 // ======================================
-exports.getTour = catchAsync(async (req, res, next) => {
-  // after adding child ref into tourModel doc, there is only ref (id) of the guides!
-  const tour = await Tour.findById(req.params.id).populate('reviews'); // this pulls in virtual reviews from tourModel!
-  // implement .populate, when querying tours, it will fetch the full user info(doc) into by calling .populate()
-  // NOTE: Removed to pre-query middleware (tourModel)
-  //   const tour = await Tour.findById(req.params.id).populate({
-  //     path: 'guides',
-  //     select: '-__v -passwordChangedAt', // exclude fields
-  //   });
-  // However,  calling .populate() will create new query!
-  // Note: In the HUGE APP, manually calling .populate in every controller is repetitive and will fuck things up, eventually!
-  // SOLUTION: go to -> Query Middleware and build one, then come back here and replace .populate()
+// Refactored with getOne from handlerFactory, included populate option.
+exports.getTour = factory.getOne(Tour, { path: 'reviews' });
+// exports.getTour = catchAsync(async (req, res, next) => {
+//   // after adding child ref into tourModel doc, there is only ref (id) of the guides!
+//   const tour = await Tour.findById(req.params.id).populate('reviews'); // this pulls in virtual reviews from tourModel!
+//   // implement .populate, when querying tours, it will fetch the full user info(doc) into by calling .populate()
+//   // NOTE: Removed to pre-query middleware (tourModel)
+//   //   const tour = await Tour.findById(req.params.id).populate({
+//   //     path: 'guides',
+//   //     select: '-__v -passwordChangedAt', // exclude fields
+//   //   });
+//   // However,  calling .populate() will create new query!
+//   // Note: In the HUGE APP, manually calling .populate in every controller is repetitive and will fuck things up, eventually!
+//   // SOLUTION: go to -> Query Middleware and build one, then come back here and replace .populate()
 
-  if (!tour) {
-    return next(new AppError('Tour not found', 404));
-  }
+//   if (!tour) {
+//     return next(new AppError('Tour not found', 404));
+//   }
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       tour,
+//     },
+//   });
+// });
 
 // ======================================
 // SOLUTION: GET /api/v1/tours/:id - Ninja
