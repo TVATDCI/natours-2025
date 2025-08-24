@@ -99,9 +99,9 @@ exports.createOneWithLogging = (Model) =>
 // ======================================
 exports.getOne = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
-    let query = Model.findById(req.params.id);
+    let query = Model.findById(req.params.id); // manipulate the the Model!
     if (popOptions) query = query.populate(popOptions);
-    const doc = await query;
+    const doc = await query; // After it is done with populate then put it back into doc(this)
 
     if (!doc) {
       return next(new AppError('No document found with that ID', 404));
