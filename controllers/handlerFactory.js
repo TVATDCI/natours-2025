@@ -118,7 +118,7 @@ exports.getOne = (Model, popOptions) =>
 // ======================================
 // GET ALL (supports nested routes)
 // ======================================
-exports.getAll = (Model) =>
+exports.getAll = (Model, options = {}) =>
   catchAsync(async (req, res, next) => {
     // Originally in getAllReview handler (reviewController)
     // To allow nested GET reviews on tour (simply hacked inline!)
@@ -136,6 +136,9 @@ exports.getAll = (Model) =>
       .paginate();
 
     const docs = await features.query;
+
+    // Optional afterQuery hook  for testing purposes like logging. It will be removed.
+    if (options.afterQuery) options.afterQuery(docs);
 
     res.status(200).json({
       status: 'success',
