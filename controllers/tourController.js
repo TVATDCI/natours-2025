@@ -1,5 +1,5 @@
 const Tour = require('../models/tourModel');
-const APIFeatures = require('../utils/apiFeatures');
+// const APIFeatures = require('../utils/apiFeatures');
 
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -22,32 +22,42 @@ exports.aliasTopTours = (req, res, next) => {
 // ======================================
 // #: GET /api/v1/tours - Get all tours
 // ======================================
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  // STEP: 1) Build the query
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  // STEP: 2) Execute the query
-  const tours = await features.query;
-
-  // DEBUG: will be removed in production
-  console.log(
-    'Returned tours:',
-    tours.map((t) => t.name),
-  );
-
-  // STEP: 3) Send response
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
+// Refactored with getAll from handlerFactory, included populate option.
+// However, it is implemented with options afterQuery hook  for testing purposes, too!
+exports.getAllTours = factory.getAll(Tour, {
+  afterQuery: (tours) => {
+    console.log(
+      'Returned tours:',
+      tours.map((t) => t.name),
+    );
+  },
 });
+// exports.getAllTours = catchAsync(async (req, res, next) => {
+//   // STEP: 1) Build the query
+//   const features = new APIFeatures(Tour.find(), req.query)
+//     .filter()
+//     .sort()
+//     .limitFields()
+//     .paginate();
+
+//   // STEP: 2) Execute the query
+//   const tours = await features.query;
+
+//   // DEBUG: will be removed in production
+//   console.log(
+//     'Returned tours:',
+//     tours.map((t) => t.name),
+//   );
+
+//   // STEP: 3) Send response
+//   res.status(200).json({
+//     status: 'success',
+//     results: tours.length,
+//     data: {
+//       tours,
+//     },
+//   });
+// });
 
 // ======================================
 // #: GET /api/v1/tours/:id - Get a specific tour by ID
