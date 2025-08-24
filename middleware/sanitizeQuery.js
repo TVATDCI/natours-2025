@@ -7,6 +7,7 @@ module.exports = (req, res, next) => {
     'difficulty',
     'order',
     'duration',
+    'rating',
   ];
 
   Object.entries(req.query).forEach(([key, value]) => {
