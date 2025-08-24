@@ -32,156 +32,32 @@ exports.getAllTours = factory.getAll(Tour, {
     );
   },
 });
-// exports.getAllTours = catchAsync(async (req, res, next) => {
-//   // STEP: 1) Build the query
-//   const features = new APIFeatures(Tour.find(), req.query)
-//     .filter()
-//     .sort()
-//     .limitFields()
-//     .paginate();
-
-//   // STEP: 2) Execute the query
-//   const tours = await features.query;
-
-//   // DEBUG: will be removed in production
-//   console.log(
-//     'Returned tours:',
-//     tours.map((t) => t.name),
-//   );
-
-//   // STEP: 3) Send response
-//   res.status(200).json({
-//     status: 'success',
-//     results: tours.length,
-//     data: {
-//       tours,
-//     },
-//   });
-// });
-
-// ======================================
+// =====================================================
 // #: GET /api/v1/tours/:id - Get a specific tour by ID
-// ======================================
+// =====================================================
 // Refactored with getOne from handlerFactory, included populate option.
 exports.getTour = factory.getOne(Tour, { path: 'reviews' });
-// exports.getTour = catchAsync(async (req, res, next) => {
-//   // after adding child ref into tourModel doc, there is only ref (id) of the guides!
-//   const tour = await Tour.findById(req.params.id).populate('reviews'); // this pulls in virtual reviews from tourModel!
-//   // implement .populate, when querying tours, it will fetch the full user info(doc) into by calling .populate()
-//   // NOTE: Removed to pre-query middleware (tourModel)
-//   //   const tour = await Tour.findById(req.params.id).populate({
-//   //     path: 'guides',
-//   //     select: '-__v -passwordChangedAt', // exclude fields
-//   //   });
-//   // However,  calling .populate() will create new query!
-//   // Note: In the HUGE APP, manually calling .populate in every controller is repetitive and will fuck things up, eventually!
-//   // SOLUTION: go to -> Query Middleware and build one, then come back here and replace .populate()
-
-//   if (!tour) {
-//     return next(new AppError('Tour not found', 404));
-//   }
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: {
-//       tour,
-//     },
-//   });
-// });
-
-// ======================================
-// SOLUTION: GET /api/v1/tours/:id - Ninja
-// ======================================
-// exports.getTour = catchAsync(async (req, res, next) => {
-//   const tour = await Tour.findById(req.params.id);
-//   if (!tour) return next(new AppError('Tour not found', 404));
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: { tour },
-//   });
-// });
 
 // ======================================
 // #: POST /api/v1/tours - REFACTORED Create a new tour
-// With catchAsync(async (req, res, next) => {const newTour = await Tour.create(req.body);
 // ======================================
-
-// exports.createTour = catchAsync(async (req, res, next) => {
-//   const newTour = await Tour.create(req.body);
-
-//   if (process.env.NODE_ENV === 'development') {
-//     console.log('Created tour:', {
-//       name: newTour.name,
-//       _id: newTour._id,
-//       price: newTour.price,
-//     });
-//   }
-
-//   res.status(201).json({
-//     status: 'success',
-//     data: {
-//       tour: newTour,
-//     },
-//   });
-// });
+exports.createTour = factory.createOne(Tour);
 // ============================================================================================
 // NOTE: EXPERIMENT VERSION OF CREATE ONE, Used only in createTour + DEV logging. It will be replaced!
 // exports.createTour = factory.createOneWithLogging(Tour);
 // ============================================================================================
-exports.createTour = factory.createOne(Tour);
-// ======================================
+// ===============================================================
 // #: PATCH /api/v1/tours/:id - REFACTORED Update an existing tour
-// ======================================
-// exports.updateTour = catchAsync(async (req, res, next) => {
-//   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-//     new: true,
-//     runValidators: true,
-//   });
-
-//   if (!updatedTour) {
-//     return next(new AppError('Tour not found', 404));
-//   }
-
-//   if (process.env.NODE_ENV === 'development') {
-//     console.log('Updated tour:', {
-//       id: updatedTour._id,
-//       name: updatedTour.name,
-//       price: updatedTour.price,
-//     });
-//   }
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: {
-//       tour: updatedTour,
-//     },
-//   });
-// });
+// ===============================================================
 exports.updateTour = factory.updateOne(Tour); // refactored by updateOne in handlerFactory
-
 // ======================================
 // #: DELETE /api/v1/tours/:id - REFACTORED Delete a tour
 // ======================================
-// exports.deleteTour = catchAsync(async (req, res, next) => {
-//   const tour = await Tour.findByIdAndDelete(req.params.id);
-
-//   if (!tour) {
-//     return next(new AppError('Tour not found', 404));
-//   }
-
-//   // NOTE: 204 = No Content (successful, but nothing to send back)
-//   res.status(204).json({
-//     status: 'success',
-//     data: null,
-//   });
-// });
-
 exports.deleteTour = factory.deleteOne(Tour);
 
-// ======================================
+// ============================================================
 // #: GET /api/v1/tours/tour-stats - Aggregated Tour Statistics
-// ======================================
+// ============================================================
 exports.getTourStats = catchAsync(async (req, res, next) => {
   // DEBUG: Log for development insight
   console.log('Running Tour Stats Aggregation...');
@@ -229,9 +105,9 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
   });
 });
 
-// ======================================
+// ==================================================================
 // #: Monthly Plan - Unwinding Projecting - Tour start stats by month
-// ======================================
+// ==================================================================
 exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   // STEP 0: // Convert year from string to number (e.g., from req.params.year = '2025' to 2025)
   const year = +req.params.year;
