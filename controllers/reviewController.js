@@ -3,7 +3,41 @@ const catchAsync = require('../utils/catchAsync');
 
 const factory = require('./handlerFactory');
 
+// =================================================================
+// Tester: before refactor
+// =================================================================
+// exports.getAllReviews = async (req, res, next) => {
+//   try {
+//     // 1) Build query
+//     const queryObj = { ...req.query };
+//     const excludedFields = ['page', 'sort', 'limit', 'fields'];
+//     excludedFields.forEach((el) => delete queryObj[el]);
+
+//     // 2) Filtering
+//     let queryStr = JSON.stringify(queryObj);
+//     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+//     const filter = JSON.parse(queryStr);
+
+//     console.log('req.query:', req.query);
+//     console.log('Parsed filter:', filter);
+
+//     const reviews = await Review.find(filter);
+
+//     // 3) Send response
+//     res.status(200).json({
+//       status: 'success',
+//       results: reviews.length,
+//       data: {
+//         reviews,
+//       },
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 exports.getAllReviews = factory.getAll(Review);
+
+// =================================================================
 exports.getReview = factory.getOne(Review);
 // =================================================================
 // Middleware to set tour and user IDs for nested routes
