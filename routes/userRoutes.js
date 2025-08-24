@@ -19,28 +19,39 @@ router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
+// Protect all routes after this middleware
+router.use(authController.protect);
+// Authentication Middleware (authController.protect):
+// This middleware checks if the request contains a valid JWT token.
+// If the token is missing or invalid,  preventing unauthorized access to the routes.
+// Now "authController.protect" can be removed from this point.
+
 // route for password updates must be protected. So only current logged-in users can use it:
 router.patch(
   '/updateMyPassword',
-  authController.protect,
+  // authController.protect,
   authController.updatePassword,
 );
 
 // route getMe to get doc from current user = ME
 router.get(
   '/me',
-  authController.protect,
+  // authController.protect,
   userController.getMe,
   userController.getUser,
 );
 // route for update user DATA
-router.patch('/updateMe', authController.protect, userController.updateMe);
+router.patch('/updateMe', userController.updateMe);
 // deleteMe - DEACTIVATE
-router.delete('/deleteMe', authController.protect, userController.deleteMe);
+router.delete('/deleteMe', userController.deleteMe);
 
-// ===============================
-// # USER - controller - ROUTES
-// ===============================
+// ========================================
+// # USER - controller - ROUTES Admins ONLY
+// ========================================
+// Protect all routes after this middleware for Admins Only!
+// =========================================================
+router.use(authController.restrictTo('admin'));
+// =========================================================
 router
   .route('/')
   .get(userController.getAllUsers)
