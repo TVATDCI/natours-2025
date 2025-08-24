@@ -8,6 +8,7 @@ module.exports = (req, res, next) => {
     'order',
     'duration',
     'rating',
+    'role',
   ];
 
   Object.entries(req.query).forEach(([key, value]) => {
