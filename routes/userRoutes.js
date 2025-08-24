@@ -26,6 +26,13 @@ router.patch(
   authController.updatePassword,
 );
 
+// route getMe to get doc from current user = ME
+router.get(
+  '/me',
+  authController.protect,
+  userController.getMe,
+  userController.getUser,
+);
 // route for update user DATA
 router.patch('/updateMe', authController.protect, userController.updateMe);
 // deleteMe - DEACTIVATE
