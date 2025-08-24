@@ -11,6 +11,7 @@ router
   .post(
     authController.protect,
     authController.restrictTo('user'),
+    reviewController.setTourUserIds,
     reviewController.createReview,
   ); // = /api/v1/reviews → create a review (review, tour, user are required in (reviewModel)
 
