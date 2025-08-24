@@ -34,6 +34,14 @@ const filterObj = (obj, ...allowedFields) => {
 };
 
 // ===============================
+// #: getMe - getting document based on current user id by taking the user.id from params.id
+// ===============================
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
+// ===============================
 // #: UPDATE CURRENT USER DATA
 // ===============================
 exports.updateMe = catchAsync(async (req, res, next) => {
