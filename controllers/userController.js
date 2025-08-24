@@ -8,17 +8,19 @@ const factory = require('./handlerFactory');
 // #: GET ALL USERS
 // ===============================
 // GET /api/v1/users
-exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
+exports.getAllUsers = factory.getAll(User);
+// refactored with getAll from handlerFactory
+// exports.getAllUsers = catchAsync(async (req, res) => {
+//   const users = await User.find();
 
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
+//   res.status(200).json({
+//     status: 'success',
+//     results: users.length,
+//     data: {
+//       users,
+//     },
+//   });
+// });
 
 // ===============================
 // Utility: filter unwanted fields (like role, password, etc.)
