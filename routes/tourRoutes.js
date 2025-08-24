@@ -34,21 +34,31 @@ router
   .get(tourController.aliasTopTours, tourController.getAllTours);
 
 router.route('/tour-stats').get(tourController.getTourStats);
-router.route('/monthly-plan/:year').get(
-  authController.protect, // must logged in
-  authController.restrictTo('admin', 'lead-guide'),
-  tourController.getMonthlyPlan,
-); // add URL params to define the year
+router
+  .route('/monthly-plan/:year')
+  .get(
+    authController.protect,
+    authController.restrictTo('admin', 'guide', 'lead-guide'),
+    tourController.getMonthlyPlan,
+  ); // add URL params to define the year
 
 router
   .route('/') // root(/api/v1/tours)
-  .get(authController.protect, tourController.getAllTours) //
-  .post(tourController.createTour); // Create a new tour. checkBody is removed!
+  .get(tourController.getAllTours) //
+  .post(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.createTour,
+  ); // Create a new tour. checkBody is removed!
 
 router
   .route('/:id')
   .get(tourController.getTour) // Get a single tour by ID
-  .patch(tourController.updateTour) // Update a specific tour
+  .patch(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.updateTour,
+  ) // Update a specific tour
   .delete(
     authController.protect, // must logged in
     authController.restrictTo('admin', 'lead-guide'), // admin or lead-guide only
