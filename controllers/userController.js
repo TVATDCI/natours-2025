@@ -83,20 +83,22 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 // #: GET A SINGLE USER BY ID
 // ===============================
 // GET /api/v1/users/:id
-exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+// Refactored with getOne from handlerFactory
+exports.getUser = factory.getOne(User);
+// exports.getUser = catchAsync(async (req, res, next) => {
+//   const user = await User.findById(req.params.id);
 
-  if (!user) {
-    return next(new AppError('No user found with that ID', 404));
-  }
+//   if (!user) {
+//     return next(new AppError('No user found with that ID', 404));
+//   }
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user,
-    },
-  });
-});
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       user,
+//     },
+//   });
+// });
 
 // ===============================
 // #: CREATE A USER
