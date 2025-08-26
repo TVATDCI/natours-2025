@@ -142,6 +142,35 @@ const tourSchema = new mongoose.Schema(
   },
 );
 
+// ===========================================
+// READING PERFORMANCE WITH INDEXES
+// .explain can be to show how MongoDB actually executes your queries under the hood. (Indexes)
+//const docs = await features.query.explain();
+// ===========================================
+//Sorting out tour indexes filtering:
+// :::::::::::::::
+// This means Mongo does not have to look at every single document in your collection
+// 1 → ascending index (low → high)
+// -1 → descending index (high → low)
+// ==================================
+// tourSchema.index({ price: 1 });
+// ==================================
+// ascending index on price means the prices in sorted order from cheapest → most expensive
+// Mongo doesn’t waste time scanning documents that could never match — it just jumps directly to the right ones.
+// query; "await Tour.find({ price: { $lt: 1000 } }).explain();"
+// "inputStage": {"stage": "IXSCAN", "keyPattern": {"price": 1}
+// "executionStats":  "totalKeysExamined": 3, "totalDocsExamined": 3, TOTAL Docs= 9
+tourSchema.index({ slug: 1 });
+// ================================================
+// A compound index :: Order matters!
+
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+
+// It can filter by price and sort efficiently by ratingsAverage in the same step.
+// Without this compound index, MongoDB would have to: use the price index, but then sort all results in memory by ratingsAverage → slower.
+
+// =================================
+
 // ======================================
 // #: Virtual Property
 // ======================================
