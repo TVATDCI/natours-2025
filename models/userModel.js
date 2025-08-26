@@ -75,33 +75,33 @@ const userSchema = new mongoose.Schema(
 // ==================================
 // 1) Hashing new password before saving
 // ==================================
-userSchema.pre('save', async function (next) {
-  // Only run if password is actually modified
-  if (!this.isModified('password')) return next();
+// userSchema.pre('save', async function (next) {
+//   // Only run if password is actually modified
+//   if (!this.isModified('password')) return next();
 
-  // Hash the password with cost of 12
-  this.password = await bcrypt.hash(this.password, 12);
+//   // Hash the password with cost of 12
+//   this.password = await bcrypt.hash(this.password, 12);
 
-  // Remove passwordConfirm field -
-  this.passwordConfirm = undefined;
-  next();
-});
+//   // Remove passwordConfirm field -
+//   this.passwordConfirm = undefined;
+//   next();
+// });
 
 // =====================================
 // 2) Update passwordChangedAt timestamp
 // =====================================
 // This runs only before saving a user document
-userSchema.pre('save', function (next) {
-  // If password field has NOT been modified, OR this is a new document, skip
-  if (!this.isModified('password') || this.isNew) return next();
+// userSchema.pre('save', function (next) {
+//   // If password field has NOT been modified, OR this is a new document, skip
+//   if (!this.isModified('password') || this.isNew) return next();
 
-  // Set the passwordChangedAt property to current time (minus 1 second)
-  // NOTE: To ensure the JWT issued *after* signup is always valid (avoids rare token issue if save() finishes slightly later)
-  // SOLUTION: set the time stamp to minus 1 second(1000ms)?
-  this.passwordChangedAt = Date.now() - 1000;
+//   // Set the passwordChangedAt property to current time (minus 1 second)
+//   // NOTE: To ensure the JWT issued *after* signup is always valid (avoids rare token issue if save() finishes slightly later)
+//   // SOLUTION: set the time stamp to minus 1 second(1000ms)?
+//   this.passwordChangedAt = Date.now() - 1000;
 
-  next();
-});
+//   next();
+// });
 
 // ============================================
 // Query middleware: filter out inactive users
