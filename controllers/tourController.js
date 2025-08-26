@@ -24,14 +24,15 @@ exports.aliasTopTours = (req, res, next) => {
 // ======================================
 // Refactored with getAll from handlerFactory, included populate option.
 // However, it is implemented with options afterQuery hook  for testing purposes, too!
-exports.getAllTours = factory.getAll(Tour, {
-  afterQuery: (tours) => {
-    console.log(
-      'Returned tours:',
-      tours.map((t) => t.name),
-    );
-  },
-});
+// exports.getAllTours = factory.getAll(Tour, {
+//   afterQuery: (tours) => {
+//     console.log(
+//       'Returned tours:',
+//       tours.map((t) => t.name),
+//     );
+//   },
+// });
+exports.getAllTours = factory.getAll(Tour);
 // =====================================================
 // #: GET /api/v1/tours/:id - Get a specific tour by ID
 // =====================================================
