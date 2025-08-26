@@ -136,7 +136,9 @@ exports.getAll = (Model, options = {}) =>
       .limitFields()
       .paginate();
 
-    const docs = await features.query.explain();
+    const docs = await features.query;
+    // .explain can be to show how MongoDB actually executes your queries under the hood. (Indexes)
+    //const docs = await features.query.explain();
 
     console.log('req.query:', req.query);
 
