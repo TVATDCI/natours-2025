@@ -136,12 +136,12 @@ exports.getAll = (Model, options = {}) =>
       .limitFields()
       .paginate();
 
-    const docs = await features.query;
+    const docs = await features.query.explain();
 
     console.log('req.query:', req.query);
 
     // Optional afterQuery hook  for testing purposes like logging. It will be removed.
-    if (options.afterQuery) options.afterQuery(docs);
+    // if (options.afterQuery) options.afterQuery(docs);
 
     res.status(200).json({
       status: 'success',
