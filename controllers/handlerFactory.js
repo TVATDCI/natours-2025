@@ -117,7 +117,7 @@ exports.getOne = (Model, popOptions) =>
 
 // ======================================
 // GET ALL (supports nested routes)
-// ======================================
+// ======================================type: mongoose.Schema.ObjectId,
 
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
