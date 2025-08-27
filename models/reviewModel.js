@@ -67,13 +67,21 @@ reviewSchema.pre(/^find/, function (next) {
 // ============================
 // Static methods in Mongoose → belong to the Model (Review) itself, not an instance.
 // ============================
-// Push the review stats up into the Tour model (Tour Stats Aggregation) through (tourId) and attach to calcAverageRatings
-reviewSchema.statics.calcAverageRatings = function (tourId) {
-  this.aggregate([
+// Push the review stats up into the Tour model (Tour Stats Aggregation - getTourStats) through (tourId) and attach to calcAverageRatings
+reviewSchema.statics.calcAverageRatings = async function (tourId) {
+  const stats = await this.aggregate([
     {
       $match: { tour: tourId }, // Match all reviews for a given tour
     },
+    {
+      $group: {
+        _id: '$tour', // group by tour _id
+        nRating: { $sum: 1 }, // count of reviews - nRating (numberRating)
+        avgRating: { $avg: '$rating' }, // average of ratings
+      },
+    },
   ]);
+  console.log(stats);
 };
 
 const Review = mongoose.model('Review', reviewSchema);
