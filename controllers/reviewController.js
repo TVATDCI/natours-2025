@@ -15,53 +15,40 @@ exports.setTourUserIds = (req, res, next) => {
 };
 
 // ======================================
-// Ownership guard for update/delete
-// Allows: owner OR admin
-// ======================================
-
-// exports.checkReviewOwnership = catchAsync(async (req, res, next) => {
-//   const review = await Review.findById(req.params.id);
-
-//   if (!review) {
-//     return next(new AppError('No review found with that ID', 404));
-//   }
-
-//   // Get the actual user ID (works for populated or non-populated)
-//   const ownerId = review.user._id
-//     ? review.user._id.toString()
-//     : review.user.toString();
-
-//   console.log({
-//     ownerId,
-//     currentUser: req.user.id,
-//     role: req.user.role,
-//   });
-
-//   if (ownerId !== req.user.id && req.user.role !== 'admin') {
-//     return next(
-//       new AppError('You do not have permission to perform this action', 403),
-//     );
-//   }
-
-//   next();
-// });
-
-// ======================================
 // CRUD via generic factory
 // ======================================
 exports.getAllReviews = factory.getAll(Review);
 exports.getReview = factory.getOne(Review);
+// =================================================
 // exports.createReview = factory.createOne(Review);
+// =================================================
+// NOTE: How Jonas does it on his github official page. BUT not until now. He knows how it will happen!
+// Single Responsibility: He doesn’t write custom logic for update/delete inside the controller.
+// Ownership Checks: Rather than custom code, he configures Mongoose schema to prevent duplicate reviews per user per tour using a compound index.
+// Cleaner Controllers: All the CRUD logic is handled by a generic handlerFactory, keeping controllers extremely clean.
+// Methods
+// setTourUserIds middleware: Ensures the user is always taken from the authenticated user—not from client input. You’re already matching this—nice work!
+// Factory handlers: He leverages createOne, updateOne, deleteOne, etc., from handlerFactory to avoid repeating similar logic across controllers.
+
+// ================================================================
+// NOTE: I DON'T. This is how i check for review ownership i come up with for now.
+// ================================================================
+// When creating, force the user field to come from req.user.id, not from req.body.
 exports.createReview = catchAsync(async (req, res, next) => {
+  // Ensure tour and user are set correctly
+  if (!req.body.tour) req.body.tour = req.params.tourId;
+  req.body.user = req.user.id; // 🔒 secure: override whatever client sends
+
   const newReview = await Review.create(req.body);
 
-  res.status(200).json({
+  res.status(201).json({
     status: 'success',
     data: {
-      newReview,
+      review: newReview,
     },
   });
 });
+
 // exports.updateReview = factory.updateOne(Review);
 // exports.deleteReview = factory.deleteOne(Review);
 
