@@ -119,7 +119,7 @@ exports.getOne = (Model, popOptions) =>
 // GET ALL (supports nested routes)
 // ======================================
 
-exports.getAll = (Model, options = {}) =>
+exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
     // Originally in getAllReview handler (reviewController)
     // To allow nested GET reviews on tour (simply hacked inline!)
