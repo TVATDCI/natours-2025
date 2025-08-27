@@ -1,7 +1,7 @@
 // controllers/reviewController.js
 const Review = require('../models/reviewModel');
 const catchAsync = require('../utils/catchAsync');
-// const AppError = require('../utils/appError');
+const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
 
 // ======================================
@@ -62,5 +62,58 @@ exports.createReview = catchAsync(async (req, res, next) => {
     },
   });
 });
-exports.updateReview = factory.updateOne(Review);
-exports.deleteReview = factory.deleteOne(Review);
+// exports.updateReview = factory.updateOne(Review);
+// exports.deleteReview = factory.deleteOne(Review);
+
+// PATCH /api/v1/reviews/:id
+exports.updateReview = catchAsync(async (req, res, next) => {
+  const review = await Review.findById(req.params.id);
+
+  if (!review) {
+    return next(new AppError('No review found with that ID', 404));
+  }
+
+  console.log('Review.user:', review.user);
+  console.log('Review.user.id:', review.user?.id);
+  console.log('req.user.id:', req.user.id);
+
+  // Check ownership (or admin)
+  if (review.user.id !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new AppError('You do not have permission to perform this action', 403),
+    );
+  }
+
+  // Now update
+  review.review = req.body.review || review.review;
+  review.rating = req.body.rating || review.rating;
+  await review.save();
+
+  res.status(200).json({
+    status: 'success',
+    data: { review },
+  });
+});
+
+// DELETE /api/v1/reviews/:id
+exports.deleteReview = catchAsync(async (req, res, next) => {
+  const review = await Review.findById(req.params.id);
+
+  if (!review) {
+    return next(new AppError('No review found with that ID', 404));
+  }
+
+  // Check ownership (or admin)
+  if (review.user.id !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new AppError('You do not have permission to perform this action', 403),
+    );
+  }
+
+  await review.deleteOne();
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
