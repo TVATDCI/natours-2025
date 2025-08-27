@@ -57,7 +57,7 @@ reviewSchema.pre(/^find/, function (next) {
   // If only the user info is needed, remove tour populate entirely from middleware and add it only when necessary in the controller (reviewController/getReviewWithTour)
   this.populate({
     path: 'user',
-    select: 'name photo -_id',
+    select: 'name photo',
   });
   next();
 });
