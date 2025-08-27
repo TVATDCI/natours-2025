@@ -62,6 +62,20 @@ reviewSchema.pre(/^find/, function (next) {
   next();
 });
 
+// ============================
+// Calculating Average on Tours
+// ============================
+// Static methods in Mongoose → belong to the Model (Review) itself, not an instance.
+// ============================
+// Push the review stats up into the Tour model (Tour Stats Aggregation) through (tourId) and attach to calcAverageRatings
+reviewSchema.statics.calcAverageRatings = function (tourId) {
+  this.aggregate([
+    {
+      $match: { tour: tourId }, // Match all reviews for a given tour
+    },
+  ]);
+};
+
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;
