@@ -108,6 +108,28 @@ reviewSchema.post('save', function () {
   this.constructor.calcAverageRatings(this.tour);
 });
 
+// To This point ... calcAverageRatings is only called inside a post('save') middleware.
+// It only recalculates averages when a review is created.
+// Fetching a tour by ID (getTour) does not trigger calcAverageRatings — because no middleware is running on read queries.
+
+// ============================
+// Middleware for findOneAndUpdate, findOneAndDelete
+// query middleware for updates and deletes, so averages always recalc when reviews are modified.
+// ============================
+// Retrieving the current doc from the database and store it in current query variable (r)
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.r = await this.findOne(); // pass the doc into post middleware
+  next();
+});
+
+// Then access the stored current database in post-middleware
+reviewSchema.post(/^findOneAnd/, async function () {
+  // await this.findOne(); does not work here because query already executed
+  if (this.r) {
+    await this.r.constructor.calcAverageRatings(this.r.tour);
+  }
+});
+
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;
