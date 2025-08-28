@@ -34,6 +34,14 @@ router
   .get(tourController.aliasTopTours, tourController.getAllTours);
 
 router.route('/tour-stats').get(tourController.getTourStats);
+// ===============================================
+// Geospatial Queries Finding Tours Within Radius!
+// GET /api/v1/tours/tours-within/100/center/34.111745,-118.113491/unit/mi
+// ===============================================
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(tourController.getToursWithin);
+
 router
   .route('/monthly-plan/:year')
   .get(
