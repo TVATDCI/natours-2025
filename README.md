@@ -3860,6 +3860,10 @@ Review {
 
 ### Geospatial Data in MongoDB
 
+---
+
+[MongoDB Tutorial](https://www.mongodb.com/docs/manual/tutorial/geospatial-tutorial/)
+
 MongoDB has **native support for geospatial data** using the **GeoJSON format**.
 The most common type is a **Point**, which represents a single location with coordinates.
 
@@ -3965,10 +3969,60 @@ If we referenced them in a separate collection, queries would be more complex wi
 }
 ```
 
+[Geospatial Queries](https://www.mongodb.com/docs/manual/geospatial-queries/)
+[MongoDB Tutorial](https://www.mongodb.com/docs/manual/tutorial/geospatial-tutorial/)
+
 ---
 
 ```js
+// ==================================================================
+// Controller function for “tours within radius” (geoWithin query)
+// ==================================================================
+// Example route:
+//   GET /api/v1/tours/tours-within/100/center/34.111745,-118.113491/unit/mi
+// Meaning:
+//   - Find all tours within 100 miles
+//   - From the point [lat=34.111745, lng=-118.113491]
+//   - Distance unit is miles (or km if specified)
+// ==================================================================
 
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  const { distance, latlng, unit } = req.params;
+
+  // Split "lat,lng" string into separate variables
+  const [lat, lng] = latlng.split(',');
+
+  // Validate that both values exist
+  if (!lat || !lng) {
+    return next(
+      new AppError(
+        'Please provide latitude and longitude in the format lat,lng.',
+        400,
+      ),
+    );
+  }
+
+  console.log(distance, lat, lng, unit);
+
+  // Convert distance to radians (distance / Earth's radius)
+  // Earth radius: 3963.2 miles OR 6378.1 km
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+  // Find all tours where the startLocation falls within the given circle
+  const tours = await Tour.find({
+    startLocation: {
+      $geoWithin: { $centerSphere: [[lng, lat], radius] },
+    },
+  });
+
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      data: tours,
+    },
+  });
+});
 ```
 
 [Back to the top](#natours-2025)
