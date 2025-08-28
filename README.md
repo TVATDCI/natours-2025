@@ -3970,7 +3970,6 @@ If we referenced them in a separate collection, queries would be more complex wi
 ```
 
 [Geospatial Queries](https://www.mongodb.com/docs/manual/geospatial-queries/)
-[MongoDB Tutorial](https://www.mongodb.com/docs/manual/tutorial/geospatial-tutorial/)
 
 ---
 
@@ -4024,6 +4023,12 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   });
 });
 ```
+
+---
+
+[MongoDB Tutorial](https://www.mongodb.com/docs/manual/tutorial/geospatial-tutorial/)
+
+---
 
 [Back to the top](#natours-2025)
 
