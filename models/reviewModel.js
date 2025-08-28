@@ -85,18 +85,27 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
 
   console.log(stats);
 
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsQuantity: stats[0].nRating,
-    ratingsAverage: stats[0].avgRating,
-  });
+  // Update the Tour with new stats
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[0].avgRating,
+    });
+  } else {
+    // If all reviews were deleted, reset to default
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
 };
 
 // ============================
 // Middleware for newly created Review
 // ============================
-reviewSchema.post('save', async function () {
-  // this → current review document
-  await this.constructor.calcAverageRatings(this.tour);
+reviewSchema.post('save', function () {
+  // `this` = current review document
+  this.constructor.calcAverageRatings(this.tour);
 });
 
 const Review = mongoose.model('Review', reviewSchema);
