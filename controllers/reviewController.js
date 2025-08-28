@@ -61,13 +61,16 @@ exports.updateReview = catchAsync(async (req, res, next) => {
   }
 
   console.log('Review.user:', review.user);
-  console.log('Review.user.id:', review.user?.id);
+  console.log('Review.user.id:', review.user.id);
   console.log('req.user.id:', req.user.id);
 
   // Check ownership (or admin)
   if (review.user.id !== req.user.id && req.user.role !== 'admin') {
     return next(
-      new AppError('You do not have permission to perform this action', 403),
+      new AppError(
+        'You do not have permission to perform this action and bla bla',
+        403,
+      ),
     );
   }
 
@@ -83,21 +86,45 @@ exports.updateReview = catchAsync(async (req, res, next) => {
 });
 
 // DELETE /api/v1/reviews/:id
+// exports.deleteReview = catchAsync(async (req, res, next) => {
+//   const review = await Review.findById(req.params.id);
+
+//   if (!review) {
+//     return next(new AppError('No review found with that ID', 404));
+//   }
+
+//   // Check ownership (or admin)
+//   if (review.user.id !== req.user.id && req.user.role !== 'admin') {
+//     return next(
+//       new AppError('You do not have permission to perform this action', 403),
+//     );
+//   }
+
+//   await review.deleteOne();
+
+//   res.status(204).json({
+//     status: 'success',
+//     data: null,
+//   });
+// });
+
 exports.deleteReview = catchAsync(async (req, res, next) => {
-  const review = await Review.findById(req.params.id);
+  // Build a single ownership filter
+  const filter =
+    req.user.role === 'admin'
+      ? { _id: req.params.id }
+      : { _id: req.params.id, user: req.user.id };
+
+  const review = await Review.findOneAndDelete(filter);
 
   if (!review) {
-    return next(new AppError('No review found with that ID', 404));
-  }
-
-  // Check ownership (or admin)
-  if (review.user.id !== req.user.id && req.user.role !== 'admin') {
     return next(
-      new AppError('You do not have permission to perform this action', 403),
+      new AppError(
+        'No review found with that ID or you are not authorized',
+        403,
+      ),
     );
   }
-
-  await review.deleteOne();
 
   res.status(204).json({
     status: 'success',
