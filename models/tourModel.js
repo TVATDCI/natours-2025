@@ -44,6 +44,14 @@ const tourSchema = new mongoose.Schema(
       default: 4.5,
       min: [1, 'Rating must be above 1.0'],
       max: [5, 'Rating must be below 5.0'],
+      // Setter function runs each time ratingsAverage is set.
+      // set: (val) => Math.round(val * 10) / 10,
+      // Math.round goes to the nearest integer (4.3333 to to). If val * 10 = (43.333). Then 43.333 / 10 = 4.3
+      // Or, If val(4.6666) * 10 = (46.666). Then 46.666 / 10 = 4.7
+      // OPTIONAL: But beware: savvy users 😅
+      // Math.ceil always rounds UP to the nearest tenth.
+      set: (val) => Math.ceil(val * 10) / 10,
+      // Example: 4.3333 * 10 = 43.333 → ceil = 44 → 4.4
     },
     ratingsQuantity: {
       type: Number,
