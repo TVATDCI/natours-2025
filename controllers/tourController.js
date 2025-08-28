@@ -177,15 +177,23 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
 });
 
 // ==================================================================
-// #: Controller function for “tours within radius”
+// #: Controller function for “tours within radius” (geoWithin query)
 // ==================================================================
-// tours-within/:distance/center/:latlng/unit/:unit
-// GET /api/v1/tours/tours-within/100/center/34.111745,-118.113491/unit/mi
+// Example route:
+//   GET /api/v1/tours/tours-within/100/center/34.111745,-118.113491/unit/mi
+// Meaning:
+//   - Find all tours within 100 miles
+//   - From the point [lat=34.111745, lng=-118.113491]
+//   - Distance unit is miles (or km if specified)
+// ==================================================================
 
 exports.getToursWithin = catchAsync(async (req, res, next) => {
   const { distance, latlng, unit } = req.params;
-  const [lat, lng] = latlng.split(','); // centralize by splitting latlng("str") with a comma. Then destructure them
-  // CHECK!
+
+  // Split "lat,lng" string into separate variables
+  const [lat, lng] = latlng.split(',');
+
+  // Validate that both values exist
   if (!lat || !lng) {
     return next(
       new AppError(
@@ -197,20 +205,22 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 
   console.log(distance, lat, lng, unit);
 
-  // Radius of Earth: in miles or kilometers
-  //   const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+  // Convert distance to radians (distance / Earth's radius)
+  // Earth radius: 3963.2 miles OR 6378.1 km
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
 
-  //   const tours = await Tour.find({
-  //     startLocation: {
-  //       $geoWithin: { $centerSphere: [[lng, lat], radius] },
-  //     },
-  //   });
+  // Find all tours where the startLocation falls within the given circle
+  const tours = await Tour.find({
+    startLocation: {
+      $geoWithin: { $centerSphere: [[lng, lat], radius] },
+    },
+  });
 
   res.status(200).json({
     status: 'success',
-    // results: tours.length,
-    // data: {
-    //   data: tours,
-    // },
+    results: tours.length,
+    data: {
+      data: tours,
+    },
   });
 });
