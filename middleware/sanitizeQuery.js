@@ -9,6 +9,7 @@ module.exports = (req, res, next) => {
     'duration',
     'rating',
     'ratingsAverage',
+    'ratingsQuantity',
     'role',
     'price',
   ];
