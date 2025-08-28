@@ -40,6 +40,14 @@ const reviewSchema = new mongoose.Schema(
 );
 
 // ======================================
+// Preventing Duplicate Reviews
+// - Each user can only leave one review per tour.
+// - If they try to post another review on the same tour, block it (or optionally update the old one).
+// ======================================
+
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
+// ======================================
 // PRE-QUERY MIDDLEWARE
 // ======================================
 // Watch out Double .populate() in one document(this)
