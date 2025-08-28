@@ -113,18 +113,20 @@ reviewSchema.post('save', function () {
 // Fetching a tour by ID (getTour) does not trigger calcAverageRatings — because no middleware is running on read queries.
 
 // ============================
-// Middleware for findOneAndUpdate, findOneAndDelete
+// Pre middleware for findOneAndUpdate, findOneAndDelete
 // query middleware for updates and deletes, so averages always recalc when reviews are modified.
 // ============================
 // Retrieving the current doc from the database and store it in current query variable (r)
 reviewSchema.pre(/^findOneAnd/, async function (next) {
-  this.r = await this.findOne(); // pass the doc into post middleware
+  // Save the document being modified so post middleware can access it
+  this.r = await this.clone().findOne(); // .clone() ensures no double execution error
+  console.log(this.r);
   next();
 });
 
-// Then access the stored current database in post-middleware
+// Post middleware for findOneAndUpdate / findOneAndDelete
 reviewSchema.post(/^findOneAnd/, async function () {
-  // await this.findOne(); does not work here because query already executed
+  // this.r contains the document before update/delete
   if (this.r) {
     await this.r.constructor.calcAverageRatings(this.r.tour);
   }
