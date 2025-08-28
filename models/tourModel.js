@@ -155,29 +155,48 @@ const tourSchema = new mongoose.Schema(
 // .explain can be to show how MongoDB actually executes your queries under the hood. (Indexes)
 //const docs = await features.query.explain();
 // ===========================================
-//Sorting out tour indexes filtering:
-// :::::::::::::::
-// This means Mongo does not have to look at every single document in your collection
-// 1 → ascending index (low → high)
-// -1 → descending index (high → low)
-// ==================================
-// tourSchema.index({ price: 1 });
-// ==================================
-// ascending index on price means the prices in sorted order from cheapest → most expensive
-// Mongo doesn’t waste time scanning documents that could never match — it just jumps directly to the right ones.
-// query; "await Tour.find({ price: { $lt: 1000 } }).explain();"
-// "inputStage": {"stage": "IXSCAN", "keyPattern": {"price": 1}
-// "executionStats":  "totalKeysExamined": 3, "totalDocsExamined": 3, TOTAL Docs= 9
-tourSchema.index({ slug: 1 });
 // ================================================
-// A compound index :: Order matters!
+// 🔹 Single-field index on price
+// ================================================
+// - Ascending index (1) means MongoDB stores prices sorted from cheapest → most expensive.
+// - Helps queries like:
+//     await Tour.find({ price: { $lt: 1000 } }).explain();
+// - Example output in execution plan:
+//     "stage": "IXSCAN", "keyPattern": { "price": 1 }
+//     "executionStats": { "totalKeysExamined": 3, "totalDocsExamined": 3, "nReturned": 3 }
+// - Notice: only 3 keys/docs scanned out of 9 total → very efficient!
+//
+tourSchema.index({ price: 1 });
 
+// ================================================
+// 🔹 Index on slug
+// ================================================
+// - Makes lookups like `Tour.findOne({ slug })` very fast.
+// - Especially useful when slugs are unique identifiers in URLs.
+//
+tourSchema.index({ slug: 1 });
+
+// ================================================
+// 🔹 Compound index (price + ratingsAverage)
+// ================================================
+// - Order matters here!
+// - First sorts/filter by `price` (asc), then within same price bucket sorts by `ratingsAverage` (desc).
+// - Example query it optimizes:
+//     Tour.find().sort({ price: 1, ratingsAverage: -1 })
+// - Without this compound index →
+//   MongoDB would filter using `price` index, but then sort all matches in memory by `ratingsAverage` (slower).
+//
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 
-// It can filter by price and sort efficiently by ratingsAverage in the same step.
-// Without this compound index, MongoDB would have to: use the price index, but then sort all results in memory by ratingsAverage → slower.
-
-// =================================
+// ================================================
+// 🔹 Geospatial index
+// ================================================
+// - Required for any $geoWithin, $geoNear queries on `startLocation`.
+// - Supports queries like:
+//     /tours-within/:distance/center/:latlng/unit/:unit
+// - Must be declared as a '2dsphere' index for GeoJSON coordinates (lng, lat).
+//
+tourSchema.index({ startLocation: '2dsphere' });
 
 // ======================================
 // #: Virtual Property
