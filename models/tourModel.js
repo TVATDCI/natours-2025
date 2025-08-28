@@ -166,7 +166,7 @@ const tourSchema = new mongoose.Schema(
 //     "executionStats": { "totalKeysExamined": 3, "totalDocsExamined": 3, "nReturned": 3 }
 // - Notice: only 3 keys/docs scanned out of 9 total → very efficient!
 //
-tourSchema.index({ price: 1 });
+// tourSchema.index({ price: 1 });
 
 // ================================================
 // 🔹 Index on slug
