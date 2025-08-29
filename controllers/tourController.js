@@ -245,26 +245,26 @@ exports.getDistances = catchAsync(async (req, res, next) => {
   }
 
   // Convert to meters (MongoDB default distance unit)
-  //   const multiplier = unit === 'mi' ? 0.000621371 : 0.001; // mi = miles, km = kilometers
+  // const multiplier = unit === 'mi' ? 0.000621371 : 0.001; // mi = miles, km = kilometers
 
-  //   const distances = await Tour.aggregate([
-  //     {
-  //       $geoNear: {
-  //         near: {
-  //           type: 'Point',
-  //           coordinates: [parseFloat(lng), parseFloat(lat)],
-  //         },
-  //         distanceField: 'distance', // new field added to docs
-  //         distanceMultiplier: multiplier, // convert from meters
-  //       },
-  //     },
-  //     {
-  //       $project: {
-  //         distance: 1,
-  //         name: 1,
-  //       },
-  //     },
-  //   ]);
+  const distances = await Tour.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [parseFloat(lng), parseFloat(lat)],
+        },
+        distanceField: 'distance', // new field added to docs
+        distanceMultiplier: multiplier, // convert from meters
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
 
   res.status(200).json({
     status: 'success',
