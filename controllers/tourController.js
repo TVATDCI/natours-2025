@@ -224,3 +224,52 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+// ==================================================================
+// #: Aggregation pipeline for calculating distances to all tours
+// ==================================================================
+// /tours/distances/:latlng/unit/:unit
+// GET /api/v1/tours/distances/34.111745,-118.113491/unit/mi
+
+exports.getDistances = catchAsync(async (req, res, next) => {
+  const { latlng } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  if (!lat || !lng) {
+    return next(
+      new AppError(
+        'Please provide latitude and longitude in the format lat,lng.',
+        400,
+      ),
+    );
+  }
+
+  // Convert to meters (MongoDB default distance unit)
+  //   const multiplier = unit === 'mi' ? 0.000621371 : 0.001; // mi = miles, km = kilometers
+
+  //   const distances = await Tour.aggregate([
+  //     {
+  //       $geoNear: {
+  //         near: {
+  //           type: 'Point',
+  //           coordinates: [parseFloat(lng), parseFloat(lat)],
+  //         },
+  //         distanceField: 'distance', // new field added to docs
+  //         distanceMultiplier: multiplier, // convert from meters
+  //       },
+  //     },
+  //     {
+  //       $project: {
+  //         distance: 1,
+  //         name: 1,
+  //       },
+  //     },
+  //   ]);
+
+  res.status(200).json({
+    status: 'success',
+    // data: {
+    //   data: distances,
+    // },
+  });
+});
