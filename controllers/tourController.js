@@ -214,7 +214,9 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
     startLocation: {
       $geoWithin: { $centerSphere: [[lng, lat], radius] },
     },
-    secretTour: { $ne: true }, // <- exclude secret tours. More info -> AGGREGATION MIDDLEWARE/tourModel
+    secretTour: { $ne: true },
+    // <- exclude secret tours directly into the find query. Nothing slip out!
+    // No extra work ofr mongoDb as it Calculates distances only for docs that match the query.
   });
 
   res.status(200).json({
@@ -231,6 +233,8 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 // ==================================================================
 // /tours/distances/:latlng/unit/:unit
 // GET /api/v1/tours/distances/34.111745,-118.113491/unit/mi
+// NOTE: Secrete tour is sharing the first index in aggregation middleware
+// SO - Filter secrets as early as possible in each context, and let middleware catch everything else!
 
 exports.getDistances = catchAsync(async (req, res, next) => {
   const { latlng, unit } = req.params;
@@ -265,7 +269,9 @@ exports.getDistances = catchAsync(async (req, res, next) => {
         },
         distanceField: 'distance', // distanceField: is the new field that MongoDB will calculate distances.
         distanceMultiplier: multiplier, // convert from meters
-        query: { secretTour: { $ne: true } }, // filter inside geoNear! more info -> AGGREGATION MIDDLEWARE/tourModel
+        query: { secretTour: { $ne: true } },
+        // filter inside geoNear! more info -> AGGREGATION MIDDLEWARE/tourModel
+        // Skips secret tours right at the $geoNear computation level.
       },
     },
     {
