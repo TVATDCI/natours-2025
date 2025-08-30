@@ -214,6 +214,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
     startLocation: {
       $geoWithin: { $centerSphere: [[lng, lat], radius] },
     },
+    secretTour: { $ne: true }, // <- exclude secret tours. More info -> AGGREGATION MIDDLEWARE/tourModel
   });
 
   res.status(200).json({
@@ -261,6 +262,7 @@ exports.getDistances = catchAsync(async (req, res, next) => {
         },
         distanceField: 'distance', // distanceField: is the new field that MongoDB will calculate distances.
         distanceMultiplier: multiplier, // convert from meters
+        query: { secretTour: { $ne: true } }, // filter inside geoNear! more info -> AGGREGATION MIDDLEWARE/tourModel
       },
     },
     {
