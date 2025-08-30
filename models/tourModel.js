@@ -364,9 +364,8 @@ tourSchema.pre('aggregate', function (next) {
   // this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   // NOTE: THE NEW CONDITION IS THAT geoNear must be the very first stage in the aggregation pipeline.
   // SOLUTION FOR NOW: A little better than manually switching the comment!
-  // If first stage is not geoNear, prepend $match for secretTour
-
-  // Only prepend secretTour filter if $geoNear is NOT the first stage
+  // CHECK! If the pipeline starts with $geoNear → don’t prepend $match.
+  // Otherwise prepend $match: { secretTour: { $ne: true } }.
   if (!(this.pipeline()[0] && this.pipeline()[0].$geoNear)) {
     this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   }
