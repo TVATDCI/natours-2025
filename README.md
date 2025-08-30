@@ -107,6 +107,7 @@ I value this project as a deep dive into building a **real-world, production-rea
       - [1. Start Location (Single Point)](#1-start-location-single-point)
       - [2. Locations (Array of Points)](#2-locations-array-of-points)
       - [3. Why Embed Locations?](#3-why-embed-locations)
+    - [API documentation in Postman](#api-documentation-in-postman)
 
 ---
 
@@ -4027,6 +4028,62 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 ---
 
 [MongoDB Tutorial](https://www.mongodb.com/docs/manual/tutorial/geospatial-tutorial/)
+
+---
+
+[Back to the top](#natours-2025)
+
+---
+
+### API documentation in Postman.
+
+---
+
+#### Steps to Create API Documentation with Postman
+
+**1. Open Postman Collection**
+
+- In Postman, `Natours API` collection with all routes (`/api/v1/tours`, `/api/v1/users`, etc.).
+- Make sure:
+  - Requests are grouped into folders (`Tours`, `Users`, `Reviews`, etc.).
+  - Each request has a clear name, not just “GET 1” or “POST request.”
+
+---
+
+**2. Add Descriptions**
+
+- For each request:
+  - Go to the request description field and explain what it does.
+
+  - Example:
+    **Get All Tours**
+    Returns a list of all tours with filtering, sorting, pagination, etc.
+  - For each **param** (like `latlng`, `unit`, `distance`), add description in **Params** tab.
+
+---
+
+**3. Save Example Responses**
+
+- Run the request in Postman.
+- In the response panel → click Save Example.
+  - Give it a name: e.g., 200 Success or 400 Bad Request.
+  - This way, the documentation shows both request + example response.
+
+**4. Generate Documentation**
+
+- In Postman left panel:
+  - Right-click your collection → **View Documentation**.
+  - Postman auto-generates an API doc from the requests, params, headers, descriptions, and examples.
+
+  ***
+
+**5. Publish (Optional)**
+[Back to the top](#natours-2025)
+
+- Or public the docs:
+  - Click **Publish Docs**.
+  - Postman will give you a public URL (like `https://documenter.getpostman.com/...`).
+- This can serve as a live API reference for the backend.
 
 ---
 
