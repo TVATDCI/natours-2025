@@ -246,7 +246,10 @@ exports.getDistances = catchAsync(async (req, res, next) => {
   }
 
   // Convert to meters (MongoDB default distance unit)
-  const multiplier = unit === 'mi' ? 0.000621371 : 0.001; // mi = miles, km = kilometers
+  // api/v1/tours/distances/34.111745,-118.113491/unit/km
+  // api/v1/tours/distances/34.111745,-118.113491/unit/mi
+  // mi = miles, km = kilometers / 1 m = 0.000621371 mi Or 1 km = 0.621371 mi
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
 
   // Call tour model from aggregate pipeline for the calculation
   const distances = await Tour.aggregate([
