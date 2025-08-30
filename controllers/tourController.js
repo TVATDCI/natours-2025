@@ -232,7 +232,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 // GET /api/v1/tours/distances/34.111745,-118.113491/unit/mi
 
 exports.getDistances = catchAsync(async (req, res, next) => {
-  const { latlng } = req.params;
+  const { latlng, unit } = req.params;
   const [lat, lng] = latlng.split(',');
 
   if (!lat || !lng) {
@@ -245,16 +245,21 @@ exports.getDistances = catchAsync(async (req, res, next) => {
   }
 
   // Convert to meters (MongoDB default distance unit)
-  // const multiplier = unit === 'mi' ? 0.000621371 : 0.001; // mi = miles, km = kilometers
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001; // mi = miles, km = kilometers
 
+  // Call tour model from aggregate pipeline for the calculation
   const distances = await Tour.aggregate([
+    // $geoNear: Must be the first stage in an aggregation pipeline.
+    // PS. if there are more than one field Geospatial index geoNear will need keys params to perform the task!
+    // It requires a 2dsphere index on the startLocation field. (tourSchema.index({ startLocation: '2dsphere' });)
+    // NOTE: near: Reference point (user’s coords) in GeoJSON { type: "Point", coordinates: [lng, lat] } format.
     {
       $geoNear: {
         near: {
           type: 'Point',
           coordinates: [parseFloat(lng), parseFloat(lat)],
         },
-        distanceField: 'distance', // new field added to docs
+        distanceField: 'distance', // distanceField: is the new field that MongoDB will calculate distances.
         distanceMultiplier: multiplier, // convert from meters
       },
     },
@@ -268,8 +273,8 @@ exports.getDistances = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    // data: {
-    //   data: distances,
-    // },
+    data: {
+      data: distances,
+    },
   });
 });
