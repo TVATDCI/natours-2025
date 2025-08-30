@@ -108,6 +108,7 @@ I value this project as a deep dive into building a **real-world, production-rea
       - [2. Locations (Array of Points)](#2-locations-array-of-points)
       - [3. Why Embed Locations?](#3-why-embed-locations)
     - [API documentation in Postman](#api-documentation-in-postman)
+    - [Server-Side vs Client-Side Rendering](#server-side-vs-client-side-rendering)
 
 ---
 
@@ -4084,6 +4085,31 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   - Click **Publish Docs**.
   - Postman will give you a public URL (like `https://documenter.getpostman.com/...`).
 - This can serve as a live API reference for the backend.
+
+---
+
+### Server-Side vs Client-Side Rendering
+
+---
+
+**🔹 Client-Side Rendering (CSR)**
+
+- Browser loads **HTML + CSS + JS bundle**.
+- JS fetches data from the API and dynamically builds UI.
+- Used in **SPAs (Single Page Apps)** like React, Angular, Vue.
+
+- **Pros:** Better user experience (after first load), faster navigation.
+- **Cons:** Initial load slower (big JS bundle), SEO can be harder.
+
+---
+
+**🔹 Server-Side Rendering (SSR)**
+
+- Server fetches **data + template (Pug, EJS, Handlebars, etc.)** → renders HTML → sends to client.
+- Browser receives **ready-to-display HTML**.
+
+- **Pros:** Great for SEO, faster first page load, no need for JS to see content.
+- **Cons:** Every new page requires a full server request.
 
 ---
 
