@@ -308,7 +308,7 @@ tourSchema.pre('save', function (next) {
 // ======================================
 tourSchema.pre(/^find/, function (next) {
   console.log('Query middleware: About to execute a find operation...');
-  // this.find({ secretTour: { $ne: true } }); // $ne= not equal to true - exclude secret tours. Now it is a secrete!
+  this.find({ secretTour: { $ne: true } }); // $ne= not equal to true - exclude secret tours. Now it is a secrete!
   // secretTour is now set to true: now it i a secrete not there if you look for it...uncomment this line to see it!
 
   this.start = Date.now(); // just for measuring query time (optional)
@@ -361,7 +361,15 @@ tourSchema.pre('aggregate', function (next) {
   // Adds a $match stage to the beginning of the aggregation pipeline
   // This filters out secret tours (secretTour: true), so they won't appear in aggregations by default
   // unshift() is used to make sure this is the FIRST stage in the pipeline
-  //this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  // this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  // NOTE: THE NEW CONDITION IS THAT geoNear must be the very first stage in the aggregation pipeline.
+  // SOLUTION FOR NOW: A little better than manually switching the comment!
+  // If first stage is not geoNear, prepend $match for secretTour
+
+  // Only prepend secretTour filter if $geoNear is NOT the first stage
+  if (!(this.pipeline()[0] && this.pipeline()[0].$geoNear)) {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  }
 
   // DEBUG:
   console.log(this.pipeline());
