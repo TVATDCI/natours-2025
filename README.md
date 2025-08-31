@@ -232,6 +232,8 @@ project-root/
 │ ├── apiFeatures.js
 │ ├── appError.js
 │ └── catchAsync.js
+├── views/
+│ └── base.pug
 ├── .eslintrc.json
 ├── .gitignore
 ├── .prettierrc
