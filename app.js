@@ -23,7 +23,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const app = express();
 
 // ======================================
-// 175: SETTING UP PUG IN EXPRESS
+// 1) VIEW ENGINE - SET UP PUG IN EXPRESS
 // ======================================
 
 // Telling Express that we’ll use Pug as our template engine
@@ -94,7 +94,7 @@ app.use(sanitizeHtmlMiddleware);
 // ======================================
 
 // ======================================
-// #: STATIC FILES & DEBUGGING
+// 2) SERVING STATIC FILES & DEBUGGING
 // ======================================
 // Serve static files from public folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -107,7 +107,7 @@ app.use((req, res, next) => {
 });
 
 // ======================================
-// #: ROUTES
+// 3) ROUTES
 // ======================================
 // Use the base.pug template inside the views folder.
 // Render it when the root (/) is accessed.
