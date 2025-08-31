@@ -30,7 +30,7 @@ const app = express();
 app.set('view engine', 'pug');
 
 // Define where the views (templates) live
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'base'));
 
 // ======================================
 // #: GLOBAL MIDDLEWARES
@@ -112,7 +112,12 @@ app.use((req, res, next) => {
 // Use the base.pug template inside the views folder.
 // Render it when the root (/) is accessed.
 app.get('/', (req, res) => {
-  res.status(200).render('base');
+  const user = { name: 'TVATDCI' };
+  const tours = [
+    { name: 'The Forest Hiker', duration: 5, price: 497 },
+    { name: 'The Sea Explorer', duration: 7, price: 997 },
+  ];
+  res.status(200).render('my-first', { user, tours });
 });
 
 app.use('/api/v1/tours', tourRouter);
