@@ -4079,12 +4079,8 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   ***
 
 **5. Publish (Optional)**
-[Back to the top](#natours-2025)
 
-- Or public the docs:
-  - Click **Publish Docs**.
-  - Postman will give you a public URL (like `https://documenter.getpostman.com/...`).
-- This can serve as a live API reference for the backend.
+[NATOURS API](https://documenter.getpostman.com/view/44358497/2sB3Hhs2Z5)
 
 ---
 
@@ -4110,6 +4106,10 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 
 - **Pros:** Great for SEO, faster first page load, no need for JS to see content.
 - **Cons:** Every new page requires a full server request.
+
+---
+
+[Back to the top](#natours-2025)
 
 ---
 
