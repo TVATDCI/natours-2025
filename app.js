@@ -1,6 +1,7 @@
 // ======================================
 // #: DEPENDENCIES
 // ======================================
+const path = require('path');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
@@ -22,6 +23,16 @@ const globalErrorHandler = require('./controllers/errorController');
 const app = express();
 
 // ======================================
+// 175: SETTING UP PUG IN EXPRESS
+// ======================================
+
+// Telling Express that we’ll use Pug as our template engine
+app.set('view engine', 'pug');
+
+// Define where the views (templates) live
+app.set('views', path.join(__dirname, 'views'));
+
+// ======================================
 // #: GLOBAL MIDDLEWARES
 // ======================================
 
@@ -29,6 +40,9 @@ const app = express();
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// Serve static files from public folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Security: Set secure HTTP headers
 app.use(helmet());
@@ -82,9 +96,8 @@ app.use(sanitizeHtmlMiddleware);
 // ======================================
 // #: STATIC FILES & DEBUGGING
 // ======================================
-
 // Serve static files from public folder
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Debugging: attach request time + log headers
 app.use((req, res, next) => {
@@ -96,6 +109,11 @@ app.use((req, res, next) => {
 // ======================================
 // #: ROUTES
 // ======================================
+// Use the base.pug template inside the views folder.
+// Render it when the root (/) is accessed.
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
