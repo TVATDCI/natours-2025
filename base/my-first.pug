@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    title PUG
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="/css/style.css")
+  body
+    h1 Welcome to my first Server-Side Rendering with Pug!
+    h2 Welcome #{user.name}!
+    br
+    p This is a simple Pug template with dynamic data.
+    br
+    ul When a user visits /, Express + Pug:
+    li 1. Fetch the template.
+    li 2. Insert any data, it will pass res.render('base', { tour })).
+    li 3. Compile it into real HTML.
+    li 4. Send the complete HTML page to the browser.
+    br
+    p The browser then simply renders the DOM immediately, because it already has a full HTML page from the backend.
+    br
+    h3 Your upcoming tours:
+    ul
+      each tour in tours
+        li #{tour.name} - $#{tour.price} - Duration: #{tour.duration} days
+
+    if tours.length === 0
+      p You have no upcoming tours.
