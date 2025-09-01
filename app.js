@@ -118,7 +118,7 @@ app.get('/', (req, res) => {
     { name: 'The Forest Hiker', duration: 5, price: 497 },
     { name: 'The Sea Explorer', duration: 7, price: 997 },
   ];
-  res.status(200).render('base', { user, tours });
+  res.status(200).render('base', { user, tours, guess: 'tom' });
 });
 
 app.use('/api/v1/tours', tourRouter);
