@@ -9,10 +9,14 @@ html
   body
     h1 Welcome to Natours-2025 - Server-Side Rendering with Pug!
     h2 Welcome #{user.name}!
-    h1= guess.toUpperCase()
+    h2= guess.toUpperCase()
     // Line above is called buffered code!
     // Visible comment in Devtools!
     //- Invisible comment in Devtools!
+    // And unbuffered code
+    - const x = 9;
+    h2= 10 * x / 9 
+    //- = 10
     br
     p This is a simple Pug template with dynamic data.
     br
