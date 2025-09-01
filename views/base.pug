@@ -3,11 +3,16 @@ html
   head
     title Natours-2025
     meta(charset="utf-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    link(rel="stylesheet", href="/css/style.css")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet" href="/css/style.css")
+    link(rel="shortcut icon" type='image/png'  href="img/favicon.png")
   body
     h1 Welcome to Natours-2025 - Server-Side Rendering with Pug!
     h2 Welcome #{user.name}!
+    h1= guess.toUpperCase()
+    // Line above is called buffered code!
+    // Visible comment in Devtools!
+    //- Invisible comment in Devtools!
     br
     p This is a simple Pug template with dynamic data.
     br
