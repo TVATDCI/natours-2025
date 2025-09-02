@@ -112,7 +112,7 @@ app.use((req, res, next) => {
 // Use the base.pug template inside the views folder.
 // Render it when the root (/) is accessed.
 app.get('/', (req, res) => {
-  // testing code:
+  // testing code 1:
   const user = { name: 'TVATDCI' };
   const tours = [
     { name: 'The Forest Hiker', duration: 5, price: 497 },
@@ -122,6 +122,18 @@ app.get('/', (req, res) => {
     .status(200)
     .render('base', { user, tours, sampleTour: 'The Forest Hiker' });
 });
+
+app.get('/overview', (req, res) => {
+  // testing code 2:
+  res.status(200).render('overview', { title: 'All Tours' });
+});
+
+app.get('/tours', (req, res) => {
+  // testing code 3:
+  res.status(200).render('tour', { title: 'The Forest Hiker Tour' });
+});
+
+// ======================================
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
