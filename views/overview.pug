@@ -1,0 +1,12 @@
+//- views/overview.pug
+extends base
+
+block content
+    section.overview
+        h1 Welcome to Natours-2025 - Server-Side Rendering with Pug!
+        //- Optional user greeting, only if 'user' is passed
+        h2 User #{user.name}!
+        h2 Our Exciting Tours
+            ul
+                each tour in tours
+                    li #{tour.name} - #{tour.duration} days ($#{tour.price})
