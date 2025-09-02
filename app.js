@@ -107,30 +107,35 @@ app.use((req, res, next) => {
 });
 
 // ======================================
+// Mock Data (for testing only)
+// ======================================
+const tours = [
+  { name: 'The Forest Hiker', duration: 5, price: 497 },
+  { name: 'The Sea Explorer', duration: 7, price: 997 },
+];
+
+const tour = { name: 'The Forest Hiker', duration: 5, price: 497 };
+
+// ======================================
 // 3) ROUTES
 // ======================================
-// Use the base.pug template inside the views folder.
-// Render it when the root (/) is accessed.
+
+// Root — for testing base layout directly
 app.get('/', (req, res) => {
-  // testing code 1:
   const user = { name: 'TVATDCI' };
-  const tours = [
-    { name: 'The Forest Hiker', duration: 5, price: 497 },
-    { name: 'The Sea Explorer', duration: 7, price: 997 },
-  ];
   res
     .status(200)
     .render('base', { user, tours, sampleTour: 'The Forest Hiker' });
 });
 
+// Overview — list of tours
 app.get('/overview', (req, res) => {
-  // testing code 2:
-  res.status(200).render('overview', { title: 'All Tours' });
+  res.status(200).render('overview', { title: 'All Tours', tours });
 });
 
+// Tour — single tour
 app.get('/tour', (req, res) => {
-  // testing code 3:
-  res.status(200).render('tour', { title: 'The Forest Hiker Tour' });
+  res.status(200).render('tour', { title: 'The Forest Hiker Tour', tour });
 });
 
 // ======================================
