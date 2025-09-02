@@ -128,7 +128,7 @@ app.get('/overview', (req, res) => {
   res.status(200).render('overview', { title: 'All Tours' });
 });
 
-app.get('/tours', (req, res) => {
+app.get('/tour', (req, res) => {
   // testing code 3:
   res.status(200).render('tour', { title: 'The Forest Hiker Tour' });
 });
