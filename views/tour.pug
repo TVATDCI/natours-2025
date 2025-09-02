@@ -1,0 +1,10 @@
+//- views/tour.pug
+extends base
+
+block content
+    section.tour
+        h1= tour.name
+        p Duration: #{tour.duration} days
+        p Price: $#{tour.price}
+        p Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        a(href="/overview") Back to all tours
