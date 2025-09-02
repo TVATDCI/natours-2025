@@ -130,12 +130,16 @@ app.get('/', (req, res) => {
 
 // Overview — list of tours
 app.get('/overview', (req, res) => {
-  res.status(200).render('overview', { title: 'All Tours', tours });
+  const user = { name: 'TVATDCI' };
+  res.status(200).render('overview', { title: 'All Tours', tours, user });
 });
 
 // Tour — single tour
 app.get('/tour', (req, res) => {
-  res.status(200).render('tour', { title: 'The Forest Hiker Tour', tour });
+  const user = { name: 'TVATDCI' };
+  res
+    .status(200)
+    .render('tour', { title: 'The Forest Hiker Tour', tour, user });
 });
 
 // ======================================
