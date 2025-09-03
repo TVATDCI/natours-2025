@@ -1,17 +1,19 @@
-// controllers/viewController.js
-
 // Mock data (temporary, later we get it from DB)
-const tours = [
-  { name: 'The Forest Hiker', duration: 5, price: 497 },
-  { name: 'The Sea Explorer', duration: 7, price: 997 },
-];
+// const tours = [
+//   { name: 'The Forest Hiker', duration: 5, price: 497 },
+//   { name: 'The Sea Explorer', duration: 7, price: 997 },
+// ];
+const Tour = require('../models/tourModel');
+const catchAsync = require('../utils/catchAsync');
 
-exports.getOverview = (req, res) => {
+exports.getOverview = catchAsync(async (req, res, next) => {
+  // 1) Get tour data from the collection
+  const tours = await Tour.find();
   res.status(200).render('overview', {
     title: 'All Tours',
     tours,
   });
-};
+});
 
 exports.getTour = (req, res) => {
   const tour = { name: 'The Forest Hiker', duration: 5, price: 497 };
