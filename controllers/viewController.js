@@ -5,6 +5,7 @@
 // ];
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
 exports.getOverview = catchAsync(async (req, res, next) => {
   // 1) Get tour data from the collection
@@ -15,13 +16,18 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getTour = (req, res) => {
-  const tour = { name: 'The Forest Hiker', duration: 5, price: 497 };
+exports.getTour = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findOne({ slug: req.params.slug });
+
+  if (!tour) {
+    return next(new AppError('No tour found with that name', 404));
+  }
+
   res.status(200).render('tour', {
-    title: 'The Forest Hiker Tour',
+    title: `${tour.name} Tour`,
     tour,
   });
-};
+});
 
 // ======================================
 // Mock Data (for testing only)
