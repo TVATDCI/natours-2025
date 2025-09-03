@@ -2,8 +2,8 @@ extends base
 
 block content
     section.overview
-        h1 Welcome to Natours-2025 - Server-Side Rendering with Pug!
-        //- Optional user greeting, only if 'user' is passed
+        h1= title
+        //- title = all tours 
         h2 Our Exciting Tours
             ul
                 each tour in tours
