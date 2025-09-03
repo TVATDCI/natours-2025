@@ -13,6 +13,7 @@ const hpp = require('hpp');
 const sanitizeQueryMiddleware = require('./middleware/sanitizeQuery');
 const sanitizeHtmlMiddleware = require('./middleware/sanitizeHtml');
 
+const viewRouter = require('./routes/viewRoutes');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
@@ -25,7 +26,6 @@ const app = express();
 // ======================================
 // 1) VIEW ENGINE - SET UP PUG IN EXPRESS
 // ======================================
-
 // Telling Express that we’ll use Pug as our template engine
 app.set('view engine', 'pug');
 
@@ -107,43 +107,10 @@ app.use((req, res, next) => {
 });
 
 // ======================================
-// Mock Data (for testing only)
-// ======================================
-const tours = [
-  { name: 'The Forest Hiker', duration: 5, price: 497 },
-  { name: 'The Sea Explorer', duration: 7, price: 997 },
-];
-
-const tour = { name: 'The Forest Hiker', duration: 5, price: 497 };
-
-// ======================================
 // 3) ROUTES
 // ======================================
-
-// Root — for testing base layout directly
-app.get('/', (req, res) => {
-  const user = { name: 'TVATDCI' };
-  res
-    .status(200)
-    .render('base', { user, tours, sampleTour: 'The Forest Hiker' });
-});
-
-// Overview — list of tours
-app.get('/overview', (req, res) => {
-  const user = { name: 'TVATDCI' };
-  res.status(200).render('overview', { title: 'All Tours', tours, user });
-});
-
-// Tour — single tour
-app.get('/tour', (req, res) => {
-  const user = { name: 'TVATDCI' };
-  res
-    .status(200)
-    .render('tour', { title: 'The Forest Hiker Tour', tour, user });
-});
-
+app.use('/', viewRouter);
 // ======================================
-
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
