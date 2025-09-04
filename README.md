@@ -233,7 +233,13 @@ project-root/
 │ ├── appError.js
 │ └── catchAsync.js
 ├── views/
-│ └── base.pug
+│ ├── \_footer.pug
+│ ├── \_head.pug
+│ ├── \_header.pug
+│ ├── \_reviewCard.pug
+│ ├── base.pug
+│ ├── overview.pug
+│ └── tour.pug
 ├── .eslintrc.json
 ├── .gitignore
 ├── .prettierrc
