@@ -179,9 +179,11 @@ project-root/
 │ ├── handlerFactory.js
 │ ├── reviewController.js
 │ ├── tourController.js
-│ └── userController.js
+│ ├── userController.js
+│ └── viewController.js
 ├── dev-data/
 │ ├── data/
+│ │ ├── import-dev-data.js
 │ │ ├── reviews.json
 │ │ ├── tour5.js
 │ │ ├── tours-simple.json
@@ -216,22 +218,24 @@ project-root/
 │ │ ├── tours/
 │ │ ├── users/
 │ │ ├── favicon.png
-│ │ ├── icon.svg
+│ │ ├── icons.svg
 │ │ ├── logo-green-round.png
 │ │ ├── logo-green-small.png
 │ │ ├── logo-green.png
-│ │ ├── log-white.png
+│ │ ├── logo-white.png
 │ │ └── pin.png
 │ ├── overview.html
 │ └── tour.html
 ├── routes/
 │ ├── reviewRoutes.js
 │ ├── tourRoutes.js
-│ └── userRoutes.js
+│ ├── userRoutes.js
+│ └── viewRoutes.js
 ├── utils/
 │ ├── apiFeatures.js
 │ ├── appError.js
-│ └── catchAsync.js
+│ ├── catchAsync.js
+│ └── email.js
 ├── views/
 │ ├── \_footer.pug
 │ ├── \_head.pug
@@ -245,7 +249,6 @@ project-root/
 ├── .prettierrc
 ├── app.js
 ├── config.env
-├── index.html
 ├── package.json
 ├── package-lock.json
 ├── README.md
