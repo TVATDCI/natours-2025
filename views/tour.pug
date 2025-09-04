@@ -32,7 +32,7 @@ block content
                     h2.heading-secondary.ma-bt-lg Quick facts
 
                     - const date = tour.startDates[0].toLocaleDateString('en-US', {month: 'long', year: 'numeric'})
-                    +overviewBox('Next date', tour.startDates[0], 'calendar')
+                    +overviewBox('Next date', date, 'calendar')
 
                     .overview-box__detail
                         svg.overview-box__icon
