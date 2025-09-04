@@ -1,11 +1,7 @@
 extends base
 
 block content
-    section.tour
-        h1= title
-        h1= tour.name
-        p Duration: #{tour.duration} days
-        p Price: $#{tour.price}
-        p Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        br
-        a(href="/") Back to overview
+    section.section-header
+        .header__hero
+            .header__hero-overlay &nbsp;
+            img.header__hero-img(src=`/img/tours/${tour.imageCover}`, alt=`${tour.name}`)
