@@ -9,9 +9,15 @@ block content
         .heading-box
             h1.heading-primary
                 span= `${tour.name} Tour`
-            p.heading-box__group
-                span.heading-box__text= tour.duration + ' days'
-                span.heading-box__text= tour.difficulty
+            .heading-box__group
+                .heading-box__detail
+                    svg.heading-box__icon
+                        use(xlink:href='/img/icons.svg#icon-clock')
+                    span.heading-box__text 10 days
+                .heading-box__detail
+                    svg.heading-box__icon
+                        use(xlink:href='/img/icons.svg#icon-map-pin')
+                    span.heading-box__text Las Vegas, USA
 
     section.section-description
         .overview-box
