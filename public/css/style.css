@@ -799,8 +799,11 @@ body {
   padding: 6rem 4rem 3rem 4rem;
   font-size: 1.4rem;
   display: grid;
-  grid-template-columns: auto auto;
+  /* grid-template-columns: auto auto;*/
+  grid-template-columns: 1fr 1fr 1fr;
   grid-row-gap: 0.75rem;
+  align-items: center;
+
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   justify-content: space-between;
@@ -848,6 +851,7 @@ body {
 .footer__copyright {
   justify-self: end;
   color: #999;
+  padding: 0 0 0 1.5rem;
 }
 @media only screen and (max-width: 50em) {
   .footer__copyright {
