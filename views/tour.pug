@@ -30,3 +30,18 @@ block content
                     li
                         strong Price:
                         |  $#{tour.price}
+
+        .description-box
+            h2.heading-secondary About the tour
+            p= tour.summary
+            p= tour.description
+
+    section.section-reviews
+        h2.heading-secondary Reviews
+        if tour.reviews.length
+            each review in tour.reviews
+                .review
+                    p= review.review
+                    p Rating: #{review.rating} stars — by #{review.user.name}
+        else
+            p No reviews yet for this tour.
