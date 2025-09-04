@@ -12,3 +12,21 @@ block content
             p.heading-box__group
                 span.heading-box__text= tour.duration + ' days'
                 span.heading-box__text= tour.difficulty
+
+    section.section-description
+        .overview-box
+            div
+                h2.heading-secondary Quick facts
+                ul
+                    li
+                        strong Duration:
+                        |  #{tour.duration} days
+                    li
+                        strong Max group size:
+                        |  #{tour.maxGroupSize}
+                    li
+                        strong Difficulty:
+                        |  #{tour.difficulty}
+                    li
+                        strong Price:
+                        |  $#{tour.price}
