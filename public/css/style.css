@@ -549,7 +549,7 @@ body {
   top: 0;
   bottom: 0;
   width: 100%;
-  border: 2px solid red;
+  max-height: 69vh; /* keep the height under control to keep zoom btns to bottom left */
 }
 
 .marker {

@@ -45,7 +45,17 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Security: Set secure HTTP headers
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+      imgSrc: ["'self'", 'data:', 'https://*.tile.openstreetmap.org'],
+      connectSrc: ["'self'", 'https://*.tile.openstreetmap.org'],
+    },
+  }),
+);
 
 // Rate limiting: Limit 100 requests per IP per hour (applies to /api routes)
 const limiter = rateLimit({
