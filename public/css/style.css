@@ -549,6 +549,7 @@ body {
   top: 0;
   bottom: 0;
   width: 100%;
+  border: 2px solid red;
 }
 
 .marker {
