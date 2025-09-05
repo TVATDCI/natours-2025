@@ -1,14 +1,14 @@
 extends base
 
-include _reviewCard
-
 block append head
-    // Leaflet CSS can go in head; but loading it here is okay for a quick test too
-    link(rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css')
-    script(src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js')
-    script(src='/js/leaflet-map.js')
-        //- script(src="/js/mapbox.js")
+    link(rel='stylesheet' href='/css/leaflet.css')
 
+
+block append scripts
+    script(src='/js/leaflet.js')
+    script(src='/js/leaflet-map.js')
+
+include _reviewCard
 
 mixin overviewBox(label, text, icon)
     .overview-box__detail
