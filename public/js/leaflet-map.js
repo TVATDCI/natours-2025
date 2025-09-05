@@ -24,13 +24,31 @@ if (mapEl) {
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 
+  // switch to a dark-themed basemap:
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+    className: 'leaflet-dark-theme',
+  }).addTo(map);
+
+  // Custom icon
+  //   const customIcon = L.icon({
+  //     iconUrl: '/img/pin.png',
+  //     iconSize: [32, 32],
+  //     iconAnchor: [16, 32],
+  //     popupAnchor: [0, -32],
+  //   });
+
   // Create bounds object
   const bounds = [];
 
   // Add markers for each location
   locations.forEach((loc) => {
-    const [lng, lat] = loc.coordinates; // Assuming your schema uses [lng, lat]
-    L.marker([lat, lng])
+    const [lng, lat] = loc.coordinates; // Assuming schema uses [lng, lat]
+
+    // Create a div icon
+    const marker = L.marker([lat, lng], {
+      icon: L.divIcon({ className: 'marker', iconSize: [32, 40] }),
+    })
       .addTo(map)
       .bindPopup(`<p>${loc.description}</p>`, { autoClose: false })
       .openPopup();
