@@ -108,7 +108,14 @@ I value this project as a deep dive into building a **real-world, production-rea
       - [2. Locations (Array of Points)](#2-locations-array-of-points)
       - [3. Why Embed Locations?](#3-why-embed-locations)
     - [API documentation in Postman](#api-documentation-in-postman)
-    - [Server-Side vs Client-Side Rendering](#server-side-vs-client-side-rendering)
+28. - [Server-Side vs Client-Side Rendering](#server-side-vs-client-side-rendering)
+      - [1. Setting Pug in Express](#)
+      - [2. Create Base Template with Pug](#)
+      - [3.Include files into Pug Templates](#)
+      - [4. Extend Base Templates with Blocks](#)
+      - [5. Setting up Project Structure](#)
+      - [6. Include a Map with Mapbox](#)
+        - [Client-Side JS Injection](#client-side-js-injection)
 
 ---
 
@@ -4119,6 +4126,40 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 - **Cons:** Every new page requires a full server request.
 
 ---
+
+#### Client-Side JS Injection
+
+**1. Create `mapbox.js` inside `public/js/`:**
+
+```js
+console.log('Test MSG from the client side');
+```
+
+**2. In `_head.pug`, define a `block head` placeholder:**
+
+```pug
+block head
+```
+
+**3. `base.pug`, you included `_head.pug` inside `<head>`:**
+
+```pug
+head
+  include _head.pug
+```
+
+**4. In `tour.pug`, you appended to the `head` block:**
+
+```pug
+extends base
+
+include _reviewCard
+
+block append head
+  script(src='/js/mapbox.js')
+```
+
+**Result**: whenever render `tour.pug` is rendered, the `<script src="/js/mapbox.js"></script>` will be injected into `<head>`. `console.log('msg from the client side')` should be in the browser console when visiting a tour detail page.
 
 [Back to the top](#natours-2025)
 
