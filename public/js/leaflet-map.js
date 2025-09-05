@@ -9,12 +9,12 @@ if (mapEl) {
   // Initialize Leaflet map
   const map = L.map('map', {
     scrollWheelZoom: false,
-    zoomControl: true, // set to false deactivate default (top-left) zoom btns!
+    zoomControl: false, // set to false deactivate default (top-left) zoom btns!
   });
 
   L.control
     .zoom({
-      position: 'bottomright', // add new zoom btns to bottom-right
+      position: 'topright', // add new zoom btns to bottom-right
     })
     .addTo(map);
 
