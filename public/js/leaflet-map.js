@@ -9,7 +9,14 @@ if (mapEl) {
   // Initialize Leaflet map
   const map = L.map('map', {
     scrollWheelZoom: false,
+    zoomControl: false, // deactivate default (top-left) zoom btns!
   });
+
+  L.control
+    .zoom({
+      position: 'bottomright', // add new zoom btns to bottom-right
+    })
+    .addTo(map);
 
   // Add tile layer (OpenStreetMap by default)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
