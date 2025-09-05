@@ -49,10 +49,23 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
+
       scriptSrc: ["'self'"],
+
       styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https://*.tile.openstreetmap.org'],
-      connectSrc: ["'self'", 'https://*.tile.openstreetmap.org'],
+
+      imgSrc: [
+        "'self'",
+        'data:',
+        'https://*.tile.openstreetmap.org',
+        'https://*.basemaps.cartocdn.com',
+      ],
+
+      connectSrc: [
+        "'self'",
+        'https://*.tile.openstreetmap.org',
+        'https://*.basemaps.cartocdn.com',
+      ],
     },
   }),
 );
