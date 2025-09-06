@@ -16,7 +16,9 @@ html
         // FOOTER
         include _footer
 
+        // Load axios first (global dependency)
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.11.0/axios.min.js')
         //- script(src="/js/leaflet-map.js")
-        // Load page-specific scripts here - each of the script will come from its block append scripts
+        // Load page-specific scripts - each of the script will be injected from its block append scripts
         //- block append scripts/ page.pug = page-specific scripts (like components/hooks in frontend)
         block scripts
