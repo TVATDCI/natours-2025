@@ -585,10 +585,11 @@ body {
   text-align: center;
   font-family: 'Lato', sans-serif;
   padding: 1.5rem !important;
-  font-size: 1.4rem;
-  font-weight: 800;
+  font-weight: 900;
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important;
-  background: linear-gradient(to right bottom, #1b3517, #04f8ab);
+  background: radial-gradient(circle, #090909 0%, #1b3517 50%, #04f8ab 100%);
+  border-radius: 12px;
+  color: #fff;
 }
 
 .section-reviews {
