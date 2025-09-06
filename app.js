@@ -50,7 +50,7 @@ app.use(
     directives: {
       defaultSrc: ["'self'"],
 
-      scriptSrc: ["'self'"],
+      scriptSrc: ["'self'", 'https://cdnjs.cloudflare.com'], // allow Axios CDN
 
       styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
 
