@@ -18,11 +18,15 @@ if (mapEl) {
     })
     .addTo(map);
 
-  // Add tile layer (OpenStreetMap by default)
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
+  // ==========================
+  // Option for Map layer Tiles
+  // ==========================
+  // Light tile layer OSM basemap (OpenStreetMap by default)
+  // ==========================
+  //   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //     attribution:
+  //       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  //   }).addTo(map);
 
   // switch to a dark-themed basemap:
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -30,7 +34,9 @@ if (mapEl) {
     className: 'leaflet-dark-theme',
   }).addTo(map);
 
+  // ====================
   // pre-styled map tiles
+  // ====================
   //   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   //     attribution:
   //       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://www.carto.com/">CARTO</a>',
@@ -38,32 +44,60 @@ if (mapEl) {
   //     maxZoom: 20,
   //   }).addTo(map);
 
-  // Custom icon
-  //   const customIcon = L.icon({
-  //     iconUrl: '/img/pin.png',
-  //     iconSize: [32, 32],
-  //     iconAnchor: [16, 32],
-  //     popupAnchor: [0, -32],
-  //   });
+  // =============================================
+  // Implement Leaflet marker (DOM + CSS approach)
+  // =============================================
+  // Bounds object (same concept as Mapbox LatLngBounds)
+  const bounds = L.latLngBounds();
 
-  // Create bounds object
-  const bounds = [];
-
-  // Add markers for each location
+  // Loop locations
   locations.forEach((loc) => {
-    const [lng, lat] = loc.coordinates; // Assuming schema uses [lng, lat]
+    const [lng, lat] = loc.coordinates;
 
-    // Create a div icon
+    // Create DOM element
+    const el = document.createElement('div');
+    el.className = 'marker';
+
+    // Add marker using Leaflet's `L.marker` with a DivIcon wrapper
     const marker = L.marker([lat, lng], {
-      icon: L.divIcon({ className: 'marker', iconSize: [32, 40] }),
+      icon: L.divIcon({
+        html: el, // pass DOM element here
+        className: '', // keep Leaflet from adding extra classes
+        iconSize: [32, 40],
+        iconAnchor: [16, 40],
+      }),
     })
       .addTo(map)
-      .bindPopup(`<p>${loc.description}</p>`, { autoClose: false })
-      .openPopup();
+      .bindPopup(`<p>${loc.description}</p>`, { autoClose: false });
 
-    bounds.push([lat, lng]);
+    bounds.extend([lat, lng]);
   });
 
-  // Fit map to show all markers
-  if (bounds.length) map.fitBounds(bounds, { padding: [50, 50] });
+  // Fit map to markers
+  map.fitBounds(bounds, { padding: [50, 50] });
 }
+// ================================================
+// Implement marker logic by https://leafletjs.com/
+// ================================================
+
+// Create bounds object
+//   const bounds = [];
+
+//   // Add markers for each location
+//   locations.forEach((loc) => {
+//     const [lng, lat] = loc.coordinates; // Assuming schema uses [lng, lat]
+
+//     // Create a div icon
+//     const marker = L.marker([lat, lng], {
+//       icon: L.divIcon({ className: 'marker', iconSize: [32, 40] }),
+//     })
+//       .addTo(map)
+//       .bindPopup(`<p>${loc.description}</p>`, { autoClose: false })
+//       .openPopup();
+
+//     bounds.push([lat, lng]);
+//   });
+
+//   // Fit map to show all markers
+//   if (bounds.length) map.fitBounds(bounds, { padding: [50, 50] });
+// }
