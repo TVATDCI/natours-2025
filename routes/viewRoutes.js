@@ -8,10 +8,12 @@
 const express = require('express');
 const viewController = require('../controllers/viewController');
 
+const authController = require('../controllers/authController'); // authController.protect
+
 const router = express.Router();
 
 router.get('/', viewController.getOverview);
-router.get('/tours/:slug', viewController.getTour);
+router.get('/tours/:slug', authController.protect, viewController.getTour);
 router.get('/login', viewController.getLoginForm);
 
 module.exports = router;
