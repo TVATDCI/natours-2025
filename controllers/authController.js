@@ -222,34 +222,30 @@ exports.protect = catchAsync(async (req, res, next) => {
 // #: isLoggedIn middleware - Only for rendered pages. NO ERRORS - No token in the header
 // ===============================
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
-  // 1) Get token (from Authorization header or cookies)
-  try {
-    if (req.cookies.jwt) {
-      // 1) Verify token
-      const decoded = await promisify(jwt.verify)(
-        req.cookies.jwt,
-        process.env.JWT_SECRET,
-      );
+  // 1) Check token (from Authorization header or cookies)
+  if (req.cookies.jwt) {
+    // 1) Verify token
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET,
+    );
 
-      // 2) Check if user still exists
-      const currentUser = await User.findById(decoded.id);
-      if (!currentUser) return next();
+    // 2) Check if user still exists
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) return next();
 
-      // 3) Check if user changed password after token was issued
-      console.log('Decoded JWT:', decoded);
-      console.log('Current user:', currentUser._id);
-      if (currentUser.changedPasswordAfter(decoded.iat)) {
-        return next();
-      }
-
-      // THERE IS A LOGGED IN USER - Render the currentUser as a locals.user!
-      res.locals.user = currentUser; // NOTE: makes user available - access in Pug templates
+    // 3) Check if user changed password after token was issued
+    console.log('Decoded JWT:', decoded);
+    console.log('Current user:', currentUser._id);
+    if (currentUser.changedPasswordAfter(decoded.iat)) {
       return next();
     }
-  } catch (err) {
-    // just continue without crashing.
+
+    // THERE IS A LOGGED IN USER - Render the currentUser as a locals.user!
+    res.locals.user = currentUser; // NOTE: makes user available - access in Pug templates
     return next();
   }
+  // just continue without crashing.
   next();
 });
 
