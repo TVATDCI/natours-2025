@@ -8,12 +8,14 @@
 const express = require('express');
 const viewController = require('../controllers/viewController');
 
-const authController = require('../controllers/authController'); // authController.protect
+const authController = require('../controllers/authController'); // authController.isLoggedIn - Check Token
 
 const router = express.Router();
 
+router.use(authController.isLoggedIn);
+
 router.get('/', viewController.getOverview);
-router.get('/tours/:slug', authController.protect, viewController.getTour);
+router.get('/tours/:slug', viewController.getTour);
 router.get('/login', viewController.getLoginForm);
 
 module.exports = router;
