@@ -13,6 +13,7 @@ const login = async (email, password) => {
 
     console.log('Login response:', res);
 
+    // Check the data.status. if === to success then redirect to homepage(/)
     if (res.data.status === 'success') {
       alert('Logged in successfully!');
       window.setTimeout(() => {
