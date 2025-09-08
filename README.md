@@ -231,6 +231,12 @@ project-root/
 │ │ ├── logo-green.png
 │ │ ├── logo-white.png
 │ │ └── pin.png
+│ ├── js/
+│ │ ├── alert.js
+│ │ ├── leaflet-map.js
+│ │ ├── leaflet.js
+│ │ ├── login.js
+│ │ └── mapbox.js
 │ ├── overview.html
 │ └── tour.html
 ├── routes/
