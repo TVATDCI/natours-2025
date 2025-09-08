@@ -13,7 +13,6 @@
   "license": "ISC",
   "author": "Tuanthong Vaidyanond",
   "type": "commonjs",
-  "main": "app.js",
   "scripts": {
     "start:dev": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
@@ -21,7 +20,9 @@
     "delete-data": "node dev-data/data/import-dev-data.js --delete",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "watch:js": "parcel serve public/js/index.js --dist-dir public/js/bundle --public-url /js",
+    "build:js": "parcel build public/js/index.js --dist-dir public/js/bundle --public-url /js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -53,6 +54,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.5.3",
     "eslint-plugin-react": "^7.37.5",
+    "parcel": "^2.15.4",
     "prettier": "^3.6.2"
   }
 }
