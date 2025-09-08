@@ -16,10 +16,13 @@ html
         // FOOTER
         include _footer
 
-        // Load axios first (global dependency)
-        script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.11.0/axios.min.js')
+        // Load axios CDN first (global dependency)
+        //- script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.11.0/axios.min.js')
         //- script(src="/js/leaflet-map.js")
+        //- Main Bundle
         script(src='/js/bundle/index.js')
+        link(rel='stylesheet' href='/js/bundle/index.css')
+
         // Load page-specific scripts - each of the script will be injected from its block append scripts
         //- block append scripts/ page.pug = page-specific scripts (like components/hooks in frontend)
-        block scripts
+        //- block scripts
