@@ -1,8 +1,5 @@
-// import axios from 'axios'; - NO NEED to install axios by injecting AJEX script in base.pug as global dependency. Watch you have to let Helmet know 🤓
-
-// const showAlert = require('./alerts');
-
 /* eslint-disable */
+// import axios from 'axios';
 
 // LOGIN HANDLER
 const login = async (email, password) => {
@@ -17,7 +14,7 @@ const login = async (email, password) => {
 
     // Check the data.status. if === to success then redirect to homepage(/)
     if (res.data.status === 'success') {
-      alert('Logged in successfully!');
+      alert('Logged in is very fucking successfully!');
       window.setTimeout(() => {
         location.assign('/'); // redirect to homepage
       }, 1500);
@@ -30,6 +27,7 @@ const login = async (email, password) => {
   }
 };
 // DOM HANDLING
+// moved to js/index.js
 const form = document.querySelector('.form');
 if (form) {
   form.addEventListener('submit', (e) => {
