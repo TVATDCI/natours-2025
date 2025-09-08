@@ -1,8 +1,8 @@
 /* eslint-disable */
 // import axios from 'axios';
 
-// LOGIN HANDLER
-const login = async (email, password) => {
+// LOGIN HANDLER CDN version
+export const login = async (email, password) => {
   try {
     const res = await axios({
       method: 'POST',
@@ -28,14 +28,3 @@ const login = async (email, password) => {
 };
 // DOM HANDLING
 // moved to js/index.js
-const form = document.querySelector('.form');
-if (form) {
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    login(email, password);
-  });
-}
