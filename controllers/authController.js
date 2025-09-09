@@ -20,8 +20,9 @@ const sendEmail = require('../utils/email');
 // };
 // ES6 arrow function - use an implicit return to simplify arrow function by removing the curly braces and the return keyword!
 // REASON: Curly braces + return are only needed if your function body has multiple statements.
-// ===============================
+// ===================
 // #: Create JWT token
+// ===================
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN, // reset to '1h'
@@ -166,8 +167,19 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 // ===============================
-// #: PROTECT - protect (all tours) middleware
+// #: LOGOUT
 // ===============================
+exports.logout = (req, res) => {
+  req.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000), // Expires in 10 secs
+    httpOnly: true,
+  });
+  res.status(200).json({ status: 'success' });
+};
+
+// ===========================================
+// #: PROTECT - protect (all tours) middleware
+// ===========================================
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Get token (from Authorization header or cookies)
   let token;
