@@ -1,5 +1,6 @@
 /* eslint-disable */
 import axios from 'axios';
+import { showAlert } from './alerts.js';
 
 // LOGIN HANDLER AXIOS
 export const login = async (email, password) => {
@@ -7,7 +8,7 @@ export const login = async (email, password) => {
     const res = await axios.post('/api/v1/users/login', { email, password });
 
     if (res.data.status === 'success') {
-      alert('Logged in successfully!');
+      showAlert('Logged in successfully!');
       window.setTimeout(() => location.assign('/'), 1500);
     }
   } catch (err) {
