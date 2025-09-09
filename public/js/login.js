@@ -16,11 +16,11 @@ export const login = async (email, password) => {
     });
 
     // console.log('Login response:', res);
-    console.log(
-      'Calling showAlert with:',
-      'success',
-      'Logged in successfully!',
-    );
+    // console.log(
+    //   'Calling showAlert with:',
+    //   'success',
+    //   'Logged in successfully!',
+    // );
 
     if (res.data.status === 'success') {
       showAlert('success', 'Logged in successfully!');
