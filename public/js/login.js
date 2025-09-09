@@ -8,14 +8,16 @@ export const login = async (email, password) => {
     const res = await axios.post('/api/v1/users/login', { email, password });
 
     if (res.data.status === 'success') {
-      showAlert('Logged in successfully!');
+      showAlert('success', 'Logged in successfully!');
       window.setTimeout(() => location.assign('/'), 1500);
     }
   } catch (err) {
-    alert(
+    showAlert(
+      'error',
       err.response?.data?.message || 'Something went wrong! Please try again.',
     );
   }
 };
+
 // DOM HANDLING
-// moved to js/index.js
+// moved to js/index.js for bundling!
