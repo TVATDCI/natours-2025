@@ -1,8 +1,15 @@
+// Show alert (success or error)
 export const showAlert = (type, msg) => {
-  const el = document.createElement('div');
-  el.className = `alert alert--${type}`;
-  el.textContent = msg;
-  document.querySelector('body').append(el);
+  hideAlert(); // remove any existing alerts first
 
-  setTimeout(() => el.remove(), 5000);
+  const markup = `<div class="alert alert--${type}">${msg}</div>`;
+  document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
+
+  window.setTimeout(hideAlert, 5000);
+};
+
+// Hide alert
+export const hideAlert = () => {
+  const el = document.querySelector('.alert');
+  if (el) el.parentElement.removeChild(el);
 };
