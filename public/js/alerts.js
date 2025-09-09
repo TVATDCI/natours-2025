@@ -1,32 +1,18 @@
-// export const hideAlert = () => {
-//   const el = document.querySelector('.alert');
-//   if (el) el.parentElement.removeChild(el);
-// };
+/* eslint-disable */
+// type = 'success' or 'error'
 
-// // Show alert (success or error)
-// export const showAlert = (type, msg) => {
-//   hideAlert(); // remove any existing alerts first
+// Dom Handling ;)
+// hide the left over
+export const hideAlert = () => {
+  const el = document.querySelector('.alert'); // select el with alert class
+  if (el) el.parentElement.removeChild(el); // then remove it.
+};
 
-//   const markup = `<div class="alert alert--${type}">${msg}</div>`;
-//   document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
-
-//   window.setTimeout(hideAlert, 5000);
-// };
-
-// =====================================
-// Function declaration, hoisted version
-// =====================================
-export function hideAlert() {
-  const el = document.querySelector('.alert');
-  if (el) el.parentElement.removeChild(el);
-}
-
-// Show alert (success or error)
-export function showAlert(type, msg) {
+export const showAlert = (type, msg) => {
   hideAlert(); // remove any existing alerts first
 
-  const markup = `<div class="alert alert--${type}">${msg}</div>`;
-  document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
+  const markup = `<div class="alert alert--${type}">${msg}</div>`; // style.css
+  document.querySelector('body').insertAdjacentHTML('afterbegin', markup); // select the alert!
 
-  window.setTimeout(hideAlert, 5000);
-}
+  window.setTimeout(hideAlert, 5000); // hide it after 5 secs
+};
