@@ -83,33 +83,55 @@ const handleJWTExpiredError = () =>
 // =====================
 // DEVELOPMENT ERROR
 // =====================
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err, // Entire error object
-    message: err.message, // Human-readable message
-    stack: err.stack, // Stack trace for debugging
-  });
-};
-
-// =====================
-// PRODUCTION ERROR
-// =====================
-const sendErrorProd = (err, res) => {
-  // Operational, trusted error: send specific message
-  if (err.isOperational) {
+const sendErrorDev = (err, req, res) => {
+  if (req.originalUrl.startsWith('/api')) {
+    // API → JSON response
     return res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
+      stack: err.stack,
+    });
+  }
+  // RENDERED WEBSITE
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: err.message,
+  });
+};
+// =====================
+// PRODUCTION ERROR
+// =====================
+const sendErrorProd = (err, req, res) => {
+  if (req.originalUrl.startsWith('/api')) {
+    // Operational, trusted error: send specific message
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
+
+    // Programming or unknown error: don't leak details and send generic message
+    console.error('ERROR 🧨', err);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Something went very wrong!',
     });
   }
 
-  // Programming or unknown error: don't leak details and send generic message
-  console.error('ERROR 🧨', err);
+  // RENDERED WEBSITE
+  if (err.isOperational) {
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      msg: err.message,
+    });
+  }
 
-  return res.status(500).json({
-    status: 'error',
-    message: 'Something went very wrong!',
+  // Programming or unknown error
+  console.error('ERROR 💥', err);
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: 'Please try again later.',
   });
 };
 
@@ -127,7 +149,7 @@ module.exports = (err, req, res, next) => {
     // DEBUG: in development if you are too lazy to switch to :prod
     // tracking err.name CastError for during dev amd hardcoded to bad request!
     if (err.name === 'CastError') err.statusCode = 400;
-    return sendErrorDev(err, res);
+    return sendErrorDev(err, req, res);
   }
 
   // ======================================
@@ -162,7 +184,7 @@ module.exports = (err, req, res, next) => {
     // =============================================
     // To be continued!
 
-    return sendErrorProd(error, res);
+    return sendErrorProd(error, req, res);
   }
 
   // ======================================
