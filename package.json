@@ -25,6 +25,7 @@
     "build:js": "parcel build public/js/index.js --dist-dir public/js/bundle --public-url /js"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
