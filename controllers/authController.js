@@ -232,6 +232,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 // ===============================
 // #: isLoggedIn middleware - Only for rendered pages. NO ERRORS - No token in the header
+// Removed catchAsync (add try - catch) from global error, to allow logout to continue
 // ===============================
 exports.isLoggedIn = async (req, res, next) => {
   // 1) Check token (from Authorization header or cookies)
