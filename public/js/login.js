@@ -1,8 +1,9 @@
 /* eslint-disable */
 import axios from 'axios';
 import { showAlert } from './alerts.js';
-
+// ===================
 // LOGIN HANDLER AXIOS
+// ===================
 export const login = async (email, password) => {
   try {
     const res = await axios({
@@ -33,3 +34,23 @@ export const login = async (email, password) => {
 
 // DOM HANDLING
 // moved to js/index.js for bundling!
+
+// ===================
+// LOGOUT HANDLER AXIOS
+// ===================
+export const logout = async () => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: '/api/v1/users/logout',
+    });
+
+    if (res.data.status === 'success') {
+      showAlert('success', 'Logged out successfully!');
+      window.setTimeout(() => location.reload(true), 3000); // reload fresh page after 3secs!
+    }
+  } catch (err) {
+    console.error('Logout error:', err.response || err);
+    showAlert('error', 'Error logging out! Try again.');
+  }
+};
