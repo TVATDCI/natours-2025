@@ -166,9 +166,9 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-// ===============================
-// #: LOGOUT
-// ===============================
+// ====================================
+// #: LOGOUT Sending jwt without cookie but a mock 'loggedout"
+// ====================================
 exports.logout = (req, res) => {
   req.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000), // Expires in 10 secs
