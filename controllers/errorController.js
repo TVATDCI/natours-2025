@@ -172,7 +172,7 @@ module.exports = (err, req, res, next) => {
     let error = { ...err };
 
     // error.message preserve message before the error gets transformed or doesn't
-    error.message = err.message;
+    error.message = err.message; // session: 193 min: 19
     // Avoids 'undefined' messages or missing logs in transformed errors.
 
     // =============================================
