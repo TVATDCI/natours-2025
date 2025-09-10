@@ -12,11 +12,13 @@ const authController = require('../controllers/authController'); // authControll
 
 const router = express.Router();
 
-router.use(authController.isLoggedIn);
+// getAccount needs protect controller
+// router.use(authController.isLoggedIn); // removed to avoid double req on getAccount
 
 router.get('/', authController.isLoggedIn, viewController.getOverview);
 router.get('/tours/:slug', authController.isLoggedIn, viewController.getTour);
 router.get('/login', authController.isLoggedIn, viewController.getLoginForm);
+// getAccount needs clear check on both JWT token and cookies
 router.get('/me', authController.protect, viewController.getAccount);
 
 module.exports = router;
