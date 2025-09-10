@@ -47,13 +47,10 @@ export const logout = async () => {
 
     if (res.data.status === 'success') {
       showAlert('success', 'Logged out successfully!');
-      window.setTimeout(() => {
-        if (window.location.pathname === '/me') {
-          location.assign('/');
-        } else {
-          location.reload(true);
-        }
-      }, 3000);
+      // natours data is not very big. Redirect to home after short delay is better than reload
+      // If the user logout from user dashboard, it will reload to page not found . err not found.
+      // = broken /me. It goes to generic error. In this case Jwt Malformed!
+      window.setTimeout(() => location.assign('/'), 1500);
     }
   } catch (err) {
     console.error('Logout error:', err.response || err);
