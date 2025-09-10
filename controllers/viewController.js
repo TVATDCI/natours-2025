@@ -2,6 +2,9 @@ const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
+// ===========================
+// #: GET OVERVIEW - ALL TOURS
+// ===========================
 exports.getOverview = catchAsync(async (req, res, next) => {
   // 1) Get tour data from the collection
   const tours = await Tour.find();
@@ -10,6 +13,10 @@ exports.getOverview = catchAsync(async (req, res, next) => {
     tours,
   });
 });
+
+// ====================
+// #: GET TOUR - A TOUR
+// ====================
 
 exports.getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findOne({ slug: req.params.slug }).populate({
@@ -27,8 +34,22 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 });
 
+// ==============================
+// #: GET LOGIN FORM - LOGIN PAGE
+// ==============================
+
 exports.getLoginForm = (req, res) => {
   res.status(200).render('login', {
     title: 'Login Form',
+  });
+};
+
+// ====================================
+// #: GET ACCOUNT - A USER ACCOUNT PAGE
+// ====================================
+
+exports.getAccount = (req, res) => {
+  res.status(200).render('account', {
+    title: 'Your account',
   });
 };
