@@ -47,7 +47,13 @@ export const logout = async () => {
 
     if (res.data.status === 'success') {
       showAlert('success', 'Logged out successfully!');
-      window.setTimeout(() => location.reload(true), 3000); // reload fresh page after 3secs!
+      window.setTimeout(() => {
+        if (window.location.pathname === '/me') {
+          location.assign('/');
+        } else {
+          location.reload(true);
+        }
+      }, 3000);
     }
   } catch (err) {
     console.error('Logout error:', err.response || err);
