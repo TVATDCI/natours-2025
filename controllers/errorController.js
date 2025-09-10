@@ -88,13 +88,19 @@ const sendErrorDev = (err, req, res) => {
     // API → JSON response
     return res.status(err.statusCode).json({
       status: err.status,
-      message: err.message,
+      message: err.message, // To the clients
       stack: err.stack,
     });
   }
-  // RENDERED WEBSITE
+
+  // Programming or Unknown errors → Don't leak details
+  // Log error- Checking in development
+  console.error('ERROR 🧨', err);
+  // RENDERED WEBSITE - Customized title 404 (page not found) VS Generic message
+  const title =
+    err.statusCode === 404 ? 'Page not found!' : 'Something went wrong!';
   return res.status(err.statusCode).render('error', {
-    title: 'Something went wrong!',
+    title,
     msg: err.message,
   });
 };
@@ -102,6 +108,7 @@ const sendErrorDev = (err, req, res) => {
 // PRODUCTION ERROR
 // =====================
 const sendErrorProd = (err, req, res) => {
+  // A) API
   if (req.originalUrl.startsWith('/api')) {
     // Operational, trusted error: send specific message
     if (err.isOperational) {
@@ -111,25 +118,31 @@ const sendErrorProd = (err, req, res) => {
       });
     }
 
-    // Programming or unknown error: don't leak details and send generic message
+    // Programming or Unknown errors → Don't leak details
+    // Log error
     console.error('ERROR 🧨', err);
+
+    // send generic message
     return res.status(500).json({
       status: 'error',
       message: 'Something went very wrong!',
     });
   }
 
-  // RENDERED WEBSITE
+  // B) RENDERED WEBSITE - 404 → title: “Page not found!” VS AppError message
+  // Operational, trusted error: send specific message
   if (err.isOperational) {
+    const title =
+      err.statusCode === 404 ? 'Page not found!' : 'Something went wrong!';
     return res.status(err.statusCode).render('error', {
-      title: 'Something went wrong!',
+      title,
       msg: err.message,
     });
   }
 
-  // Programming or unknown error
+  // Programming or IF UNKNOWN errors → GENERIC FALLBACK!
   console.error('ERROR 💥', err);
-  return res.status(err.statusCode).render('error', {
+  return res.status(500).render('error', {
     title: 'Something went wrong!',
     msg: 'Please try again later.',
   });
