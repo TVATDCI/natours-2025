@@ -1,24 +1,36 @@
-// routes/viewRoutes.js = is the bridge between frontend pages (Pug views) and Express server.
-// It’s an Express Router dedicated to rendering frontend Pug templates.
-// Unlike the API routes (which send JSON), these routes render HTML.
-// Example:
-// / → calls viewController.getOverview → renders overview.pug
-// /tours/:slug → calls viewController.getTour → renders tour.pug
+// routes/viewRoutes.js
+// ====================
+// This router connects frontend pages (Pug templates) with the Express server.
+// Unlike API routes (which return JSON), these routes render full HTML views.
+// Each route typically:
+//   1. Optionally checks login status (authController.isLoggedIn) → non-blocking
+//   2. Calls a viewController method → renders the corresponding Pug template
+//
+// Key difference between middleware:
+//   - authController.isLoggedIn → runs on public pages, checks cookie/JWT quietly.
+//       • Does NOT throw an error if no/invalid token.
+//       • Simply sets res.locals.user if a logged-in user exists (used in header.pug).
+//   - authController.protect → strict guard for protected pages.
+//       • Throws 401 if no/invalid token.
+//       • Use this for pages where the user must be authenticated (like /me).
+//
+// NOTE: isLoggedIn = "soft check for rendering", protect = "hard check for access".
+// SOLUTION: Use authController.protect → strict guard for protected pages. Authenticated user only!
 
 const express = require('express');
 const viewController = require('../controllers/viewController');
-
-const authController = require('../controllers/authController'); // authController.isLoggedIn - Check Token
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 
-// getAccount needs protect controller
-// router.use(authController.isLoggedIn); // removed to avoid double req on getAccount
-
+// Overview and tour detail pages: visible to everyone, but show different header if logged in
 router.get('/', authController.isLoggedIn, viewController.getOverview);
 router.get('/tours/:slug', authController.isLoggedIn, viewController.getTour);
+
+// Login form: if already logged in, header will reflect it
 router.get('/login', authController.isLoggedIn, viewController.getLoginForm);
-// getAccount needs clear check on both JWT token and cookies
+
+// Account page: must be logged in → strict protection required
 router.get('/me', authController.protect, viewController.getAccount);
 
 module.exports = router;
