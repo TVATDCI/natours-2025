@@ -1,7 +1,17 @@
 /* eslint-disable */
 import axios from 'axios';
 import { showAlert } from './alerts.js';
-// ===================
+
+// ====================
+// Future REFACTOR DRY Plan = Unify login / logout helper
+// ====================
+// export const handleAuthRedirect = (status, msg, redirectUrl) => {
+//   if (status === 'success') {
+// showAlert('success', msg);
+// setTimeout(() => location.assign(redirectUrl), 1500);
+//   }
+// };
+//
 // LOGIN HANDLER AXIOS
 // ===================
 export const login = async (email, password) => {
