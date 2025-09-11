@@ -6,10 +6,13 @@ import { showAlert } from './alerts';
 
 export const updateData = async (name, email) => {
   try {
+    // DEBUG:
+    console.log('Submitting data:', { name, email });
     // http: req directly to API endpoint = /updateMe
     const res = await axios({
       method: 'PATCH',
       url: '/api/v1/users/updateMe',
+      // The data is explicitly sent only name and email for the updating process
       data: {
         name,
         email,
@@ -20,6 +23,7 @@ export const updateData = async (name, email) => {
       showAlert('success', 'Data updated successfully!');
     }
   } catch (err) {
-    showAlert('error', err.response.data.message);
+    console.error('🔴 Update error:', err.response?.data || err.message);
+    showAlert('error', err.response?.data?.message || 'Update failed!');
   }
 };
