@@ -36,6 +36,10 @@ if (userDataForm) {
     e.preventDefault();
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
+
+    // DEBUG: log form data
+    console.log('📤 Form submit:', { name, email });
+    // updateData(name, email) → function only accepts name + email - Nothing else!
     updateData(name, email);
   });
 }
