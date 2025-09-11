@@ -53,3 +53,26 @@ exports.getAccount = (req, res) => {
     title: 'User account',
   });
 };
+
+// ==================================================================
+// #: UPDATE USER SETTINGS - IN USER ACCOUNT PAGE - SAVE SETTINGS BTN
+// ==================================================================
+
+exports.updateUserData = catchAsync(async (req, res, next) => {
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  res.status(200).render('account', {
+    title: 'User account',
+    user: updatedUser,
+  });
+});
