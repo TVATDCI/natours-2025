@@ -116,6 +116,7 @@ This project is a deep dive into building a **real-world, production-ready Node.
       - [5. Setting up Project Structure](#)
       - [6. Include a Map with Mapbox](#)
         - [Client-Side JS Injection](#client-side-js-injection)
+      - [SPAs VS MPAs](#spas-vs-mpas)
 
 ---
 
@@ -4166,6 +4167,104 @@ block append head
 ```
 
 **Result**: whenever render `tour.pug` is rendered, the `<script src="/js/mapbox.js"></script>` will be injected into `<head>`. `console.log('msg from the client side')` should be in the browser console when visiting a tour detail page.
+
+---
+
+### SPAs VS MPAs
+
+---
+
+#### Definition SPAs and MPAs
+
+**A Single-Page Application (SPA)**
+
+is a web application that loads a single HTML page and dynamically updates content as users interact with the app. Instead of reloading entire pages, only the necessary components change. SPA creates a seamless, fast, and responsive experience.
+
+**A Multi-Page Application (MPA)**
+
+consists of multiple pages, where each new interaction or request from the user leads to a full-page refresh. MPAs are the traditional web model. Each function or category of the website has its own dedicated page.
+
+---
+
+[Continue reading-SPAs VS MPAs](https://arounda.agency/blog/spa-vs-mpa-which-web-architecture-is-best-for-your-startup)
+
+---
+
+**Key differences**
+
+- **Traditional:** tightly couples frontend to backend rendering. Frontend doesn’t “know” the data — it just submits and reloads.
+
+- **API/AJAX:** decouples things. You can have the same API consumed by web, mobile, even third-party services. The frontend (browser) has more control.
+
+In both cases Express runs the backend:
+
+- Traditional: Express has “view routes” that handle both DB + rendering.
+
+- Modern: Express has “API routes” that only return JSON, then your JS frontend updates the DOM.
+
+---
+
+**SPA:**
+
+1. Offers fast, seamless, and interactive user experience with minimal disruptions.
+2. Reduces page reloads and provides near-instant interactions. Loads a single HTML page, and content is dynamically updated without page refreshes.
+3. Can feel faster to users because the app doesn’t reload entire pages. However, SPAs may require more initial loading time, especially complex ones.
+4. Often requires additional setup (server-side rendering or prerendering) to be fully optimized for search engines.
+5. Is easier to scale for apps that rely on user interaction and need to load data without reloading the page.
+6. More emphasis on the front end. Needs a more complex frontend setup and heavy reliance on JavaScript frameworks.
+7. Has smooth navigation without traditional page reloads and looks more like a desktop application.
+
+**Modern SPA / API-driven**
+
+- Frontend: Intercepts the form submission with JS (e.g. `addEventListener('submit', …)`) → then send an AJAX request (`axios.patch('/api/v1/users/updateMe', formData)`).
+
+- Backend: Express has an existing REST API route (`PATCH /api/v1/users/updateMe) that updates the DB and returns JSON ({status: 'success', data: {user}}).
+
+- Result: The page doesn’t reload. Instead, update the UI dynamically (e.g., change the name/email field or re-render).
+
+- ✔️ Pros: Smooth user experience, re-usable API, clear separation frontend/backend, can be used by mobile apps too.
+
+- ❌ Cons: More setup (JS code, axios, event listeners), needs error handling manually.
+
+---
+
+**MPA:**
+
+1. Offers a structured, clear, and organized user experience, but is slower because it refreshes the entire page as users navigate.
+2. Each new interaction results in a full-page reload.
+3. Is sometimes slower during navigation but can load faster initially due to its segmented content-loading structure.
+4. Has excellent SEO performance thanks to unique URLs for each page that are easily crawled by search engines.
+5. Is better suited for large-scale websites with vast content across different categories or functions.
+6. Needs more backend logic with individual pages requiring separate rendering.
+7. Has traditional navigation with clear page reloads. It’s ideal for complex or content-heavy sites.
+
+**Traditional “normal” HTML form submission**
+
+- Frontend: In your Pug/HTML
+
+```pug
+form(action='/submit-user-data', method='POST')
+  input(name='email', type='text')
+  button(type='submit') Save
+```
+
+- **Browser behavior:** Submitting the form triggers a full-page reload. The browser automatically sends data in the request body (`application/x-www-form-urlencoded`).
+
+- **Backend:** Express needs a route like:
+
+```js
+app.post('/submit-user-data', (req, res) => {
+  // req.body.email available
+  // update DB
+  res.redirect('/me'); // refresh page with updated info
+});
+```
+
+- ✔️ Pros: Very simple, built into HTML, no JavaScript required.
+
+- ❌ Cons: Page reloads (not smooth), backend must have routes that both handle DB logic and return a rendered page. Less reusable → API can’t easily serve mobile apps, etc.
+
+**However, Natours is a Node API + Pug frontend hybrid**.
 
 [Back to the top](#natours-2025)
 
