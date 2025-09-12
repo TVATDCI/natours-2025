@@ -7,7 +7,7 @@ import { showAlert } from './alerts';
 export const updateData = async (name, email) => {
   try {
     // DEBUG:
-    console.log('Submitting data:', { name, email });
+    console.log('📤 Sending PATCH to /updateMe:', { name, email });
     // http: req directly to API endpoint = /updateMe
     const res = await axios({
       method: 'PATCH',
@@ -18,6 +18,8 @@ export const updateData = async (name, email) => {
         email,
       },
     });
+
+    console.log('✅ Response from /updateMe:', res);
 
     if (res.data.status === 'success') {
       showAlert('success', 'Data updated successfully!');

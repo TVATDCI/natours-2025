@@ -11,18 +11,22 @@ import { leaflet } from './leaflet.js';
 import { leafletMap } from './leafletMap';
 
 // DOM Handling: only run this if we're on the login page (included logout!)
-const loginForm = document.querySelector('.form');
+const loginForm = document.querySelector('.form--login');
 const logoutBtn = document.querySelector('.nav__el--logout');
 // select user data form
 const userDataForm = document.querySelector('.form-user-data');
+
+console.log('💡 index.js loaded successfully');
 
 // === LOGIN FORM ===========================================
 if (loginForm)
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    console.log('📥 Form submit handler triggered');
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
+    console.log('📤 Passing to login():', { email, password });
     login(email, password);
   });
 
@@ -31,7 +35,7 @@ if (loginForm)
 if (logoutBtn) logoutBtn.addEventListener('click', logout);
 
 // === UPDATE FORM === USER SETTINGS(DATA) ==============
-if (userDataForm) {
+if (userDataForm)
   userDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('name').value;
@@ -42,4 +46,3 @@ if (userDataForm) {
     // updateData(name, email) → function only accepts name + email - Nothing else!
     updateData(name, email);
   });
-}
