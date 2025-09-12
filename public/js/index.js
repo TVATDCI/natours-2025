@@ -63,5 +63,14 @@ if (userPasswordForm) {
       passwordConfirm,
     });
 
-    updateSettings({ passwordCurrent, password, passwordConfirm}, 'password')
-}};
+    await updateSettings(
+      { passwordCurrent, password, passwordConfirm },
+      'password',
+    );
+
+    // optionally clear fields after success
+    document.getElementById('password-current').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('password-confirm').value = '';
+  });
+}
