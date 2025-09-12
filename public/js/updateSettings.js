@@ -23,8 +23,8 @@ export const updateSettings = async (data, type) => {
       data,
     });
 
-    console.log('✅ Response from /updateMe:', res);
-    console.log('✅ Response from /updateMyPassword:', res);
+    // console.log('✅ Response from /updateMe:', res);
+    // console.log('✅ Response from /updateMyPassword:', res);
 
     if (res.data.status === 'success') {
       showAlert('success', `${type.toUpperCase()} updated successfully!`);
