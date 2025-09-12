@@ -384,11 +384,13 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 // #: UPDATE CURRENT USER PASSWORD
 // ===============================
 exports.updatePassword = catchAsync(async (req, res, next) => {
+  console.log('Incoming body:', req.body);
+
   // 1) Get current user from collection and ask for the password from protect middleware
   const user = await User.findById(req.user.id).select('+password');
 
   // 2) Check if POSTed current password is correct from `userSchema.methods.correctPassword`
-  if (!(await user.correctPassword(req.body.currentPassword, user.password))) {
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
     return next(new AppError('Your current password is wrong.', 401));
   }
 
