@@ -35,17 +35,20 @@ if (loginForm)
 // If there is an event (addEventListener) when there is a click(logoutBtn), call the logout function
 if (logoutBtn) logoutBtn.addEventListener('click', logout);
 
-// === UPDATE FORM === USER SETTINGS(DATA) ==============
+// === UPDATE FORM === USER SETTINGS(DATA) === name, email ===========
 if (userDataForm)
   userDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
+
+    const form = new FormData();
+
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
 
     // DEBUG: log form data
-    console.log('📤 Form submit:', { name, email });
+    console.log('📤 Form submit:', 'data');
     // updateData(name, email) → function only accepts name + email - Nothing else!
-    updateSettings({ name, email }, 'data');
+    updateSettings(form, 'data');
   });
 
 // === UPDATE FORM === USER SETTINGS (PASSWORD) ==============
