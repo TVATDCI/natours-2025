@@ -54,7 +54,8 @@ if (userPasswordForm) {
     e.preventDefault();
 
     // change button text while waiting
-    document.querySelector('.btn--save-password').textContent = 'Updating...';
+    const saveBtn = document.querySelector('.btn--save-password');
+    saveBtn.textContent = 'Updating...';
 
     const passwordCurrent = document.getElementById('password-current').value;
     const password = document.getElementById('password').value;
@@ -66,17 +67,26 @@ if (userPasswordForm) {
       passwordConfirm,
     });
 
-    // Add async within the function and and await for the promise (below)
-    await updateSettings(
-      { passwordCurrent, password, passwordConfirm },
-      'password',
-    );
-
-    // reset button text when done
-    document.querySelector('.btn--save-password').textContent = 'Save password';
-    // and select the fields again to clear them (.value = '')
-    document.getElementById('password-current').value = '';
-    document.getElementById('password').value = '';
-    document.getElementById('password-confirm').value = '';
+    // Add async within the function and and await for the promise + with try/catch/finally.
+    // So the btn and fields always reset, never gets “stuck” on Updating., even if the request fails:
+    // runs the API call.
+    try {
+      await updateSettings(
+        { passwordCurrent, password, passwordConfirm },
+        'password',
+      );
+      // logs or handles errors without breaking the flow
+    } catch (err) {
+      console.error('Password update failed:', err);
+      // always resets the UI, whether success or failure.
+    } finally {
+      // reset button text when done
+      document.querySelector('.btn--save-password').textContent =
+        'Save password';
+      // and select the fields again to clear them (.value = '')
+      document.getElementById('password-current').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('password-confirm').value = '';
+    }
   });
 }
