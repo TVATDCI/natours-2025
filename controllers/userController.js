@@ -5,9 +5,9 @@ const AppError = require('../utils/appError');
 
 const factory = require('./handlerFactory');
 
-// ===============================
-// #: IMAGE UPLOAD BY MULTER
-// ===============================
+// ====================================
+// #: IMAGE UPLOAD BY MULTER MIDDLEWARE
+// ====================================
 // 1) Storage configuration - NOTE: cb = call back
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -52,7 +52,7 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-exports.uploadUserPhoto = upload.single('photo');
+exports.uploadUserPhoto = upload.single('photo'); // use it in userRoutes/updateMe
 
 // ===============================
 // #: GET ALL USERS
