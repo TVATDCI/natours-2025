@@ -7,6 +7,9 @@ const factory = require('./handlerFactory');
 
 // ====================================
 // #: IMAGE UPLOAD BY MULTER MIDDLEWARE
+// In /updateMe - If file was uploaded, add photo name to filteredBody
+// Implement if (req.file) filteredBody.photo = req.file.filename;
+// NOTE: After the image is uploaded --> Implement the photo field inside userModel to save image to database
 // ====================================
 // 1) Storage configuration - NOTE: cb = call back
 const multerStorage = multer.diskStorage({
@@ -105,6 +108,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   const filteredBody = filterObj(req.body, 'name', 'email');
   console.log('🟢 Filtered body:', filteredBody);
+
+  // If file was uploaded, add photo name to filteredBody
+  if (req.file) filteredBody.photo = req.file.filename; // It will store only the file name(.filename) in the database
 
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
