@@ -101,17 +101,20 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   console.log(req.file);
   console.log('🟡 updateMe hit! Body:', req.body);
 
+  // 1) Create error if user posts password data
   if (req.body.password || req.body.passwordConfirm) {
     console.log('🔴 Password fields sent, rejecting...');
     return next(new AppError('This route is not for password updates.', 400));
   }
 
+  // 2) Filter out unwanted fields not allowed to be updated
   const filteredBody = filterObj(req.body, 'name', 'email');
   console.log('🟢 Filtered body:', filteredBody);
 
-  // If file was uploaded, add photo name to filteredBody
+  // 3) If file was uploaded, add photo name to filteredBody
   if (req.file) filteredBody.photo = req.file.filename; // It will store only the file name(.filename) in the database
 
+  // 4) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
