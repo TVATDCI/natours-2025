@@ -45,6 +45,7 @@ exports.getMe = (req, res, next) => {
 // #: UPDATE CURRENT USER DATA
 // ===============================
 exports.updateMe = catchAsync(async (req, res, next) => {
+  console.log(req.file);
   console.log('🟡 updateMe hit! Body:', req.body);
 
   if (req.body.password || req.body.passwordConfirm) {
