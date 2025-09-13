@@ -53,6 +53,9 @@ if (userPasswordForm) {
   userPasswordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    // change button text while waiting
+    document.querySelector('.btn--save-password').textContent = 'Updating...';
+
     const passwordCurrent = document.getElementById('password-current').value;
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
@@ -63,12 +66,15 @@ if (userPasswordForm) {
       passwordConfirm,
     });
 
+    // Add async within the function and and await for the promise (below)
     await updateSettings(
       { passwordCurrent, password, passwordConfirm },
       'password',
     );
 
-    // optionally clear fields after success
+    // reset button text when done
+    document.querySelector('.btn--save-password').textContent = 'Save password';
+    // and select the fields again to clear them (.value = '')
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';
     document.getElementById('password-confirm').value = '';
