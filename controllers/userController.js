@@ -5,8 +5,52 @@ const AppError = require('../utils/appError');
 
 const factory = require('./handlerFactory');
 
+// ===============================
+// #: IMAGE UPLOAD BY MULTER
+// ===============================
+// 1) Storage configuration - NOTE: cb = call back
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/img/users'); // where to save!
+  },
+
+  filename: (req, file, cb) => {
+    // https://github.com/expressjs/multer
+    // console.log(req.file);
+    // { fieldname: 'photo',
+    //   originalname: 'leo.jpg',
+    //   encoding: '7bit',
+    //   mimetype: 'image/jpeg',
+    //   destination: 'public/img/users',
+    //   filename: '47dbd0b30b0b14259160dfaa0b4588ce',
+    //   path: 'public/img/users/47dbd0b30b0b14259160dfaa0b4588ce',
+    //   size: 207078 }
+    // user-userId-timestamp.jpeg
+    const ext = file.mimetype.split('/')[1];
+    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`); // specify time stamp to avoid upload at the same time!
+  },
+});
+
+// multer filter
+
+// 2) File filter (accept only images)
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    // specify file.mimetype upload only images
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image! Please upload only images.', 400), false);
+  }
+};
 // Moved from userRoutes
-const upload = multer({ dest: 'public/img/users' });
+// Then, follow above
+// const upload = multer({ dest: 'public/img/users' });
+
+// 3) Upload middleware
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
 
 exports.uploadUserPhoto = upload.single('photo');
 
