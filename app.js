@@ -127,8 +127,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Debugging: attach request time + log headers
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log(req.cookies);
-  console.log(req.headers); // DEBUG
+  //  console.log(req.cookies);
+  //  console.log(req.headers); // DEBUG
   next();
 });
 
