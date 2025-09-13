@@ -1,9 +1,13 @@
 const express = require('express');
+// import multer for img upload
+const multer = require('multer');
 
 // Import controller
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
-// const reviewController = require('../controllers/reviewController');
+
+// upload images
+const upload = multer({ dest: 'public/img/users' }); // to the file system, NOT in the database
 
 // declare and define the Routers before mounting!
 // logic: create routers for all routes and turn them into mini Express apps then mount them into the ROUTER below!
@@ -42,7 +46,8 @@ router.get(
   userController.getUser,
 );
 // route for update user DATA
-router.patch('/updateMe', userController.updateMe);
+// implement upload (single)img to /updateMe. ('photo') = ('name of the field')
+router.patch('/updateMe', upload.single('photo'), userController.updateMe);
 // deleteMe - DEACTIVATE
 router.delete('/deleteMe', userController.deleteMe);
 
