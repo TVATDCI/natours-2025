@@ -1,4 +1,5 @@
-const fs = require('fs');
+// const fs = require('fs');
+const fs = require('fs').promises;
 
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
@@ -79,16 +80,22 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
     // cleanup: remove old photo if it wasn't default
     if (req.user.photo && req.user.photo !== 'default.jpg') {
-      fs.unlink(`public/img/users/${req.user.photo}`, (err) => {
-        if (err) console.error('🟥 Failed to delete old photo:', err);
-      });
+      try {
+        await fs.unlink(`public/img/users/${req.user.photo}`);
+        console.log(`🗑 Deleted old photo: ${req.user.photo}`);
+      } catch (err) {
+        console.error('🟥 Failed to delete old photo:', err.message);
+      }
     }
   } else if (req.body.photo === 'default.jpg') {
     // Case 2: User clicked "Remove photo" → reset to default
     if (req.user.photo && req.user.photo !== 'default.jpg') {
-      fs.unlink(`public/img/users/${req.user.photo}`, (err) => {
-        if (err) console.error('🟥 Failed to delete old photo:', err);
-      });
+      try {
+        await fs.unlink(`public/img/users/${req.user.photo}`);
+        console.log(`🗑 Deleted removed photo: ${req.user.photo}`);
+      } catch (err) {
+        console.error('🟥 Failed to delete removed photo:', err.message);
+      }
     }
     filteredBody.photo = 'default.jpg';
   }
