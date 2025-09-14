@@ -1,6 +1,3 @@
-// const fs = require('fs');
-// const fs = require('fs').promises; // "engines": {"node": ">=14.0.0"}
-
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
