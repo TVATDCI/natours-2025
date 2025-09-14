@@ -1,11 +1,12 @@
 // const fs = require('fs');
-const fs = require('fs').promises; // "engines": {"node": ">=14.0.0"}
+// const fs = require('fs').promises; // "engines": {"node": ">=14.0.0"}
 
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 const { uploadUserPhoto, resizeUserPhoto } = require('./multerController'); // refactored version
+const { handleUserPhoto } = require('./photoController');
 
 const factory = require('./handlerFactory');
 
@@ -68,39 +69,10 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   const filteredBody = filterObj(req.body, 'name', 'email');
   console.log('🟢 Filtered body:', filteredBody);
 
-  // =========== Photo upload, remove and delete process ================
-  // 3) If file was uploaded, add photo name to filteredBody
-  // if (req.file) filteredBody.photo = req.file.filename; // It will store only the file name(.filename) in
-  // uploaded-resized in memory(req.file.buffer) and sent here to store in public/img/users/...
-  // Including remove and reset profile picture to fallback(default.jpg)
-  // delete the photo directly after being removed!
-  if (req.file) {
-    // Case 1: User uploaded a new photo
-    filteredBody.photo = req.file.filename;
-
-    // cleanup: remove old photo if it wasn't default
-    if (req.user.photo && req.user.photo !== 'default.jpg') {
-      try {
-        await fs.unlink(`public/img/users/${req.user.photo}`);
-        console.log(`🗑 Deleted old photo: ${req.user.photo}`);
-      } catch (err) {
-        console.error('🟥 Failed to delete old photo:', err.message);
-      }
-    }
-  } else if (req.body.photo === 'default.jpg') {
-    // Case 2: User clicked "Remove photo" → reset to default
-    if (req.user.photo && req.user.photo !== 'default.jpg') {
-      try {
-        await fs.unlink(`public/img/users/${req.user.photo}`);
-        console.log(`🗑 Deleted removed photo: ${req.user.photo}`);
-      } catch (err) {
-        console.error('🟥 Failed to delete removed photo:', err.message);
-      }
-    }
-    filteredBody.photo = 'default.jpg';
-  }
-
-  // ======================================================================
+  // 3) Handle photo updates (upload, remove, cleanup)
+  // =========== logic - handling photo upload, remove and delete process ========
+  // Moved to photoController
+  await handleUserPhoto(req, filteredBody, req.user);
 
   // 4) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
