@@ -15,11 +15,14 @@ const loginForm = document.querySelector('.form--login');
 const logoutBtn = document.querySelector('.nav__el--logout');
 // select user data form
 const userDataForm = document.querySelector('.form-user-data');
+const removePhoto = document.getElementById('remove-photo');
 const userPasswordForm = document.querySelector('.form-user-password');
 
 console.log('📇 index.js loaded successfully');
 
+//  =========================================================
 // === LOGIN FORM ===========================================
+//  =========================================================
 if (loginForm)
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -31,10 +34,13 @@ if (loginForm)
     login(email, password);
   });
 
+//  =====================================================
 // === LOGOUT BUTTON ====================================
 // If there is an event (addEventListener) when there is a click(logoutBtn), call the logout function
+//  =====================================================
 if (logoutBtn) logoutBtn.addEventListener('click', logout);
 
+// ==============================================
 // === UPDATE FORM === USER SETTINGS(DATA) === name, email ===========
 // ==============================================
 // USER DATA UPDATE FORM HANDLER
@@ -77,29 +83,22 @@ if (userDataForm) {
 // ==============================
 // REMOVE PROFILE PHOTO HANDLER
 // ==============================
-// const removePhoto = document.getElementById('remove-photo');
-// if (removePhoto) {
-//   removePhoto.addEventListener('click', () => {
-//     // Reset file input (so nothing is pending upload)
-//     const photoInput = document.getElementById('photo');
-//     const fileChosen = document.getElementById('file-chosen');
-//     // grab the current user preview image
-//     const userPhoto = document.querySelector('.form__user-photo');
+if (removePhoto) {
+  removePhoto.addEventListener('click', () => {
+    const photoInput = document.getElementById('photo');
+    if (photoInput) photoInput.value = ''; // clear pending file input
 
-//     if (photoInput) photoInput.value = '';
-//     if (fileChosen) fileChosen.textContent = 'Default (no profile picture)';
+    // Create a form to tell backend: reset to default
+    const form = new FormData();
+    form.append('photo', 'default.jpg');
 
-//     // instant refresh back to default.jpg
-//     if (userPhoto) userPhoto.src = '/img/users/default.jpg';
-//     // Create a form to reset backend to default
-//     const form = new FormData();
-//     form.append('photo', 'default.jpg');
+    console.log('🗑 Removing profile photo → reset to default.jpg');
 
-//     console.log('🗑 Removing profile photo → reset to default.jpg');
-
-//     updateSettings(form, 'data');
-//   });
-// }
+    // Backend sets photo to default.jpg
+    // updateSettings handles success alert + reload
+    updateSettings(form, 'data');
+  });
+}
 
 // ===========================================================
 // === UPDATE FORM === USER SETTINGS (PASSWORD ONLY) ==============
