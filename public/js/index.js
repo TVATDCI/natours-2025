@@ -17,17 +17,17 @@ const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
 
-console.log('💡 index.js loaded successfully');
+console.log('📇 index.js loaded successfully');
 
 // === LOGIN FORM ===========================================
 if (loginForm)
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    console.log('📥 Form submit handler triggered');
+    console.log('🤝 Form submit handler triggered');
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    console.log('📤 Passing to login():', { email, password });
+    console.log('🟠 Passing to login():', { email, password });
     login(email, password);
   });
 
@@ -36,22 +36,69 @@ if (loginForm)
 if (logoutBtn) logoutBtn.addEventListener('click', logout);
 
 // === UPDATE FORM === USER SETTINGS(DATA) === name, email ===========
-if (userDataForm)
+// ==============================================
+// USER DATA UPDATE FORM HANDLER
+// Handles profile updates (name, email, photo).
+// Submits data using FormData, so that files can
+// be uploaded along with text fields (multipart/form-data).
+// ==============================================
+if (userDataForm) {
   userDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
+    // Create a new FormData object to hold form inputs
+    // FormData is required here because we’re sending both
+    // text fields (name/email) AND potentially a file (photo).
     const form = new FormData();
 
+    // Append text fields
     form.append('name', document.getElementById('name').value);
     form.append('email', document.getElementById('email').value);
 
-    // DEBUG: log form data
-    console.log('📤 Form submit:', 'data');
-    // updateData(name, email) → function only accepts name + email - Nothing else!
+    // Append photo field (if user selected one)
+    // ⚠️ IMPORTANT: input element must have id="photo"
+    const photo = document.getElementById('photo').files[0];
+    if (photo) form.append('photo', photo);
+
+    // Debugging: log form contents to ensure everything is correct
+    // Note: logging FormData directly won’t show contents.
+    // Iterate instead if you want to see key-value pairs.
+    console.log('📃 Form submit data:');
+    for (let [key, value] of form.entries()) {
+      console.log(key, value);
+    }
+
+    // Call updateSettings utility function
+    // Second argument 'data' indicates we’re updating user data (not password).
     updateSettings(form, 'data');
   });
+}
 
-// === UPDATE FORM === USER SETTINGS (PASSWORD) ==============
+// ==============================
+// REMOVE PROFILE PHOTO HANDLER
+// ==============================
+const removePhoto = document.getElementById('remove-photo');
+if (removePhoto) {
+  removePhoto.addEventListener('click', () => {
+    // Reset file input (so nothing is pending upload)
+    const photoInput = document.getElementById('photo');
+    const fileChosen = document.getElementById('file-chosen');
+    if (photoInput) photoInput.value = '';
+    if (fileChosen) fileChosen.textContent = 'Default (no profile picture)';
+
+    // Create a form to reset backend to default
+    const form = new FormData();
+    form.append('photo', 'default.jpg');
+
+    console.log('🗑 Removing profile photo → reset to default.jpg');
+
+    updateSettings(form, 'data');
+  });
+}
+
+// ===========================================================
+// === UPDATE FORM === USER SETTINGS (PASSWORD ONLY) ==============
+// ===========================================================
 if (userPasswordForm) {
   userPasswordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -64,7 +111,7 @@ if (userPasswordForm) {
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
 
-    console.log('📤 Form submit new password:', {
+    console.log('🆕 Form submit new password:', {
       passwordCurrent,
       password,
       passwordConfirm,
