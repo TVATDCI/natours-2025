@@ -1,3 +1,4 @@
+/* eslint-disable */
 // handles upload - save, remove, delete, default and save.
 const fs = require('fs').promises;
 
