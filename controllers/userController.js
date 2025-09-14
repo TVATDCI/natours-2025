@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -68,12 +70,26 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   // 3) If file was uploaded, add photo name to filteredBody
   // if (req.file) filteredBody.photo = req.file.filename; // It will store only the file name(.filename) in
 
+  // uploaded-resized in memory(req.file.buffer) and sent here to store in public/img/users/...
   // Including remove and reset profile picture to fallback(default.jpg)
+  // delete the photo directly after being removed!
   if (req.file) {
     // Case 1: User uploaded a new photo
     filteredBody.photo = req.file.filename;
+
+    // cleanup: remove old photo if it wasn't default
+    if (req.user.photo && req.user.photo !== 'default.jpg') {
+      fs.unlink(`public/img/users/${req.user.photo}`, (err) => {
+        if (err) console.error('🟥 Failed to delete old photo:', err);
+      });
+    }
   } else if (req.body.photo === 'default.jpg') {
-    // Case 2: User clicked "Remove photo"
+    // Case 2: User clicked "Remove photo" → reset to default
+    if (req.user.photo && req.user.photo !== 'default.jpg') {
+      fs.unlink(`public/img/users/${req.user.photo}`, (err) => {
+        if (err) console.error('🟥 Failed to delete old photo:', err);
+      });
+    }
     filteredBody.photo = 'default.jpg';
   }
 
@@ -83,7 +99,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     runValidators: true,
   });
 
-  console.log('✅ Updated user:', updatedUser);
+  console.log('🟩 Updated user:', updatedUser);
 
   res.status(200).json({
     status: 'success',
