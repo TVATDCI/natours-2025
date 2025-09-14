@@ -39,9 +39,10 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
   if (!req.files.imageCover || !req.files.images) return next();
 
   // The process - updateOne update the document
+
   // 1) Cover image (imageCover) is an array[]
   // const  imageCoverFilename = `tour-${req.param.id}-${Date.now()}.jpeg`;
-  req.body.imageCover = `tour-${req.param.id}-${Date.now()}.jpeg`;
+  req.body.imageCover = `tour-${req.params.id}-${Date.now()}.jpeg`;
   await sharp(req.files.imageCover[0].buffer)
     .resize(2000, 1333)
     .toFormat('jpeg')
@@ -49,6 +50,19 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
     .toFile(`public/img/tours/${req.body.imageCover}`); // << replaced  imageCoverFilename!
   // update take the whole req.body
   // req.body.imageCover = imageCoverFilename
+
+  // 2) Images
+  req.files.images.map(async (file, i) => {
+    const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+
+    await sharp(req.files.imageCover[0].buffer)
+      .resize(2000, 1333)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/tours/${filename}`);
+
+    req.body.images.push(filename);
+  });
 
   next();
 });
