@@ -232,7 +232,14 @@ body {
 .btn--white::after {
   background-color: #fff;
 }
-
+.btn--transparent_green {
+  background-color: transparent;
+  color: #55c57a;
+}
+.btn--transparent_red {
+  background-color: transparent;
+  color: #eb4d4b;
+}
 .btn--green {
   background-color: #55c57a;
   color: #fff;
