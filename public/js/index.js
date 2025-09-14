@@ -77,24 +77,29 @@ if (userDataForm) {
 // ==============================
 // REMOVE PROFILE PHOTO HANDLER
 // ==============================
-const removePhoto = document.getElementById('remove-photo');
-if (removePhoto) {
-  removePhoto.addEventListener('click', () => {
-    // Reset file input (so nothing is pending upload)
-    const photoInput = document.getElementById('photo');
-    const fileChosen = document.getElementById('file-chosen');
-    if (photoInput) photoInput.value = '';
-    if (fileChosen) fileChosen.textContent = 'Default (no profile picture)';
+// const removePhoto = document.getElementById('remove-photo');
+// if (removePhoto) {
+//   removePhoto.addEventListener('click', () => {
+//     // Reset file input (so nothing is pending upload)
+//     const photoInput = document.getElementById('photo');
+//     const fileChosen = document.getElementById('file-chosen');
+//     // grab the current user preview image
+//     const userPhoto = document.querySelector('.form__user-photo');
 
-    // Create a form to reset backend to default
-    const form = new FormData();
-    form.append('photo', 'default.jpg');
+//     if (photoInput) photoInput.value = '';
+//     if (fileChosen) fileChosen.textContent = 'Default (no profile picture)';
 
-    console.log('🗑 Removing profile photo → reset to default.jpg');
+//     // instant refresh back to default.jpg
+//     if (userPhoto) userPhoto.src = '/img/users/default.jpg';
+//     // Create a form to reset backend to default
+//     const form = new FormData();
+//     form.append('photo', 'default.jpg');
 
-    updateSettings(form, 'data');
-  });
-}
+//     console.log('🗑 Removing profile photo → reset to default.jpg');
+
+//     updateSettings(form, 'data');
+//   });
+// }
 
 // ===========================================================
 // === UPDATE FORM === USER SETTINGS (PASSWORD ONLY) ==============
