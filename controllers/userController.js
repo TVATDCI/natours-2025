@@ -66,12 +66,15 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   console.log('🟢 Filtered body:', filteredBody);
 
   // 3) If file was uploaded, add photo name to filteredBody
-  if (req.file) {
-    filteredBody.photo = req.file.filename; // It will store only the file name(.filename) in the database
-  } else if (req.body.photo === 'default.jpg') {
-    // User clicked "remove photo"
-    filteredBody.photo = 'default.jpg';
-  }
+  if (req.file) filteredBody.photo = req.file.filename; // It will store only the file name(.filename) in
+
+  // Including remove and reset profile picture to fallback(default.jpg)
+  //   if (req.file) {
+  //     filteredBody.photo = req.file.filename; // It will store only the file name(.filename) in the database
+  //   } else if (req.body.photo === 'default.jpg') {
+  //     // User clicked "remove photo"
+  //     filteredBody.photo = 'default.jpg';
+  //   }
 
   // 4) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
