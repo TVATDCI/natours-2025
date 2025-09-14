@@ -1,5 +1,5 @@
 // const fs = require('fs');
-const fs = require('fs').promises;
+const fs = require('fs').promises; // "engines": {"node": ">=14.0.0"}
 
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
@@ -68,9 +68,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   const filteredBody = filterObj(req.body, 'name', 'email');
   console.log('🟢 Filtered body:', filteredBody);
 
+  // =========== Photo upload, remove and delete process ================
   // 3) If file was uploaded, add photo name to filteredBody
   // if (req.file) filteredBody.photo = req.file.filename; // It will store only the file name(.filename) in
-
   // uploaded-resized in memory(req.file.buffer) and sent here to store in public/img/users/...
   // Including remove and reset profile picture to fallback(default.jpg)
   // delete the photo directly after being removed!
@@ -99,6 +99,8 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     }
     filteredBody.photo = 'default.jpg';
   }
+
+  // ======================================================================
 
   // 4) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
