@@ -28,6 +28,13 @@ export const updateSettings = async (data, type) => {
 
     if (res.data.status === 'success') {
       showAlert('success', `${type.toUpperCase()} updated successfully!`);
+
+      // ✅ If updating user DATA (not password), reload the page
+      if (type === 'data') {
+        window.setTimeout(() => {
+          location.reload();
+        }, 1500); // wait 1.5s so user can see success alert
+      }
     }
   } catch (err) {
     console.error('🔴 Update error:', err.response?.data || err.message);
