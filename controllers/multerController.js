@@ -1,6 +1,8 @@
 // controllers/multerController.js
 const multer = require('multer');
 const sharp = require('sharp');
+
+const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 // =============================
@@ -25,11 +27,12 @@ const upload = multer({
 exports.uploadUserPhoto = upload.single('photo');
 
 // Middleware: resize photo
-exports.resizeUserPhoto = async (req, res, next) => {
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
+  // WAIT: It can take time, add await for asynchronous before calling next!
   await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
@@ -37,4 +40,4 @@ exports.resizeUserPhoto = async (req, res, next) => {
     .toFile(`public/img/users/${req.file.filename}`);
 
   next();
-};
+});
