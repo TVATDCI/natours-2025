@@ -32,20 +32,26 @@ exports.uploadTourImages = upload.fields([
 // upload.array('images', 5);
 
 // Middleware: resize UPLOADED Tour Images
-exports.resizeTourImages = async (req, res, next) => {
+exports.resizeTourImages = catchAsync(async (req, res, next) => {
   console.log(req.files);
-  //   if (!req.file) return next();
 
-  //   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  // If there is no req for these files then --> move on!
+  if (!req.files.imageCover || !req.files.images) return next();
 
-  //   await sharp(req.file.buffer)
-  //     .resize(500, 500)
-  //     .toFormat('jpeg')
-  //     .jpeg({ quality: 90 })
-  //     .toFile(`public/img/users/${req.file.filename}`);
+  // The process - updateOne update the document
+  // 1) Cover image (imageCover) is an array[]
+  // const  imageCoverFilename = `tour-${req.param.id}-${Date.now()}.jpeg`;
+  req.body.imageCover = `tour-${req.param.id}-${Date.now()}.jpeg`;
+  await sharp(req.files.imageCover[0].buffer)
+    .resize(2000, 1333)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/tours/${req.body.imageCover}`); // << replaced  imageCoverFilename!
+  // update take the whole req.body
+  // req.body.imageCover = imageCoverFilename
 
   next();
-};
+});
 
 // =========================================
 const factory = require('./handlerFactory');
