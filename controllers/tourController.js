@@ -1,71 +1,20 @@
-const multer = require('multer');
-const sharp = require('sharp');
+// const multer = require('multer');
+// const sharp = require('sharp');
 const Tour = require('../models/tourModel');
 // const APIFeatures = require('../utils/apiFeatures');
 
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
-// ========== Upload multi photos ==========
-const multerStorage = multer.memoryStorage(); // in memory(req.file.buffer)
+const {
+  uploadTourImages,
+  resizeTourImages,
+} = require('./multerTourImgController');
 
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image')) {
-    cb(null, true);
-  } else {
-    cb(new AppError('Not an image! Please upload only images.', 400), false);
-  }
-};
-
-const upload = multer({
-  storage: multerStorage,
-  fileFilter: multerFilter,
-});
-
-// like uploading user photo but instead of upload.single, to upload.fields
-exports.uploadTourImages = upload.fields([
-  { name: 'imageCover', maxCount: 1 },
-  { name: 'images', maxCount: 3 },
-]);
-
-// upload.single('image');
-// upload.array('images', 5);
-
-// Middleware: resize UPLOADED Tour Images
-exports.resizeTourImages = catchAsync(async (req, res, next) => {
-  console.log(req.files);
-
-  // If there is no req for these files then --> move on!
-  if (!req.files.imageCover || !req.files.images) return next();
-
-  // The process - updateOne update the document
-
-  // 1) Cover image (imageCover) is an array[]
-  // const  imageCoverFilename = `tour-${req.param.id}-${Date.now()}.jpeg`;
-  req.body.imageCover = `tour-${req.params.id}-${Date.now()}.jpeg`;
-  await sharp(req.files.imageCover[0].buffer)
-    .resize(2000, 1333)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`public/img/tours/${req.body.imageCover}`); // << replaced  imageCoverFilename!
-  // update take the whole req.body
-  // req.body.imageCover = imageCoverFilename
-
-  // 2) Images
-  req.files.images.map(async (file, i) => {
-    const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
-
-    await sharp(req.files.imageCover[0].buffer)
-      .resize(2000, 1333)
-      .toFormat('jpeg')
-      .jpeg({ quality: 90 })
-      .toFile(`public/img/tours/${filename}`);
-
-    req.body.images.push(filename);
-  });
-
-  next();
-});
+// ====================================================
+// ==== Implement multer logic from multerTourImgController.js ===========
+exports.uploadTourImages = uploadTourImages;
+exports.resizeTourImages = resizeTourImages;
 
 // =========================================
 const factory = require('./handlerFactory');
