@@ -5,7 +5,8 @@ const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
-const sendEmail = require('../utils/email');
+// const sendEmail = require('../utils/email'); Now implemented with sendWelcome & sendPasswordReset = Email
+const Email = require('../utils/email');
 
 // ===============================
 // Helper: Create JWT Token
@@ -91,16 +92,23 @@ const createSendToken = (user, statusCode, res) => {
 exports.signup = catchAsync(async (req, res, next) => {
   // const newUser = await User.create(req.body) // removed for a new implement below for a security reason!
   // the newUser is coming here with the whole .body. The admin role can be manipulated at this point!
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    // select: false (userSchema) doesn’t apply on newly created docs, only on queries.
-    // To avoid password output in postman(any where else) set "user.password = undefined;" in createSendToken to avoid
-    passwordConfirm: req.body.passwordConfirm,
-    // passwordChangedAt: req.body.passwordChangedAt,
-    // role: req.body.role, // Optional for learning dev: It SHOULD NOT be in production!
-  });
+  // == Original signup newUser without welcome email! ==========================================
+  //   const newUser = await User.create({
+  //     name: req.body.name,
+  //     email: req.body.email,
+  //     password: req.body.password,
+  //     select: false (userSchema) doesn’t apply on newly created docs, only on queries.
+  //     To avoid password output in postman(any where else) set "user.password = undefined;" in createSendToken to avoid
+  //    passwordConfirm: req.body.passwordConfirm,
+  // passwordChangedAt: req.body.passwordChangedAt,
+  // role: req.body.role, // Optional for learning dev: It SHOULD NOT be in production!
+
+  // == NEWl signup newUser WITH welcome email! ==========================================
+  const newUser = await User.create(req.body);
+
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  console.log(`URL:📧: ${url}`);
+  await new Email(newUser, url).sendWelcome();
 
   // DEBUG:
   console.log(`User registered successfully:🧟: ${newUser.name}`);
@@ -314,11 +322,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   // PROD-User Inbox
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email.`;
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset token (valid for 10 min)',
-      message,
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: 'Your password reset token (valid for 10 min)',
+    //   message,
+    // });
 
     // DEV-ONLY: expose resetURL test in Postman
     res.status(200).json({
