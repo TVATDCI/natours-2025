@@ -8,7 +8,7 @@ module.exports = class Email {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
-    this.from = `Natours <${process.env.EMAIL_FROM}>`;
+    this.from = `Natours - 2025<${process.env.EMAIL_FROM}>`;
   }
 
   newTransport() {
@@ -34,6 +34,10 @@ module.exports = class Email {
     });
   }
 
+  // ===============
+  // SEND FUNCTION
+  // ================
+
   // Send the actual email
   async send(template, subject) {
     // 1) Render HTML from pug template
@@ -52,12 +56,12 @@ module.exports = class Email {
       text: convert(html), // generate plain text automatically
     };
 
-    // 3) Send it
+    // 3) Create a transport & Send email
     await this.newTransport().sendMail(mailOptions);
   }
 
   async sendWelcome() {
-    await this.send('welcome', 'Welcome to the Natours family!');
+    await this.send('welcome', 'Welcome to the Natours - 2025!'); // send welcome email
   }
 
   async sendPasswordReset() {
