@@ -2,7 +2,10 @@ const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
-const { uploadUserPhoto, resizeUserPhoto } = require('./multerController'); // refactored version
+const {
+  uploadUserPhoto,
+  resizeUserPhoto,
+} = require('./multerUserImgController'); // refactored version
 const { handleUserPhoto } = require('./photoController');
 
 const factory = require('./handlerFactory');
@@ -47,7 +50,7 @@ exports.getMe = (req, res, next) => {
 // ====================================================
 // #: UPDATE CURRENT USER DATA = name, email, photo
 // ====================================================
-// ==== Implement multer logic from multerController.js ===========
+// ==== Implement multer logic from multerUserImgController.js ===========
 exports.uploadUserPhoto = uploadUserPhoto;
 exports.resizeUserPhoto = resizeUserPhoto;
 
