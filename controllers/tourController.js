@@ -15,6 +15,7 @@ const {
 // ==== Implement multer logic from multerTourImgController.js ===========
 exports.uploadTourImages = uploadTourImages;
 exports.resizeTourImages = resizeTourImages;
+// ====================================================
 
 // =========================================
 const factory = require('./handlerFactory');
@@ -31,6 +32,10 @@ exports.aliasTopTours = (req, res, next) => {
   req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
   next();
 };
+
+// ====================================================
+// =============== ACTUAL TOUR HANDLERS ===============
+// ====================================================
 
 // ======================================
 // #: GET /api/v1/tours - Get all tours
