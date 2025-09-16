@@ -13,19 +13,17 @@ module.exports = class Email {
 
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      // Use SendGrid or another production-ready service
-      // TODO: Use SendGrid in production
-      //   return nodemailer.createTransport({
-      //     service: 'SendGrid',
-      //     auth: {
-      //       user: process.env.SENDGRID_USERNAME,
-      //       pass: process.env.SENDGRID_PASSWORD,
-      //     },
-      //   });
-      return 1;
+      // === Production: SendGrid ===
+      return nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SENDGRID_USERNAME,
+          pass: process.env.SENDGRID_PASSWORD,
+        },
+      });
     }
 
-    // Development: Mailtrap
+    // === Development: Mailtrap ===
     return nodemailer.createTransport({
       host: process.env.MAILTRAP_HOST,
       port: process.env.MAILTRAP_PORT,
