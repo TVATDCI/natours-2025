@@ -13,7 +13,7 @@ module.exports = class Email {
 
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      // === Production: SendGrid ===
+      // === Production: SendGrid === sendgrid free trial ends on November 15th, 2025.
       return nodemailer.createTransport({
         service: 'SendGrid',
         auth: {
