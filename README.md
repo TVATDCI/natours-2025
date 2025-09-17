@@ -242,6 +242,7 @@ project-root/
 │ ├── overview.html
 │ └── tour.html
 ├── routes/
+│ ├── bookingRoutes.js
 │ ├── reviewRoutes.js
 │ ├── tourRoutes.js
 │ ├── userRoutes.js
