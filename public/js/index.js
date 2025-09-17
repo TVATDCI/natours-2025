@@ -9,6 +9,7 @@ import { updateSettings } from './updateSettings.js';
 // Import map.js (if used on certain pages)
 import { leaflet } from './leaflet.js';
 import { leafletMap } from './leafletMap';
+import { bookTour } from './stripe';
 
 // DOM Handling: only run this if we're on the login page (included logout!)
 const loginForm = document.querySelector('.form--login');
@@ -17,6 +18,7 @@ const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const removePhoto = document.getElementById('remove-photo');
 const userPasswordForm = document.querySelector('.form-user-password');
+const bookBtn = document.getElementById('book-tour');
 
 console.log('📇 index.js loaded successfully');
 
