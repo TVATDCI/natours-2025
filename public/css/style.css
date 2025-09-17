@@ -144,7 +144,7 @@ body {
 }
 
 .heading-primary,
-.heading-tertirary {
+.heading-tertiary {
   color: #fff;
   text-transform: uppercase;
   font-weight: 300;
@@ -222,7 +222,7 @@ body {
 
 .btn:focus {
   outline: none;
-  background-color: #2e864b;
+  background-color: #01250d;
 }
 
 .btn--white {
