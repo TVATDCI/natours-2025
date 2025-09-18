@@ -148,12 +148,12 @@ if (userPasswordForm) {
 }
 
 // ===========================================================
-// === bookTour ==============
+// === bookTour Handler==============
 // ===========================================================
 
 if (bookBtn) {
   bookBtn.addEventListener('click', (e) => {
-    e.target.textContent = 'Processing...';
+    e.target.textContent = 'Processing...'; // target the textContent to switch it to 'processing' when bookBtn is clicked!
     const { tourId } = e.target.dataset;
     if (tourId) {
       bookTour(tourId);
