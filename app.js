@@ -73,6 +73,7 @@ app.use(
         'https://*.basemaps.cartocdn.com',
         'https://api.stripe.com',
       ],
+      frameSrc: ["'self'", 'https://js.stripe.com'],
     },
   }),
 );
