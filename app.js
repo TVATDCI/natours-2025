@@ -51,7 +51,11 @@ app.use(
     directives: {
       defaultSrc: ["'self'"],
 
-      scriptSrc: ["'self'", 'https://cdnjs.cloudflare.com'], // allow Axios CDN
+      scriptSrc: [
+        "'self'",
+        'https://cdnjs.cloudflare.com',
+        'https://js.stripe.com',
+      ], // allow Axios CDN
 
       styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
 
@@ -67,6 +71,7 @@ app.use(
         "'self'",
         'https://*.tile.openstreetmap.org',
         'https://*.basemaps.cartocdn.com',
+        'https://api.stripe.com',
       ],
     },
   }),
