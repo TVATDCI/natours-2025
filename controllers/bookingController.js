@@ -64,7 +64,11 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   // tour ✅, user ❌, price ✅ → still creates a booking (with user = undefined).
   // So unless all query params are missing at the same time, the booking gets created. That’s looser.
 
-  await Booking.create({ tour, user, price });
+  try {
+    await Booking.create({ tour, user, price });
+  } catch (err) {
+    console.error('Booking creation failed:', err);
+  }
 
   // Redirect to remove query params from URL
   // `${req.protocol}://${req.get('host')}/?tour
