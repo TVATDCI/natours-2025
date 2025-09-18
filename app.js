@@ -72,6 +72,7 @@ app.use(
         'https://*.tile.openstreetmap.org',
         'https://*.basemaps.cartocdn.com',
         'https://api.stripe.com',
+        'https://q.stripe.com', // Stripe tracking pixel
       ],
       frameSrc: ["'self'", 'https://js.stripe.com'],
     },
