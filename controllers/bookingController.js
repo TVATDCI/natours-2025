@@ -1,6 +1,10 @@
-const stripe = require('stripe')(process.env.STRIPE_TEST_KEY);
+const stripe = require('stripe')(process.env.STRIPE_TEST_KEY); // Must be on the top prior!
+
+const Booking = require('../models/bookingModel');
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
+
+const factory = require('./handlerFactory');
 // const AppError = require('../utils/appError');
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
@@ -44,3 +48,22 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     session,
   });
 });
+
+// TEMP: Create booking without Stripe webhook (hack)
+exports.createBookingCheckout = catchAsync(async (req, res, next) => {
+  const { tour, user, price } = req.query;
+
+  if (!tour || !user || !price) return next();
+
+  await Booking.create({ tour, user, price });
+
+  // Redirect to remove query params from URL
+  res.redirect(req.originalUrl.split('?')[0]);
+});
+
+// CRUD operations (use factory functions for reusability)
+exports.createBooking = factory.createOne(Booking);
+exports.getBooking = factory.getOne(Booking);
+exports.getAllBookings = factory.getAll(Booking);
+exports.updateBooking = factory.updateOne(Booking);
+exports.deleteBooking = factory.deleteOne(Booking);
