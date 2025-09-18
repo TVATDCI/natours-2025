@@ -1,7 +1,7 @@
 const stripe = require('stripe')(process.env.STRIPE_TEST_KEY); // Must be on the top prior!
 
-const Booking = require('../models/bookingModel');
 const Tour = require('../models/tourModel');
+const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 
 const factory = require('./handlerFactory');
@@ -49,7 +49,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-// TEMP: Create booking middle without STRIPE WEBHOOK (HACK)
+// TEMP: Create INSECURE booking middle without STRIPE WEBHOOK (HACK)
 exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   const { tour, user, price } = req.query; // as in bookingModel.js
 
@@ -67,7 +67,8 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   await Booking.create({ tour, user, price });
 
   // Redirect to remove query params from URL
-  res.redirect(req.originalUrl.split('?')[0]);
+  // `${req.protocol}://${req.get('host')}/?tour
+  res.redirect(req.originalUrl.split('?')[0]); // [0] = root url '/'
 });
 
 // CRUD operations (use factory functions for reusability)
