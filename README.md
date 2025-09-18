@@ -235,10 +235,13 @@ project-root/
 │ │ └── pin.png
 │ ├── js/
 │ │ ├── alert.js
-│ │ ├── leaflet-map.js
+│ │ ├── index.js
 │ │ ├── leaflet.js
+│ │ ├── leaflet-map.js
 │ │ ├── login.js
-│ │ └── mapbox.js
+│ │ ├── mapbox.js
+│ │ ├── stripe.js
+│ │ └── updateSetting.js
 │ ├── overview.html
 │ └── tour.html
 ├── routes/
