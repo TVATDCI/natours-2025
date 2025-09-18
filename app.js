@@ -74,7 +74,12 @@ app.use(
         'https://api.stripe.com',
         'https://q.stripe.com', // Stripe tracking pixel
       ],
-      frameSrc: ["'self'", 'https://js.stripe.com', 'https://hooks.stripe.com'], // Required for webhooks + 3D Secure iframe
+      frameSrc: [
+        "'self'",
+        'https://js.stripe.com',
+        'https://hooks.stripe.com', // Required for webhooks + 3D Secure iframe
+        'https://checkout.stripe.com', // Checkout session iframe
+      ],
     },
   }),
 );
