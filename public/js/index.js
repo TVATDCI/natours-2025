@@ -38,7 +38,7 @@ if (loginForm)
 
 //  =====================================================
 // === LOGOUT BUTTON ====================================
-// If there is an event (addEventListener) when there is a click(logoutBtn), call the logout function
+// If there is an event (addEventListener) when there is a click(logout// const bookBtn = document.getElementById('book-tour');Btn), call the logout function
 //  =====================================================
 if (logoutBtn) logoutBtn.addEventListener('click', logout);
 
@@ -143,6 +143,22 @@ if (userPasswordForm) {
       document.getElementById('password-current').value = '';
       document.getElementById('password').value = '';
       document.getElementById('password-confirm').value = '';
+    }
+  });
+}
+
+// ===========================================================
+// === bookTour ==============
+// ===========================================================
+
+if (bookBtn) {
+  bookBtn.addEventListener('click', (e) => {
+    e.target.textContent = 'Processing...';
+    const { tourId } = e.target.dataset;
+    if (tourId) {
+      bookTour(tourId);
+    } else {
+      console.error('❌ No tourId found on button');
     }
   });
 }
