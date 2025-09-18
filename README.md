@@ -117,6 +117,7 @@ This project is a deep dive into building a **real-world, production-ready Node.
       - [6. Include a Map with Mapbox](#)
         - [Client-Side JS Injection](#client-side-js-injection)
       - [SPAs VS MPAs](#spas-vs-mpas)
+29. - [Security Headers & Content Security Policy (CSP)](#security-headers--content-security-policy-csp)
 
 ---
 
@@ -4358,7 +4359,77 @@ try {
 }
 ```
 
-[Back to the top](#natours-2025)
+---
+
+### Security Headers & Content Security Policy (CSP)
+
+---
+
+**1. Overview**
+Helmet is used to set secure `HTTP` headers, including a Content Security Policy (CSP) to mitigate XSS, data injection, and other common web attacks.
+
+---
+
+**2. Current CSP Directives**
+
+```js
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"], // Only allow resources from our own origin
+      scriptSrc: [
+        "'self'",
+        'https://cdnjs.cloudflare.com',
+        'https://js.stripe.com',
+      ], // Scripts allowed from own site, CDN, Stripe
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'"], // Styles allowed from own site, HTTPS resources, and inline styles
+      imgSrc: [
+        "'self'",
+        'data:',
+        'blob:',
+        'https://*.tile.openstreetmap.org',
+        'https://*.basemaps.cartocdn.com',
+      ], // Images from own site, base64, blob, maps
+      connectSrc: [
+        "'self'",
+        'https://*.tile.openstreetmap.org',
+        'https://*.basemaps.cartocdn.com',
+        'https://api.stripe.com',
+      ], // Allowed fetch/XHR/WebSocket sources
+      frameSrc: ["'self'", 'https://js.stripe.com'], // Frames allowed from own site and Stripe
+      objectSrc: ["'none'"], // Disallow <object>, <embed>, <applet> for XSS mitigation
+      upgradeInsecureRequests: [], // Automatically upgrade all HTTP requests to HTTPS
+    },
+  }),
+);
+```
+
+---
+
+**3. Directive Details**
+
+---
+
+| Directive                 | Purpose                                   | Notes                                                                    |
+| ------------------------- | ----------------------------------------- | ------------------------------------------------------------------------ |
+| `defaultSrc`              | Base fallback for all resource types      | Only load from self (our domain)                                         |
+| `scriptSrc`               | Allowed JavaScript sources                | Must include any CDNs, Stripe.js, or other external scripts              |
+| `styleSrc`                | Allowed CSS sources                       | `'unsafe-inline'` needed if inline styles are used (e.g., pug templates) |
+| `imgSrc`                  | Allowed image sources                     | Includes map tile servers, local images, base64/blobs                    |
+| `connectSrc`              | Allowed fetch/XHR/WebSocket destinations  | Needed for API calls, Stripe requests, etc.                              |
+| `frameSrc`                | Allowed `<iframe>` sources                | Required for Stripe Checkout frames                                      |
+| `objectSrc`               | `<object>`, `<embed>`, `<applet>` sources | Blocked for security unless explicitly required                          |
+| `upgradeInsecureRequests` | Automatically convert HTTP → HTTPS        | Ensures secure connections in production                                 |
+
+---
+
+**4. Notes & Best Practices**
+
+- Always **add new external scripts or APIs** to `scriptSrc` or `connectSrc` before using them.
+- For Stripe Checkout, `https://js.stripe.com` must be included in `scriptSrc` and `frameSrc`.
+- Avoid `'unsafe-inline'` in `scriptSrc` whenever possible; keep it only in `styleSrc` if needed.
+- This file should be updated whenever new external integrations are added.
+  [Back to the top](#natours-2025)
 
 ```
 
