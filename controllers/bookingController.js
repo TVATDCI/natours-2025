@@ -49,11 +49,20 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-// TEMP: Create booking without Stripe webhook (hack)
+// TEMP: Create booking middle without STRIPE WEBHOOK (HACK)
 exports.createBookingCheckout = catchAsync(async (req, res, next) => {
-  const { tour, user, price } = req.query;
+  const { tour, user, price } = req.query; // as in bookingModel.js
 
   if (!tour || !user || !price) return next();
+  // if any one of those values (tour, user, or price) is missing/invalid, the condition is true.
+  // Meaning: If ANY ONE of tour, user, or price is missing → skip creating the booking and call next()!
+  // This is stricter and prevents half-baked bookings from being created.
+
+  // if (!tour && !user && !price) return next(); // Jonas version - The condition is only true if all three are falsy at the same time.
+  // Example: Scary version
+  // tour ✅, user ✅, price ❌ → still creates a booking (with price = undefined 😬).
+  // tour ✅, user ❌, price ✅ → still creates a booking (with user = undefined).
+  // So unless all query params are missing at the same time, the booking gets created. That’s looser.
 
   await Booking.create({ tour, user, price });
 
