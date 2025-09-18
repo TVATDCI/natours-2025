@@ -7,8 +7,20 @@ const stripe = Stripe(
 );
 
 export const bookTour = async (tourId) => {
-  // 1) Get checkout session from API
-  const session = await axios(`/api/v1/bookings/checkout-session/${tourId}`);
-  console.log();
-  // 2) Redirect to Stripe checkout page
+  if (typeof Stripe === 'undefined') {
+    console.error('❌ Stripe not loaded on page!');
+    return;
+  }
+  try {
+    // 1) Get checkout session from API
+    const session = await axios(`/api/v1/bookings/checkout-session/${tourId}`);
+
+    // 2) Redirect to Stripe checkout page
+    await stripe.redirectToCheckout({
+      sessionId: session.data.session.id,
+    });
+  } catch (err) {
+    console.error(err);
+    showAlert('error', 'Payment failed! Please try again later.');
+  }
 };
