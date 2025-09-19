@@ -51,9 +51,18 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 
 // TEMP: Create INSECURE booking middle without STRIPE WEBHOOK (HACK)
 exports.createBookingCheckout = catchAsync(async (req, res, next) => {
+  console.log('🎯 createBookingCheckout middleware HIT');
+  console.log('🔎 Full req.url:', req.url);
+  console.log('🔎 Full req.query:', req.query);
+
   const { tour, user, price } = req.query; // as in bookingModel.js
 
-  if (!tour || !user || !price) return next();
+  if (!tour || !user || !price) {
+    console.log('⚠️ Missing query params:', { tour, user, price });
+    return next();
+  }
+
+  //if (!tour || !user || !price) return next();
   // if any one of those values (tour, user, or price) is missing/invalid, the condition is true.
   // Meaning: If ANY ONE of tour, user, or price is missing → skip creating the booking and call next()!
   // This is stricter and prevents half-baked bookings from being created.
@@ -64,13 +73,16 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   // tour ✅, user ❌, price ✅ → still creates a booking (with user = undefined).
   // So unless all query params are missing at the same time, the booking gets created. That’s looser.
 
+  console.log('Booking.create payload:', { tour, user, price });
+
   try {
-    await Booking.create({ tour, user, price });
+    await Booking.create({ tour, user, price: +price });
+    console.log('✅ Booking created');
   } catch (err) {
-    console.error('Booking creation failed:', err);
+    console.error('❌ Booking failed:', err);
   }
 
-  // Redirect to remove query params from URL
+  // More secure - Redirect to remove query params from URL
   // `${req.protocol}://${req.get('host')}/?tour
   res.redirect(req.originalUrl.split('?')[0]); // [0] = root url '/'
 });
