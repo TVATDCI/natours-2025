@@ -39,4 +39,7 @@ router.get('/login', authController.isLoggedIn, viewController.getLoginForm);
 // Account page: must be logged in → strict protection required
 router.get('/me', authController.protect, viewController.getAccount);
 
+// Account page: logged in user can query bookings and see their booked tours
+router.get('/my-tours', authController.protect, viewController.getMyTours);
+
 module.exports = router;
