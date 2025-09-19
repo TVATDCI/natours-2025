@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
+const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
@@ -54,6 +55,28 @@ exports.getAccount = (req, res) => {
     title: 'User account',
   });
 };
+
+// =================================================================================
+// #: GET MY TOURS - USER CAN QUERY INSIDE THEIR ACCOUNT TO CHECK THEIR BOOKED TOURS
+// TODO - Virtual populate can also be implemented from the tours doc!
+// =================================================================================
+
+exports.getMyTours = catchAsync(async (req, res, next) => {
+  // 1) Find all bookings for current user
+  const bookings = await Booking.find({ user: req.user.id });
+
+  // 2) Extract tour IDs from those bookings
+  const tourIDs = bookings.map((el) => el.tour);
+
+  // 3) Find tours with those IDs
+  const tours = await Tour.find({ _id: { $in: tourIDs } });
+
+  // 4) Render template with those tours
+  res.status(200).render('overview', {
+    title: 'My Tours',
+    tours,
+  });
+});
 
 // ==================================================================
 // #: UPDATE USER SETTINGS - IN USER ACCOUNT PAGE - SAVE SETTINGS BTN
