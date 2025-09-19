@@ -65,13 +65,13 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 // TEMP: Create INSECURE booking middle without STRIPE WEBHOOK (HACK)
 exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   console.log('🎯 createBookingCheckout middleware HIT');
-  console.log('🔎 Full req.url:', req.url);
-  console.log('🔎 Full req.query:', req.query);
+  // console.log('🔎 Full req.url:', req.url);
+  // console.log('🔎 Full req.query:', req.query);
 
   const { tour, user, price } = req.query; // as in bookingModel.js
 
   if (!tour || !user || !price) {
-    console.log('⚠️ Missing query params:', { tour, user, price });
+    // console.log('⚠️ Missing query params:', { tour, user, price });
     return next();
   }
 
@@ -89,7 +89,7 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   console.log('Booking.create payload:', { tour, user, price });
 
   try {
-    await Booking.create({ tour, user, price: +price });
+    await Booking.create({ tour, user, price: +price }); // price = number
     console.log('✅ Booking created');
   } catch (err) {
     console.error('❌ Booking failed:', err);
