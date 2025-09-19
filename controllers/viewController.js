@@ -59,6 +59,7 @@ exports.getAccount = (req, res) => {
 // =================================================================================
 // #: GET MY TOURS - USER CAN QUERY INSIDE THEIR ACCOUNT TO CHECK THEIR BOOKED TOURS
 // TODO - Virtual populate can also be implemented from the tours doc!
+// After that the route name should be changed to getMyBookings 🤡, maybe!
 // =================================================================================
 
 exports.getMyTours = catchAsync(async (req, res, next) => {
@@ -68,7 +69,7 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
   // 2) Extract tour IDs from those bookings
   const tourIDs = bookings.map((el) => el.tour);
 
-  // 3) Find tours with those IDs
+  // 3) Find tours id, using ($in operator), with those booked tour IDs
   const tours = await Tour.find({ _id: { $in: tourIDs } });
 
   // 4) Render template with those tours
