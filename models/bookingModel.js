@@ -26,7 +26,7 @@ const bookingSchema = new mongoose.Schema({
   },
 });
 
-// Auto-populate references whenever there is a query
+// Pre-middleware Auto-populate references whenever there is a query
 bookingSchema.pre(/^find/, function (next) {
   this.populate('user').populate({
     path: 'tour',
