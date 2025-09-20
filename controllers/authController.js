@@ -198,34 +198,23 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 // #: RESET PASSWORD
 // ===============================
 exports.resetPassword = catchAsync(async (req, res, next) => {
-  // 1) Hash token from the URL
   const hashedToken = crypto
     .createHash('sha256')
-    .update(req.params.token) // call parameter (resetPassword/:token) in userRoutes to update the resetPassword
+    .update(req.params.token)
     .digest('hex');
 
-  // 2) Find user with matching token & non-expired
   const user = await User.findOne({
-    passwordResetToken: hashedToken, // Find user who sent the req with the email to match resetToken
-    passwordResetExpires: { $gt: Date.now() }, // check if the reset password has expired
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
   });
-
   if (!user) return next(new AppError('Token is invalid or has expired', 400));
 
-  // NOTE: If the matching user found in the database
-  // 3) 📗 Set the new password and confirm it!
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
-
-  // 4) Clear reset token fields
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
+  await user.save();
 
-  // 5) Save — triggers mongoose pre-save hooks hashing + passwordChangedAt
-  // NOTE: To run all the validator, most importantly save middleware function, use save NOT update,
-  await user.save(); // in userModel
-
-  // 6) Log the user in with a fresh JWT
   createSendToken(user, 200, res);
 });
 
