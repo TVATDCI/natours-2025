@@ -1,5 +1,5 @@
 const crypto = require('crypto'); // reset password
-const { promisify } = require('util'); // destructure the object and use directly
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
@@ -222,21 +222,13 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 // #: UPDATE CURRENT USER PASSWORD
 // ===============================
 exports.updatePassword = catchAsync(async (req, res, next) => {
-  // console.log('Incoming body:', req.body);
-
-  // 1) Get current user from collection and ask for the password from protect middleware
   const user = await User.findById(req.user.id).select('+password');
-
-  // 2) Check if POSTed current password is correct from `userSchema.methods.correctPassword`
-  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password)))
     return next(new AppError('Your current password is wrong.', 401));
-  }
 
-  // 3) If so, update password like in step 3 in resetPassword
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
-  await user.save(); // Use save(),runs the pre-save password hashing. NOT findByIdAndUpdate!
+  await user.save();
 
-  // 4) Log user in, send JWT
   createSendToken(user, 200, res);
 });
