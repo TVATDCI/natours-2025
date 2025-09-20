@@ -9,16 +9,6 @@ const Email = require('../utils/email');
 // ===============================
 // Helper: Create JWT Token
 // ===============================
-// GITHUB node-jsonwebtoken (https://github.com/auth0/node-jsonwebtoken)
-// npm i jsonwebtoken (https://www.npmjs.com/package/jsonwebtoken)
-// NOTE: 2019: Unexpected block statement surrounding arrow body - error!
-// const signToken = (id) => {
-//   return jwt.sign({ id }, process.env.JWT_SECRET, {
-//     expiresIn: process.env.JWT_EXPIRES_IN,
-//   });
-// };
-// ES6 arrow function - use an implicit return to simplify arrow function by removing the curly braces and the return keyword!
-// REASON: Curly braces + return are only needed if your function body has multiple statements.
 // ===================
 // #: Create JWT token
 // ===================
@@ -255,8 +245,8 @@ exports.isLoggedIn = async (req, res, next) => {
       if (!currentUser) return next();
 
       // 3) Check if user changed password after token was issued
-      console.log('Decoded JWT:', decoded);
-      console.log('Current user:', currentUser._id);
+      // console.log('Decoded JWT:', decoded);
+      // console.log('Current user:', currentUser._id);
       if (currentUser.changedPasswordAfter(decoded.iat)) {
         return next();
       }
@@ -392,7 +382,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 // #: UPDATE CURRENT USER PASSWORD
 // ===============================
 exports.updatePassword = catchAsync(async (req, res, next) => {
-  console.log('Incoming body:', req.body);
+  // console.log('Incoming body:', req.body);
 
   // 1) Get current user from collection and ask for the password from protect middleware
   const user = await User.findById(req.user.id).select('+password');
