@@ -44,32 +44,11 @@ const createSendToken = (user, statusCode, res) => {
 // #: SIGN UP - CREATE NEW DOCUMENT!
 // ===============================
 exports.signup = catchAsync(async (req, res, next) => {
-  // const newUser = await User.create(req.body) // removed for a new implement below for a security reason!
-  // the newUser is coming here with the whole .body. The admin role can be manipulated at this point!
-  // == Original signup newUser without welcome email! ==========================================
-  //   const newUser = await User.create({
-  //     name: req.body.name,
-  //     email: req.body.email,
-  //     password: req.body.password,
-  //     select: false (userSchema) doesn’t apply on newly created docs, only on queries.
-  //     To avoid password output in postman(any where else) set "user.password = undefined;" in createSendToken to avoid
-  //    passwordConfirm: req.body.passwordConfirm,
-  // passwordChangedAt: req.body.passwordChangedAt,
-  // role: req.body.role, // Optional for learning dev: It SHOULD NOT be in production!
-
-  // == NEWl signup newUser WITH welcome email! ==========================================
   const newUser = await User.create(req.body);
 
   const url = `${req.protocol}://${req.get('host')}/me`;
-  console.log(`URL:📧: ${url}`);
   await new Email(newUser, url).sendWelcome();
 
-  // DEBUG:
-  console.log(`User registered successfully:🧟: ${newUser.name}`);
-  console.log(`Email:📧: ${newUser.email}`);
-  console.log(`Password:📗: ${newUser.password}`);
-
-  // Newly created newUser is ready. send the token to the client!
   createSendToken(newUser, 201, res);
 });
 
