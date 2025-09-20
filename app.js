@@ -25,9 +25,9 @@ const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
-// ======================================
+// =========================================================
 // 1) VIEW ENGINE - SET UP PUG IN EXPRESS
-// ======================================
+// =========================================================
 // Telling Express that we’ll use Pug as our template engine
 app.set('view engine', 'pug');
 
@@ -42,9 +42,6 @@ app.set('views', path.join(__dirname, 'views'));
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-
-// Serve static files from public folder
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Security: Set secure HTTP headers
 app.use(
@@ -147,7 +144,9 @@ app.use(sanitizeHtmlMiddleware);
 // Serve static files from public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Compressing all the text content that is sent to client
+// =======================================================
+// Compressing all the text after static content that is sent to client
+// =======================================================
 app.use(compression());
 // Debugging: attach request time + log headers
 app.use((req, res, next) => {
