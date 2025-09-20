@@ -4,8 +4,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-
-// const sendEmail = require('../utils/email'); Now implemented with sendWelcome & sendPasswordReset = Email
 const Email = require('../utils/email');
 
 // ===============================
