@@ -4,6 +4,7 @@
 const path = require('path');
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -146,6 +147,8 @@ app.use(sanitizeHtmlMiddleware);
 // Serve static files from public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Compressing all the text content that is sent to client
+app.use(compression());
 // Debugging: attach request time + log headers
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
