@@ -42,9 +42,9 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-// ===============================
-// #: SIGN UP - CREATE NEW DOCUMENT!
-// ===============================
+// ================================
+// #: SIGN UP - CREATE NEW DOCUMENT
+// ================================
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create(req.body);
 
@@ -54,9 +54,9 @@ exports.signup = catchAsync(async (req, res, next) => {
   createSendToken(newUser, 201, res);
 });
 
-// ===============================
+// ========
 // #: LOGIN
-// ===============================
+// ========
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password)
@@ -69,9 +69,9 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-// ====================================
+// =====================================================
 // #: LOGOUT Sending JWT with a mock 'logged-out' cookie
-// ====================================
+// =====================================================
 exports.logout = (req, res) => {
   res.cookie('jwt', 'theuserhasloggedoutthisisamockcookies', {
     expires: new Date(Date.now() + 10 * 1000), // Expires in 10 secs
@@ -113,11 +113,11 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-// ===============================
+// ======================================================================================
 // #: isLoggedIn middleware - Only for rendered pages. NO ERRORS - No token in the header
 // Removed catchAsync (add try - catch) from global error, to allow logout to continue
 // Only for rendered pages, no errors if not logged in
-// ===============================
+// ======================================================================================
 exports.isLoggedIn = async (req, res, next) => {
   if (req.cookies.jwt) {
     try {
@@ -148,9 +148,9 @@ exports.restrictTo =
     next();
   };
 
-// ===============================
+// =====================================
 // #: RESTRICT access by role (...roles)
-// ===============================
+// =====================================
 exports.restrictTo =
   (...roles) =>
   (req, res, next) => {
@@ -161,9 +161,9 @@ exports.restrictTo =
     next();
   };
 
-// ===============================
+// ===================
 // #: FORGET PASSWORD
-// ===============================
+// ===================
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
@@ -196,9 +196,9 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
-// ===============================
+// =================
 // #: RESET PASSWORD
-// ===============================
+// =================
 exports.resetPassword = catchAsync(async (req, res, next) => {
   const hashedToken = crypto
     .createHash('sha256')
