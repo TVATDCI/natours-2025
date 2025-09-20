@@ -42,9 +42,6 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Serve static files from public folder
-app.use(express.static(path.join(__dirname, 'public')));
-
 // Security: Set secure HTTP headers
 app.use(
   helmet.contentSecurityPolicy({
