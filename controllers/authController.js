@@ -9,7 +9,6 @@ const Email = require('../utils/email');
 // ===============================
 // Helper: Create JWT Token
 // ===============================
-// ===================
 // #: Create JWT token
 // ===================
 const signToken = (id) =>
@@ -17,20 +16,9 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXPIRES_IN, // reset to '1h'
   });
 
-// TEST: TEMP - force a very short expiration for testing
-// replace process.env.JWT_EXPIRES_IN with testing time (5s)
-// const signToken = (id) =>
-//   jwt.sign({ id }, process.env.JWT_SECRET, {
-//     expiresIn: '5s', // short-lived token for test and don’t forget to revert this to process.env.JWT_EXPIRES_IN after the test.
-//   });
-
-// DEBUG:
-// NOTE: Check jwt.io for DEBUGGER!
-// console.log('JWT_SECRET:', process.env.JWT_SECRET);
-
-// ===============================
+// ===================================================
 // #: Create and send JWT token in cookie and response
-// ===============================
+// ===================================================
 const createSendToken = (user, statusCode, res) => {
   // 1) Create token with 1 hour expiry, based on the user's MongoDB _id
   // The _id is the unique identifier stored inside the token payload
