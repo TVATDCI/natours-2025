@@ -20,44 +20,22 @@ const signToken = (id) =>
 // #: Create and send JWT token in cookie and response
 // ===================================================
 const createSendToken = (user, statusCode, res) => {
-  // 1) Create token with 1 hour expiry, based on the user's MongoDB _id
-  // The _id is the unique identifier stored inside the token payload
   const token = signToken(user._id);
 
-  // 2) Configure cookie options for storing JWT securely
   const cookieOptions = {
     expires: new Date(
-      // Convert days to milliseconds, e.g. 90 days * 24h * 60m * 60s * 1000ms
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
-    httpOnly: true, // Prevents JS from reading the cookie in the browser → XSS PROTECTION
-    // Only send cookie over HTTPS in production (for security)
-    // ...(process.env.NODE_ENV === 'production' && { secure: true }),
-    // concise way to conditionally add properties inline without creating the object first
-    // then mutating it or writing a multi-line if block.
-    // If process.env.NODE_ENV === 'production' is true, then the expression evaluates to { secure: true }.
-    // If it’s false, it evaluates to false.The ... spread operator spreads the properties of an object into cookieOptions.
+    httpOnly: true,
   };
-  // However, This ensures cookie is secure and encrypted during transit
-  // NOTE: Stand alone: if statement add properties without cluttering the object literal.
-  // secure should only be added in production if the condition is met (typically when HTTPS is enabled).
-  // Then if statement modifies the object after it's created by adding a new property.
-  // Putting the if statement outside allows it to conditionally add properties without cluttering the object literal.
-  // It makes it very clear what properties are always present vs which are conditionally added.
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // it secure will be false in development!
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-  // 3) Send JWT to the browser as an HTTP cookie
-  // This allows automatic sending of token with every request (good for web apps, not mobile APIs)
   res.cookie('jwt', token, cookieOptions);
-
-  // 4) Remove the password from the output field before sending back to the client
-  // NOTE: Never leak password hashes (even if hashed, it’s sensitive info)
   user.password = undefined;
 
-  // 5) Send the final JSON response with token + user data
   res.status(statusCode).json({
     status: 'success',
-    token, // Still include token in body for APIs (e.g., mobile apps that can't rely on cookies)
+    token,
     data: { user },
   });
 };
