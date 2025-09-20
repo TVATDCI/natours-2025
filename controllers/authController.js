@@ -114,42 +114,37 @@ exports.protect = catchAsync(async (req, res, next) => {
 // ===============================
 // #: isLoggedIn middleware - Only for rendered pages. NO ERRORS - No token in the header
 // Removed catchAsync (add try - catch) from global error, to allow logout to continue
+// Only for rendered pages, no errors if not logged in
 // ===============================
 exports.isLoggedIn = async (req, res, next) => {
-  // 1) Check token (from Authorization header or cookies)
   if (req.cookies.jwt) {
     try {
-      // 1) Verify token
       const decoded = await promisify(jwt.verify)(
         req.cookies.jwt,
         process.env.JWT_SECRET,
       );
-
-      // 2) Check if user still exists
       const currentUser = await User.findById(decoded.id);
       if (!currentUser) return next();
+      if (currentUser.changedPasswordAfter(decoded.iat)) return next();
 
-      // 3) Check if user changed password after token was issued
-      // console.log('Decoded JWT:', decoded);
-      // console.log('Current user:', currentUser._id);
-      if (currentUser.changedPasswordAfter(decoded.iat)) {
-        return next();
-      }
-
-      // THERE IS A LOGGED IN USER - Render the currentUser as a locals.user!
-      res.locals.user = currentUser; // NOTE: makes user available - access in Pug templates
+      res.locals.user = currentUser;
       return next();
     } catch (err) {
       return next();
     }
   }
-  // just continue without crashing.
   next();
 };
 
-// Logged in user & admin or lead-guide made it to this point
-// authController.protect, // must logged in
-// authController.restrictTo('admin', 'lead-guide'), // admin or lead-guide only
+exports.restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    if (!roles.includes(req.user.role))
+      return next(
+        new AppError('You do not have permission to perform this action', 403),
+      );
+    next();
+  };
 
 // ===============================
 // #: RESTRICT access by role (...roles)
