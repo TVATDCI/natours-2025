@@ -6,6 +6,8 @@ const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const Email = require('../utils/email');
 
+// Note: The full version is in Development!
+
 // ===============================
 // Helper: Create JWT Token
 // ===============================
@@ -13,7 +15,7 @@ const Email = require('../utils/email');
 // ===================
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN, // reset to '1h'
+    expiresIn: process.env.JWT_EXPIRES_IN, // set to '1h' goes to config.env to reset
   });
 
 // ===================================================
@@ -68,7 +70,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 // ====================================
-// #: LOGOUT Sending JWT with a mock 'loggedout' cookie
+// #: LOGOUT Sending JWT with a mock 'logged-out' cookie
 // ====================================
 exports.logout = (req, res) => {
   res.cookie('jwt', 'theuserhasloggedoutthisisamockcookies', {
