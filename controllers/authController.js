@@ -149,22 +149,13 @@ exports.restrictTo =
 // ===============================
 // #: RESTRICT access by role (...roles)
 // ===============================
-// NOTE: Argument is NOT allowed directly in middleware function
-// In this case, 'restrictTo' must accept arguments (like 'admin' or 'guide')
-// before the middleware actually runs.
-// SOLUTION: Use spread operator in a wrapper function that returns the real middleware.
-// ES6: Uses an implicit return (no curly braces or 'return' keyword) when the function body is a single expression.
-// REASON: Curly braces + return are only needed if your function body has multiple statements.
 exports.restrictTo =
   (...roles) =>
   (req, res, next) => {
-    // the middleware is here - req.user = currentUser made it here.
-    // restrictedTo roles ['admin', lead-guide]. if role='user' is NOT in th roles arr? Then it's user last stop!
-    if (!roles.includes(req.user.role)) {
+    if (!roles.includes(req.user.role))
       return next(
-        new AppError('You do not have permission to perform this action', 403), // 403 = Forbidden
+        new AppError('You do not have permission to perform this action', 403),
       );
-    }
     next();
   };
 
