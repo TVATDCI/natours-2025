@@ -56,54 +56,14 @@ exports.signup = catchAsync(async (req, res, next) => {
 // #: LOGIN
 // ===============================
 exports.login = catchAsync(async (req, res, next) => {
-  // const email = req.body.email; // eslint will give a warning to use obj-destructuring to extract .body!
-  const { email, password } = req.body; // reverse obj-destructuring with the same property(email) and variable(email) name - ES6
-
-  // DEBUG:
-  console.log('Login attempt for user:📧:', email);
-  console.log('Logging in user HIT:❓:');
-  console.log('Request body:🪪:✅:', req.body);
-
-  // STEP: 1) Check if email & password exist
-  if (!email || !password) {
-    // DEBUG:
-    console.log('Please provide email and password:🚨:');
+  const { email, password } = req.body;
+  if (!email || !password)
     return next(new AppError('Please provide email and password!', 400));
-  }
 
-  // STEP: 2) Check if user exists & password is correct
-  // Incorrect: "const user = await User.findOne({ email: req.body.email, password: req.body.password });"
-  // If anyone passed "NoSQL injection" { "email": { "$gt": "" }, "password": "existingPassword" }
-  // MongoDB would treat it as a condition (email > "") and return any user, bypassing login.
-
-  // SOLUTION:   const user = await User.findOne({ email }).select('+password');
-  // email is just a string from req.body.email.Mongoose doesn’t allow query operators like $gt inside plain string fields,
-  // so { "$gt": "" } just gets treated as "object" (not a valid email).
-  // ==================================================================
-  // NOTE: The output "(User.findOne({ email })" SHOULD NOT contain the password!
-  // However, password is explicitly selected (.select('+password');)here.
-  // Because it's excluded by default in the schema, but is needed for bcrypt comparison for verification!
   const user = await User.findOne({ email }).select('+password');
-  // IMPORTANT: The check for `!user` must happen BEFORE calling `user.correctPassword()`
-  // Otherwise, if `user` is `null` (email not found), trying to call `correctPassword()`
-  // That would cause a runtime error: "Cannot read properties of null".
+  if (!user || !(await user.correctPassword(password, user.password)))
+    return next(new AppError('Incorrect email or password', 401));
 
-  // const correct = await user.correctPassword(password, user.password);
-
-  // SOLUTION:
-  // By combining the two checks in one `if` statement:
-  // If the user is not found (`!user`) → skip password comparison and return error.
-  // If the user exists but password is wrong (`!await user.correctPassword(...)`) → return error.
-  // This prevents crashes and keeps the login logic concise.
-  // DEBUG: to check if the password has been explicitly selected?
-  // console.log('return user body', user);
-
-  if (!user || !(await user.correctPassword(password, user.password))) {
-    console.log('Incorrect email or password:⛔:', req.body);
-    return next(new AppError('INCORRECT EMAIL OR PASSWORD', 401)); // (401) Unauthorized
-  }
-
-  // STEP: 3) If everything is ok, send token with status(200)
   createSendToken(user, 200, res);
 });
 
