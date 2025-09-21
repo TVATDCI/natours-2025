@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const fs = require('fs');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -36,9 +38,6 @@ const importData = async () => {
     await User.create(users, { validateBeforeSave: false });
     await Review.create(reviews);
 
-    // NOTE: Turn of the validation to confirm the data import. Also encrypting middleware in userModel must be OFF, too!
-    // REASON: the seed file often has plain passwords that won’t pass validation/middleware (like password hashing).
-
     console.log('Data loaded successfully');
   } catch (err) {
     console.error('Failed to import data:', err.message);
@@ -59,8 +58,6 @@ const deleteData = async () => {
 
 const seeder = async () => {
   await connectDB();
-
-  // DEBUG: logs here
   console.log('Full argv array:', process.argv);
   console.log('Your command was:', process.argv[2]);
 
@@ -79,6 +76,6 @@ const seeder = async () => {
 
 seeder();
 
-// TODO:import, export data with the script below:
+// NOTE: import, export data with the script below:
 // node dev-data/data/import-dev-data.js --import
 // node dev-data/data/import-dev-data.js --delete
