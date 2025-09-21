@@ -2,12 +2,11 @@ const crypto = require('crypto'); // built-in node_model
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-// For hashing password
 const bcrypt = require('bcryptjs');
 
-// ===============================
+// =======================
 // User Schema Definition
-// ===============================
+// =======================
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -39,8 +38,6 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Please provide a password'],
       minlength: 8, // password should have a 8 char
       select: false, // Never send back password in queries.
-      // NOTE: select: false (userSchema) doesn’t apply on newly created docs, only on queries!
-      // SOLUTION: user.password = undefined; in createSendToken during sending the cookies process!
     },
 
     passwordConfirm: {
@@ -70,11 +67,10 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-// ===============================
+// ====================
 // Document Middleware
-// ==================================
+// ====================
 // 1) Hashing new password before saving
-// ==================================
 userSchema.pre('save', async function (next) {
   // Only run if password is actually modified
   if (!this.isModified('password')) return next();
@@ -94,10 +90,6 @@ userSchema.pre('save', async function (next) {
 userSchema.pre('save', function (next) {
   // If password field has NOT been modified, OR this is a new document, skip
   if (!this.isModified('password') || this.isNew) return next();
-
-  // Set the passwordChangedAt property to current time (minus 1 second)
-  // NOTE: To ensure the JWT issued *after* signup is always valid (avoids rare token issue if save() finishes slightly later)
-  // SOLUTION: set the time stamp to minus 1 second(1000ms)?
   this.passwordChangedAt = Date.now() - 1000;
 
   next();
@@ -109,7 +101,7 @@ userSchema.pre('save', function (next) {
 // To this point the inactive user (active: false)
 userSchema.pre(/^find/, function (next) {
   // "this" points to current query
-  this.find({ active: { $ne: false } }); //  Find & show any user that has active status set not equal($ne) to false!
+  this.find({ active: { $ne: false } });
   next();
 });
 
@@ -119,8 +111,8 @@ userSchema.pre(/^find/, function (next) {
 // Compare entered password to hashed password
 // ===========================================
 userSchema.methods.correctPassword = async function (
-  candidatePassword, // plain text from user input into the body(.body)
-  userPassword, // hashed from DB - line 79 - this.password = await bcrypt.hash(this.password, 12);
+  candidatePassword,
+  userPassword,
 ) {
   return await bcrypt.compare(candidatePassword, userPassword); // now both are being compared!
 };
@@ -143,14 +135,13 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
-// =====================================================================================
+// =========================================================================================
 // Create NEW Password - Reset and create plain token - Hash the token and send back to user
-// =====================================================================================
+// =========================================================================================
 userSchema.methods.createPasswordResetToken = function () {
   // 1) Create PLAIN token (send to user via email)
-  const resetToken = crypto.randomBytes(32).toString('hex'); // randomBytes will create 32 char "Plain token" save in ('hex)
+  const resetToken = crypto.randomBytes(32).toString('hex');
 
-  // ENCRYPTING flow - use crypto to encrypt, then use ('sha256) to createHash, update the resetToken and store it back to ('hex)
   // 2) Hash the token for DB storage (never store plain token)
   this.passwordResetToken = crypto
     .createHash('sha256')
@@ -158,7 +149,7 @@ userSchema.methods.createPasswordResetToken = function () {
     .digest('hex');
 
   // check the object resetToken before sending back to the process!
-  console.log({ resetToken }, this.passwordResetToken);
+  // console.log({ resetToken }, this.passwordResetToken);
 
   // 3) Set expiry (10 minutes)
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
