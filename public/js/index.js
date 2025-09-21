@@ -22,41 +22,32 @@ const bookBtn = document.getElementById('book-tour');
 
 console.log('📇 index.js loaded successfully');
 
-//  =========================================================
-// === LOGIN FORM ===========================================
-//  =========================================================
+//  =================
+// === LOGIN FORM ===
+//  =================
 if (loginForm)
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    console.log('🤝 Form submit handler triggered');
+    // console.log('🤝 Form submit handler triggered');
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    console.log('🟠 Passing to login():', { email, password });
+    // console.log('🟠 Passing to login():', { email, password });
     login(email, password);
   });
 
-//  =====================================================
-// === LOGOUT BUTTON ====================================
-// If there is an event (addEventListener) when there is a click(logout// const bookBtn = document.getElementById('book-tour');Btn), call the logout function
-//  =====================================================
+//  ====================
+// === LOGOUT BUTTON ===
+//  ====================
 if (logoutBtn) logoutBtn.addEventListener('click', logout);
 
-// ==============================================
-// === UPDATE FORM === USER SETTINGS(DATA) === name, email ===========
-// ==============================================
-// USER DATA UPDATE FORM HANDLER
-// Handles profile updates (name, email, photo).
-// Submits data using FormData, so that files can
-// be uploaded along with text fields (multipart/form-data).
-// ==============================================
+// ===========================================================
+// === UPDATE FORM === USER SETTINGS(DATA) === name, email ===
+// ===========================================================
 if (userDataForm) {
   userDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Create a new FormData object to hold form inputs
-    // FormData is required here because we’re sending both
-    // text fields (name/email) AND potentially a file (photo).
     const form = new FormData();
 
     // Append text fields
@@ -64,20 +55,18 @@ if (userDataForm) {
     form.append('email', document.getElementById('email').value);
 
     // Append photo field (if user selected one)
-    // ⚠️ IMPORTANT: input element must have id="photo"
+    // ⚠️ IMPORTANT: input element must have id (id="photo")
     const photo = document.getElementById('photo').files[0];
     if (photo) form.append('photo', photo);
 
     // Debugging: log form contents to ensure everything is correct
     // Note: logging FormData directly won’t show contents.
     // Iterate instead if you want to see key-value pairs.
-    console.log('📃 Form submit data:');
+    // console.log('📃 Form submit data:');
     for (let [key, value] of form.entries()) {
-      console.log(key, value);
+      // console.log(key, value);
     }
 
-    // Call updateSettings utility function
-    // Second argument 'data' indicates we’re updating user data (not password).
     updateSettings(form, 'data');
   });
 }
@@ -94,7 +83,7 @@ if (removePhoto) {
     const form = new FormData();
     form.append('photo', 'default.jpg');
 
-    console.log('🗑 Removing profile photo → reset to default.jpg');
+    // console.log('🗑 Removing profile photo → reset to default.jpg');
 
     // Backend sets photo to default.jpg
     // updateSettings handles success alert + reload
@@ -103,7 +92,7 @@ if (removePhoto) {
 }
 
 // ===========================================================
-// === UPDATE FORM === USER SETTINGS (PASSWORD ONLY) ==============
+// === UPDATE FORM === USER SETTINGS (PASSWORD ONLY) =========
 // ===========================================================
 if (userPasswordForm) {
   userPasswordForm.addEventListener('submit', async (e) => {
@@ -117,15 +106,11 @@ if (userPasswordForm) {
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
 
-    console.log('🆕 Form submit new password:', {
-      passwordCurrent,
-      password,
-      passwordConfirm,
-    });
-
-    // Add async within the function and and await for the promise + with try/catch/finally.
-    // So the btn and fields always reset, never gets “stuck” on Updating., even if the request fails:
-    // runs the API call.
+    // console.log('🆕 Form submit new password:', {
+    //   passwordCurrent,
+    //   password,
+    //   passwordConfirm,
+    // });
     try {
       await updateSettings(
         { passwordCurrent, password, passwordConfirm },
@@ -147,13 +132,13 @@ if (userPasswordForm) {
   });
 }
 
-// ===========================================================
-// === bookTour Handler==============
-// ===========================================================
+// ========================
+// === bookTour Handler====
+// ========================
 
 if (bookBtn) {
   bookBtn.addEventListener('click', (e) => {
-    e.target.textContent = 'Processing...'; // target the textContent to switch it to 'processing' when bookBtn is clicked!
+    e.target.textContent = 'Processing...';
     const { tourId } = e.target.dataset;
     if (tourId) {
       bookTour(tourId);
