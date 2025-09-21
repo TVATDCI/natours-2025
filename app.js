@@ -145,14 +145,17 @@ app.use(sanitizeHtmlMiddleware);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // =======================================================
-// Compressing all the text after static content that is sent to client
+// Compressing all the text after static content that is sent to client but only in production
 // =======================================================
-app.use(compression());
-// Debugging: attach request time + log headers
+if (process.env.NODE_ENV === 'production') {
+  app.use(compression());
+}
+
+// Test: attach request time + log headers
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   //  console.log(req.cookies);
-  //  console.log(req.headers); // DEBUG
+  //  console.log(req.headers);
   next();
 });
 
