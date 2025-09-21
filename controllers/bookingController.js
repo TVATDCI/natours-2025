@@ -5,16 +5,15 @@ const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 
 const factory = require('./handlerFactory');
-// const AppError = require('../utils/appError');
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   // 1) Get the currently booked tour
   const tour = await Tour.findById(req.params.tourId);
 
-  console.log('⚡ getCheckoutSession called with:');
-  console.log('tourId param:', req.params.tourId);
-  console.log('user:', req.user && req.user.id);
-  console.log('tour price:', tour.price);
+  // console.log('⚡ getCheckoutSession called with:');
+  // console.log('tourId param:', req.params.tourId);
+  // console.log('user:', req.user && req.user.id);
+  // console.log('tour price:', tour.price);
 
   // 2) Create checkout session
   const session = await stripe.checkout.sessions.create({
@@ -48,12 +47,12 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 
   // check success_url being sent to Stripe:
-  console.log(
-    'Generated success_url:',
-    `${req.protocol}://${req.get('host')}/?tour=${
-      req.params.tourId
-    }&user=${req.user.id}&price=${tour.price}`,
-  );
+  //   console.log(
+  //     'Generated success_url:',
+  //     `${req.protocol}://${req.get('host')}/?tour=${
+  //       req.params.tourId
+  //     }&user=${req.user.id}&price=${tour.price}`,
+  //   );
 
   // 3) Send session to client
   res.status(200).json({
@@ -64,7 +63,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 
 // TEMP: Create INSECURE booking middle without STRIPE WEBHOOK (HACK)
 exports.createBookingCheckout = catchAsync(async (req, res, next) => {
-  console.log('🎯 createBookingCheckout middleware HIT');
+  // console.log('🎯 createBookingCheckout middleware HIT');
   // console.log('🔎 Full req.url:', req.url);
   // console.log('🔎 Full req.query:', req.query);
 
@@ -75,22 +74,11 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
     return next();
   }
 
-  //if (!tour || !user || !price) return next();
-  // if any one of those values (tour, user, or price) is missing/invalid, the condition is true.
-  // Meaning: If ANY ONE of tour, user, or price is missing → skip creating the booking and call next()!
-  // This is stricter and prevents half-baked bookings from being created.
-
-  // if (!tour && !user && !price) return next(); // Jonas version - The condition is only true if all three are falsy at the same time.
-  // Example: Scary version
-  // tour ✅, user ✅, price ❌ → still creates a booking (with price = undefined 😬).
-  // tour ✅, user ❌, price ✅ → still creates a booking (with user = undefined).
-  // So unless all query params are missing at the same time, the booking gets created. That’s looser.
-
   console.log('Booking.create payload:', { tour, user, price });
 
   try {
     await Booking.create({ tour, user, price: +price }); // price = number
-    console.log('✅ Booking created');
+    // console.log('✅ Booking created');
   } catch (err) {
     console.error('❌ Booking failed:', err);
   }
