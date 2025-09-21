@@ -1,10 +1,4 @@
 /* eslint-disable */
-// handles upload - save, remove, delete, default and save.
-// If file was uploaded, add photo name to filteredBody
-// if (req.file) filteredBody.photo = req.file.filename; // It will store only the file name(.filename) in
-// uploaded-resized in memory(req.file.buffer) and sent here to store in public/img/users/...
-// Including remove and reset profile picture to fallback(default.jpg)
-// delete the photo directly after being removed!
 
 // =========== Photo upload, remove and delete process ================
 const fs = require('fs').promises;
@@ -44,9 +38,4 @@ exports.handleUserPhoto = async (req, filteredBody, user) => {
     }
     filteredBody.photo = 'default.jpg';
   }
-
-  // =========================
-  // If neither uploaded nor removed → do nothing
-  // filteredBody.photo remains unchanged
-  // =========================
 };
