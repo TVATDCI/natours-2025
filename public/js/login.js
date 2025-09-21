@@ -2,16 +2,9 @@
 import axios from 'axios';
 import { showAlert } from './alerts.js';
 
-// ====================
+// ======================================================
 // Future REFACTOR DRY Plan = Unify login / logout helper
-// ====================
-// export const handleAuthRedirect = (status, msg, redirectUrl) => {
-//   if (status === 'success') {
-// showAlert('success', msg);
-// setTimeout(() => location.assign(redirectUrl), 1500);
-//   }
-// };
-//
+// ======================================================
 // LOGIN HANDLER AXIOS
 // ===================
 export const login = async (email, password) => {
@@ -25,15 +18,13 @@ export const login = async (email, password) => {
       },
     });
 
-    console.log('📤 Login form submitted');
-
-    console.log('Login response:', res);
-    console.log(
-      'Calling showAlert with:',
-      'success',
-      'Logged in successfully!',
-    );
-
+    // console.log('📤 Login form submitted');
+    // console.log('Login response:', res);
+    // console.log(
+    //   'Calling showAlert with:',
+    //   'success',
+    //   'Logged in successfully!',
+    // );
     if (res.data.status === 'success') {
       showAlert('success', 'Logged in successfully!');
       window.setTimeout(() => location.assign('/'), 1500);
@@ -59,9 +50,6 @@ export const logout = async () => {
 
     if (res.data.status === 'success') {
       showAlert('success', 'Logged out successfully!');
-      // natours data is not very big. Redirect to home after short delay is better than reload
-      // If the user logout from user dashboard, it will reload to page not found . err not found.
-      // = broken /me. It goes to generic error. In this case Jwt Malformed!
       window.setTimeout(() => location.assign('/'), 1500);
     }
   } catch (err) {
