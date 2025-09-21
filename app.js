@@ -79,14 +79,7 @@ app.use(
         'https://checkout.stripe.com', // Checkout session iframe
       ],
       objectSrc: ["'none'"],
-      // Disallow <object>, <embed>, <applet>.
-      // These are rarely used today and often exploited for XSS.
-      // Safe to block entirely unless you specifically need them.
       upgradeInsecureRequests: [],
-      // enforce https in production
-      // Automatically upgrade all HTTP requests to HTTPS.
-      // Ensures external resources (scripts, images, styles)
-      // are always fetched securely in production.
     },
   }),
 );
