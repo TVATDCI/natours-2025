@@ -1,17 +1,9 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
-const authController = require('../controllers/authController'); // PROTECT ROUTE
+const authController = require('../controllers/authController');
 const reviewRouter = require('./reviewRoutes');
-// const reviewController = require('../controllers/reviewController');
-// const sanitizeQuery = require('../middleware/sanitizeQuery'); // clean query parameters in routes level!
 
-// declare and define the Routers before mounting!
-// logic: create routers for all routes and turn them into mini Express apps then mount them into the ROUTER below!
 const router = express.Router(); // modular router
-
-// Param MIDDLEWARES to check the id
-// Register param middleware from tourController
-// router.param('id', tourController.checkID);
 
 // ===================================================================
 // # tours reviews ROUTES - check double block of code in reviewRoutes
@@ -19,26 +11,17 @@ const router = express.Router(); // modular router
 // ===================================================================
 // Redirect any /:tourId/reviews to reviewRouter because it is using the same block of code!
 router.use('/:tourId/reviews', reviewRouter);
-// ===================================================================
-// router
-//   .route('/:tourId/reviews')
-//   .post(
-//     authController.protect,
-//     authController.restrictTo('user'),
-//     reviewController.createReview,
-//   );
-// ===================================================================
 
+// ===================================================================
 router
   .route('/top-5-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTours);
 
 router.route('/tour-stats').get(tourController.getTourStats);
-// ===============================================
+// =======================================================================
 // Geospatial Queries Finding Tours Within Radius!
 // GET /api/v1/tours/tours-within/100/center/34.111745,-118.113491/unit/mi
-// ===============================================
-
+// =======================================================================
 router
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
   .get(tourController.getToursWithin);
@@ -79,32 +62,3 @@ router
   ); // Delete a specific tour
 
 module.exports = router;
-
-/**
- * Avoiding repeating tourController by destructuring Object method! DRY 
- * 
- * const express = require('express');
-const {
-  getAllTours,
-  createTour,
-  getTour,
-  updateTour,
-  deleteTour
-} = require('../controllers/tourController');
-
-const router = express.Router();
-
-router
-  .route('/')
-  .get(getAllTours)
-  .post(createTour);
-
-router
-  .route('/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
-
-module.exports = router;
-  
- */
