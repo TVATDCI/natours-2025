@@ -1,18 +1,20 @@
-// ======================================
+// ================
 // #: DEPENDENCIES
-// ======================================
+// ================
 const path = require('path');
 const express = require('express');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const compression = require('compression');
-const morgan = require('morgan');
-const helmet = require('helmet');
+// const morgan = require('morgan');
+// const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const mongoSanitize = require('express-mongo-sanitize');
-const hpp = require('hpp');
+// const mongoSanitize = require('express-mongo-sanitize');
+// const hpp = require('hpp');
 
-const sanitizeQueryMiddleware = require('./middleware/sanitizeQuery');
-const sanitizeHtmlMiddleware = require('./middleware/sanitizeHtml');
+const securityMiddleware = require('./middleware/security');
+const globalsMiddleware = require('./middleware/globalMiddlewares');
+// const sanitizeQueryMiddleware = require('./middleware/sanitizeQuery');
+// const sanitizeHtmlMiddleware = require('./middleware/sanitizeHtml');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -25,64 +27,65 @@ const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
-// =========================================================
+// ======================================
 // 1) VIEW ENGINE - SET UP PUG IN EXPRESS
-// =========================================================
-// Telling Express that we’ll use Pug as our template engine
+// ======================================
+// Telling Express that Pug is used as template engine
 app.set('view engine', 'pug');
 
 // Define where the views (templates) live
 app.set('views', path.join(__dirname, 'views'));
 
-// ======================================
-// #: GLOBAL MIDDLEWARES
-// ======================================
+// =======================================================
+// #: GLOBAL MIDDLEWARES - middleware/globalMiddlewares.js
+// =======================================================
+app.use(globalsMiddleware);
 
-// Development logging
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+// // Development logging
+// if (process.env.NODE_ENV === 'development') {
+//   app.use(morgan('dev'));
+// }
 
-// Security: Set secure HTTP headers
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
+// // Security: Set secure HTTP headers
+// app.use(
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       defaultSrc: ["'self'"],
 
-      scriptSrc: [
-        "'self'",
-        'https://cdnjs.cloudflare.com',
-        'https://js.stripe.com',
-      ], // allow Axios CDN
+//       scriptSrc: [
+//         "'self'",
+//         'https://cdnjs.cloudflare.com',
+//         'https://js.stripe.com',
+//       ], // allow Axios CDN
 
-      styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+//       styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
 
-      imgSrc: [
-        "'self'",
-        'data:',
-        'blob:',
-        'https://*.tile.openstreetmap.org',
-        'https://*.basemaps.cartocdn.com',
-      ],
+//       imgSrc: [
+//         "'self'",
+//         'data:',
+//         'blob:',
+//         'https://*.tile.openstreetmap.org',
+//         'https://*.basemaps.cartocdn.com',
+//       ],
 
-      connectSrc: [
-        "'self'",
-        'https://*.tile.openstreetmap.org',
-        'https://*.basemaps.cartocdn.com',
-        'https://api.stripe.com',
-        'https://q.stripe.com', // Stripe tracking pixel
-      ],
-      frameSrc: [
-        "'self'",
-        'https://js.stripe.com',
-        'https://hooks.stripe.com', // Required for webhooks + 3D Secure iframe
-        'https://checkout.stripe.com', // Checkout session iframe
-      ],
-      objectSrc: ["'none'"],
-      upgradeInsecureRequests: [],
-    },
-  }),
-);
+//       connectSrc: [
+//         "'self'",
+//         'https://*.tile.openstreetmap.org',
+//         'https://*.basemaps.cartocdn.com',
+//         'https://api.stripe.com',
+//         'https://q.stripe.com', // Stripe tracking pixel
+//       ],
+//       frameSrc: [
+//         "'self'",
+//         'https://js.stripe.com',
+//         'https://hooks.stripe.com', // Required for webhooks + 3D Secure iframe
+//         'https://checkout.stripe.com', // Checkout session iframe
+//       ],
+//       objectSrc: ["'none'"],
+//       upgradeInsecureRequests: [],
+//     },
+//   }),
+// );
 
 // Rate limiting: Limit 100 requests per IP per hour (applies to /api routes)
 const limiter = rateLimit({
@@ -92,54 +95,54 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-// ======================================
-// #: SECURITY & SANITIZATION MIDDLEWARES
-// ======================================
-// Body parser, reading data from body (limit payload to 10kb) to req.body
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-// ======================================
-// Cookie parser: parses cookies into req.cookies
-app.use(cookieParser());
-// ======================================
-// Data sanitization against NoSQL query injection
-// mongoSanitize → protects from NoSQL injection ($gt, $ne, etc.).
-app.use(mongoSanitize());
-// ======================================
-// Data sanitization against HTTP Parameter Pollution
-// hpp → prevents duplicate param exploitation, pollution, allow certain whitelisted params
-app.use(
-  hpp({
-    whitelist: [
-      'duration',
-      'ratingsQuantity',
-      'ratingsAverage',
-      'maxGroupSize',
-      'difficulty',
-      'price',
-      'rating',
-    ],
-  }),
-);
-// ======================================
-// Query sanitization
-// sanitizeQueryMiddleware → cleans query params & enforces what’s allowed.
-app.use(sanitizeQueryMiddleware); // Query sanitization
-// ======================================
-// Data sanitization against XSS
-// sanitizeHtmlMiddleware → protects from XSS / HTML injection.
-app.use(sanitizeHtmlMiddleware);
-// ======================================
+// ===============================================================
+// #: SECURITY & SANITIZATION MIDDLEWARES - middleware/security.js
+// ===============================================================
+app.use(securityMiddleware);
+// // Body parser, reading data from body (limit payload to 10kb) to req.body
+// app.use(express.json({ limit: '10kb' }));
+// app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+// // ======================================
+// // Cookie parser: parses cookies into req.cookies
+// app.use(cookieParser());
+// // ======================================
+// // Data sanitization against NoSQL query injection
+// // mongoSanitize → protects from NoSQL injection ($gt, $ne, etc.).
+// app.use(mongoSanitize());
+// // ======================================
+// // Data sanitization against HTTP Parameter Pollution
+// // hpp → prevents duplicate param exploitation, pollution, allow certain whitelisted params
+// app.use(
+//   hpp({
+//     whitelist: [
+//       'duration',
+//       'ratingsQuantity',
+//       'ratingsAverage',
+//       'maxGroupSize',
+//       'difficulty',
+//       'price',
+//       'rating',
+//     ],
+//   }),
+// );
+// // ======================================
+// // Query sanitization
+// // sanitizeQueryMiddleware → cleans query params & enforces what’s allowed.
+// app.use(sanitizeQueryMiddleware); // Query sanitization
+// // ======================================
+// // Data sanitization against XSS
+// // sanitizeHtmlMiddleware → protects from XSS / HTML injection.
+// app.use(sanitizeHtmlMiddleware);
+// // ======================================
 
-// ======================================
-// 2) SERVING STATIC FILES & DEBUGGING
-// ======================================
-// Serve static files from public folder
+// ===========================================================================
+// 2) SERVING STATIC FILES & DEBUGGING - Serve static files from public folder
+// ===========================================================================
 app.use(express.static(path.join(__dirname, 'public')));
 
-// =======================================================
+// ===========================================================================================
 // Compressing all the text after static content that is sent to client but only in production
-// =======================================================
+// ===========================================================================================
 if (process.env.NODE_ENV === 'production') {
   app.use(compression());
 }
@@ -152,9 +155,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// ======================================
+// ==========
 // 3) ROUTES
-// ======================================
+// ==========
 app.use('/', viewRouter);
 // ======================================
 app.use('/api/v1/tours', tourRouter);
@@ -167,13 +170,13 @@ app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// ======================================
+// =======================
 // #: GLOBAL ERROR HANDLER
-// ======================================
+// =======================
 
 app.use(globalErrorHandler);
 
 module.exports = app;
-// ======================================
+// ========================
 // #: SERVER: server.js >>
-// ======================================
+// ========================
