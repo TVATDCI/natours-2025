@@ -25,34 +25,32 @@ if (mapEl) {
     },
   );
 
-  // ==========================
+  // =======================
   // Initialize Leaflet map
-  // ==========================
+  // =======================
   const map = L.map('map', {
     scrollWheelZoom: false,
     zoomControl: false,
-    layers: [light], // ✅ works now
+    layers: [light],
   });
 
   L.control
     .zoom({
-      position: 'topright', // add new zoom btns to top-right
+      position: 'topright',
     })
     .addTo(map);
 
-  // ==========================
+  // =================
   // Basemap switcher
-  // ==========================
+  // =================
   const baseMaps = { Light: light, Dark: dark };
   L.control.layers(baseMaps).addTo(map);
 
   // =============================================
   // Implement Leaflet marker (DOM + CSS approach)
   // =============================================
-  // Bounds object (same concept as Mapbox LatLngBounds)
   const bounds = L.latLngBounds();
 
-  // Loop locations from GeoJSON  ([lng, lat]). It will be flipped for leaflet
   locations.forEach((loc) => {
     const [lng, lat] = loc.coordinates;
 
@@ -60,11 +58,9 @@ if (mapEl) {
     const el = document.createElement('div');
     el.className = 'marker';
 
-    // Add marker using Leaflet's `L.marker` with a DivIcon wrapper
-    // Flipping lng, lat to leaflet way (l.marker) ([lat, lng])
     const marker = L.marker([lat, lng], {
       icon: L.divIcon({
-        html: el, // pass DOM element here
+        html: el,
         className: '', // keep Leaflet from adding extra classes
         iconSize: [32, 40],
         iconAnchor: [16, 40],
@@ -78,6 +74,5 @@ if (mapEl) {
     bounds.extend([lat, lng]);
   });
 
-  // Fit map to markers
   map.fitBounds(bounds, { padding: [50, 50] });
 }
