@@ -16,9 +16,6 @@ const reviewSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    // NOTE: This is Parent Referencing → Review is the child, and it points up to its parents.
-    // The Review document stores the reference IDs of those parents.
-    // Each Review belongs to exactly one Tour and one User. It holds ID of parent Tour + parent User
     tour: {
       // Parent referencing: each review knows which tour it belongs to
       type: mongoose.Schema.ObjectId,
@@ -39,31 +36,18 @@ const reviewSchema = new mongoose.Schema(
   },
 );
 
-// ======================================
+// ======================================================
 // Preventing Duplicate Reviews
 // - Each user can only leave one review per tour.
-// - If they try to post another review on the same tour, block it (or optionally update the old one).
-// ======================================
-
+// - If they try to post another review on the same tour,
+// block it (or optionally update the old one).
+// ======================================================
 reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
 
-// ======================================
+// ====================
 // PRE-QUERY MIDDLEWARE
-// ======================================
-// Watch out Double .populate() in one document(this)
-
+// ====================
 reviewSchema.pre(/^find/, function (next) {
-  //   this.populate({
-  //     path: 'tour',
-  //     select: 'name', // include field
-  //   }).populate({
-  //     path: 'user',
-  //     select: 'name photo', // include fields
-  //   });
-
-  //   next();
-  // });
-  // If only the user info is needed, remove tour populate entirely from middleware and add it only when necessary in the controller (reviewController/getReviewWithTour)
   this.populate({
     path: 'user',
     select: 'name photo',
@@ -76,7 +60,6 @@ reviewSchema.pre(/^find/, function (next) {
 // ============================
 // Static methods in Mongoose → belong to the Model (Review) itself, not an instance.
 // ============================
-// Push the review stats up into the Tour model (Tour Stats Aggregation - getTourStats) through (tourId) and attach to calcAverageRatings
 reviewSchema.statics.calcAverageRatings = async function (tourId) {
   const stats = await this.aggregate([
     {
@@ -91,7 +74,7 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     },
   ]);
 
-  console.log(stats);
+  // console.log(stats);
 
   // Update the Tour with new stats
   if (stats.length > 0) {
@@ -108,33 +91,26 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
   }
 };
 
-// ============================
+// ===================================
 // Middleware for newly created Review
-// ============================
+// ===================================
 reviewSchema.post('save', function () {
-  // `this` = current review document
   this.constructor.calcAverageRatings(this.tour);
 });
 
-// To This point ... calcAverageRatings is only called inside a post('save') middleware.
-// It only recalculates averages when a review is created.
-// Fetching a tour by ID (getTour) does not trigger calcAverageRatings — because no middleware is running on read queries.
-
-// ============================
+// =====================================================
 // Pre middleware for findOneAndUpdate, findOneAndDelete
-// query middleware for updates and deletes, so averages always recalc when reviews are modified.
-// ============================
-// Retrieving the current doc from the database and store it in current query variable (r)
+// =====================================================
 reviewSchema.pre(/^findOneAnd/, async function (next) {
-  // Save the document being modified so post middleware can access it
-  this.r = await this.clone().findOne(); // .clone() ensures no double execution error
-  console.log(this.r);
+  this.r = await this.clone().findOne();
+  // console.log(this.r);
   next();
 });
 
+// =======================================================
 // Post middleware for findOneAndUpdate / findOneAndDelete
+// =======================================================
 reviewSchema.post(/^findOneAnd/, async function () {
-  // this.r contains the document before update/delete
   if (this.r) {
     await this.r.constructor.calcAverageRatings(this.r.tour);
   }
