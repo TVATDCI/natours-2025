@@ -1,12 +1,10 @@
 /* eslint-disable */
-console.log('Leaflet client script loaded ');
-
 import 'leaflet/dist/leaflet.css';
 
 const mapEl = document.getElementById('map');
 if (mapEl) {
   const locations = JSON.parse(mapEl.dataset.locations);
-  console.log('Locations data:', locations);
+  // console.log('Locations data:', locations);
 
   // ==========================
   // Define basemap layers FIRST
