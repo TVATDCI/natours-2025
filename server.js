@@ -21,7 +21,8 @@ const app = require('./app');
 // =============================
 // Database Connection
 // =============================
-connectDB(); // Failures bubble to unhandledRejection
+// No catch here — failures bubble to unhandledRejection
+connectDB();
 
 // =============================
 // Start Server
