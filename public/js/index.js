@@ -1,5 +1,8 @@
 /* eslint-disable */
-import '@babel/polyfill';
+// import '@babel/polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+
 import { login, logout } from './login.js';
 import { updateSettings } from './updateSettings.js';
 import { leaflet } from './leaflet.js';
