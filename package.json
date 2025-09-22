@@ -23,7 +23,7 @@
     "lint:fix": "eslint . --fix",
     "debug": "ndb server.js",
     "watch:js": "parcel serve public/js/index.js --dist-dir public/js/bundle --public-url /js",
-    "build:js": "parcel build public/js/index.js --dist-dir public/js/bundle --public-url /js"
+    "build:js": "npx parcel build public/js/index.js --dist-dir public/js/bundle --public-url /js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
@@ -63,7 +63,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.5.3",
     "eslint-plugin-react": "^7.37.5",
-    "parcel": "^2.15.4",
+    "parcel": "^2.16.0",
     "prettier": "^3.6.2"
   }
 }
