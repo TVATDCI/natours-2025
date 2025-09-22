@@ -1,6 +1,5 @@
 /* eslint-disable */
 // type = 'success' or 'error'
-
 // Dom Handling ;)
 // hide the left over
 export const hideAlert = () => {
