@@ -2,15 +2,16 @@
 import axios from 'axios';
 import { showAlert } from './alerts';
 
-// ==========================================================================================================================
-// updateData V2. This version (updateSettings) will use ternary operator to differ url between updateData and updatePassword
-// ==========================================================================================================================
+// ========================================================
+// Update user data or password
+// type: 'data' | 'password'
+// ========================================================
 export const updateSettings = async (data, type) => {
   try {
     const url =
       type === 'password'
-        ? 'http://127.0.0.1:3000/api/v1/users/updateMyPassword'
-        : 'http://127.0.0.1:3000/api/v1/users/updateMe';
+        ? '/api/v1/users/updateMyPassword'
+        : '/api/v1/users/updateMe';
     // http: req directly to API endpoint = /updateMe
     const res = await axios({
       method: 'PATCH',
@@ -23,9 +24,9 @@ export const updateSettings = async (data, type) => {
     if (res.data.status === 'success') {
       showAlert('success', `${type.toUpperCase()} updated successfully!`);
 
-      // ✅ If updating user DATA (not password), reload the page
+      // Reload only for profile data updates
       if (type === 'data') {
-        window.setTimeout(() => {
+        setTimeout(() => {
           location.reload();
         }, 1500);
       }
