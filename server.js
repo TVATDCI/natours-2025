@@ -1,31 +1,41 @@
 /* eslint-disable */
 const dotenv = require('dotenv');
 
+// =============================
+// Handle Synchronous Exceptions
+// =============================
 process.on('uncaughtException', (err) => {
-  console.error('🧨 :UNCAUGHT EXCEPTION! Shutting down...');
-  console.error(err);
+  console.error('🔴 Uncaught Exception! Shutting down...');
+  console.error(err.name, err.message);
   process.exit(1);
 });
 
+// =============================
+// Load Environment Variables
+// =============================
 dotenv.config({ path: './config.env' });
 
 const connectDB = require('./config/db');
 const app = require('./app');
 
-// Connect to Database
-connectDB(); // No catch here — failures go to unhandledRejection
+// =============================
+// Database Connection
+// =============================
+connectDB(); // Failures bubble to unhandledRejection
 
-// Start server
+// =============================
+// Start Server
+// =============================
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
-  console.log(`App running on port:🌐: ${port}...`);
+  console.log(`🌐 App running on port ${port}...`);
 });
 
-// ======================================
-// Global Unhandled Promise Rejection Handler
-// (Async errors outside Express)
+// =============================
+// Handle Unhandled Rejections
+// =============================
 process.on('unhandledRejection', (err) => {
-  console.error('🔴 :UNHANDLED REJECTION! Shutting down...');
+  console.error('🔴 Unhandled Rejection! Shutting down...');
   console.error(err.name, err.message);
   server.close(() => {
     process.exit(1);
