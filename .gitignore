@@ -24,6 +24,7 @@ build/
 
 # Parcel cache
 .parcel-cache/
+.cache/
 
 # Bundled output
 public/js/bundle/
