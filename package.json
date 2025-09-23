@@ -29,6 +29,7 @@
     "@babel/polyfill": "^7.12.1",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
+    "buffer": "^6.0.3",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "core-js": "^3.45.1",
@@ -57,7 +58,6 @@
   },
   "devDependencies": {
     "@prettier/plugin-pug": "^3.4.2",
-    "buffer": "^6.0.3",
     "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^10.1.8",
