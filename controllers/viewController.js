@@ -46,6 +46,16 @@ exports.getLoginForm = (req, res) => {
   });
 };
 
+// ================================
+// #: GET SIGNUP FORM - SIGNUP PAGE
+// ================================
+
+exports.getSignupForm = (req, res) => {
+  res.status(200).render('signup', {
+    title: 'Create your account',
+  });
+};
+
 // ====================================
 // #: GET ACCOUNT - A USER ACCOUNT PAGE
 // ====================================

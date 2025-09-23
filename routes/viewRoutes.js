@@ -17,6 +17,9 @@ router.get('/tours/:slug', authController.isLoggedIn, viewController.getTour);
 // Login form: if already logged in, header will reflect it
 router.get('/login', authController.isLoggedIn, viewController.getLoginForm);
 
+// signup form:
+router.get('/signup', viewController.getSignupForm);
+
 // Account page: must be logged in → strict protection required
 router.get('/me', authController.protect, viewController.getAccount);
 
