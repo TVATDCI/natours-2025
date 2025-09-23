@@ -28,10 +28,3 @@ build/
 
 # Bundled output
 public/js/bundle/
-
-
-# Frontend-specific
-frontend/node_modules/
-
-# Backend-specific
-backend/node_modules/
