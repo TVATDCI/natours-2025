@@ -2,9 +2,10 @@
 import axios from 'axios';
 import { showAlert } from './alerts.js';
 
+// =====================
 // SIGNUP HANDLER AXIOS
-// ===================
-export const login = async (name, email, password, passwordConfirm) => {
+// =====================
+export const signup = async (name, email, password, passwordConfirm) => {
   try {
     const res = await axios({
       method: 'POST',
@@ -18,11 +19,11 @@ export const login = async (name, email, password, passwordConfirm) => {
     });
 
     if (res.data.status === 'success') {
-      showAlert('success', 'Logged in successfully!');
+      showAlert('success', 'Account created successfully!');
       window.setTimeout(() => location.assign('/'), 1500);
     }
   } catch (err) {
     console.error('Signup error:', err.response || err);
-    showAlert('error', err.response.data.message || 'Something went wrong!');
+    showAlert('error', err.response?.data?.message || 'Something went wrong!');
   }
 };
