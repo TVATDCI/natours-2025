@@ -9,7 +9,9 @@ import { leaflet } from './leaflet.js';
 import { leafletMap } from './leafletMap.js';
 import { bookTour } from './stripe.js';
 
+// ==================
 // DOM Elements
+// ==================
 const signupForm = document.querySelector('.form--signup');
 const loginForm = document.querySelector('.form--login');
 const logoutBtn = document.querySelector('.nav__el--logout');
