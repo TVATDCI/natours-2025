@@ -1,6 +1,6 @@
-// controllers/multerController.js
 const multer = require('multer');
 const sharp = require('sharp');
+const cloudinary = require('../utils/cloudinary');
 
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -26,18 +26,49 @@ const upload = multer({
 // Middleware: single photo upload
 exports.uploadUserPhoto = upload.single('photo');
 
-// Middleware: resize photo
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
-  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-
-  // WAIT: It can take time, add await for asynchronous before calling next!
-  await sharp(req.file.buffer)
+  const buffer = await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`public/img/users/${req.file.filename}`);
+    .toBuffer();
+
+  // Wrap Cloudinary upload in a Promise
+  await new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'natours/users',
+        public_id: `user-${req.user.id}-${Date.now()}`,
+        resource_type: 'image',
+      },
+      (error, result) => {
+        if (error) return reject(error);
+
+        // Save Cloudinary URL for DB update
+        req.file.filename = result.secure_url;
+        resolve();
+      },
+    );
+
+    uploadStream.end(buffer);
+  });
 
   next();
 });
+
+// Middleware: resize photo
+// exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+//   if (!req.file) return next();
+
+//   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+
+//   await sharp(req.file.buffer)
+//     .resize(500, 500)
+//     .toFormat('jpeg')
+//     .jpeg({ quality: 90 })
+//     .toFile(`public/img/users/${req.file.filename}`);
+
+//   next();
+// });

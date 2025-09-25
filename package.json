@@ -15,13 +15,13 @@
   "type": "commonjs",
   "scripts": {
     "start:dev": "nodemon server.js",
+    "start:local:prod": "NODE_ENV=production node server.js",
     "import-data": "node dev-data/data/import-dev-data.js --import",
     "delete-data": "node dev-data/data/import-dev-data.js --delete",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "watch:js": "parcel serve public/js/index.js --dist-dir public/js/bundle --public-url /js",
     "build:js": "parcel build public/js/index.js --dist-dir public/js/bundle --public-url /js",
-    "start": "NODE_ENV=production node server.js",
     "start:prod": "NODE_ENV=production node server.js",
     "postinstall": "npm rebuild sharp"
   },
@@ -30,6 +30,7 @@
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "buffer": "^6.0.3",
+    "cloudinary": "^2.7.0",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "core-js": "^3.45.1",
