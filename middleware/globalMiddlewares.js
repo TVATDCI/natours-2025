@@ -26,6 +26,7 @@ globalsMiddleware.use(
         'blob:',
         'https://*.tile.openstreetmap.org',
         'https://*.basemaps.cartocdn.com',
+        'https://res.cloudinary.com',
       ],
       connectSrc: [
         "'self'",
