@@ -42,7 +42,13 @@ block content
                             label.form__label(for='email') Email address
                             input#email.form__input(type='email', value=user.email, required)
                         .form__group.form__photo-upload
-                            img.form__user-photo(src=`/img/users/${user.photo}`, alt='User photo')
+                            //- img.form__user-photo(src=`/img/users/${user.photo}`, alt='User photo')
+                            if user.photo && user.photo.startsWith('http')
+                                img.nav__user-img(src=user.photo alt=`Photo of ${user.name}`)
+                            else if user.photo
+                                img.nav__user-img(src=`/img/users/${user.photo}` alt=`Photo of ${user.name}`)
+                            else
+                                img.nav__user-img(src='/img/users/default.jpg' alt='Default user')
                             //- Remove button (reset to default)
                             button#remove-photo(type="button").btn.btn--small.btn--transparent_red Remove photo
                             //- a.btn-text(href='') Choose new photo
