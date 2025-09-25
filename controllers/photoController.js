@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 // =========== Photo upload, remove and delete process ================
 const fs = require('fs').promises;
 
