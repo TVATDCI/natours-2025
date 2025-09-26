@@ -72,7 +72,7 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
 //   await new Promise((resolve, reject) => {
 //     const uploadStream = cloudinary.uploader.upload_stream(
 //       {
-//         folder: 'natours/users',
+//         folder: 'natours-2025/users',
 //         public_id: `user-${req.user.id}-${Date.now()}`,
 //         resource_type: 'image',
 //       },
