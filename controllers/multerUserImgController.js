@@ -26,6 +26,7 @@ const upload = multer({
 // Middleware: single photo upload
 exports.uploadUserPhoto = upload.single('photo');
 
+// v.3 extended user schema store with both secure_url and public_id
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
@@ -35,29 +36,62 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
     .jpeg({ quality: 90 })
     .toBuffer();
 
-  // Wrap Cloudinary upload in a Promise
-  await new Promise((resolve, reject) => {
+  const uploadResult = await new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: 'natours/users',
+        folder: 'natours-2025/users',
         public_id: `user-${req.user.id}-${Date.now()}`,
         resource_type: 'image',
       },
       (error, result) => {
         if (error) return reject(error);
-
-        // Save Cloudinary URL for DB update
-        req.file.filename = result.secure_url;
-        resolve();
+        resolve(result);
       },
     );
-
     uploadStream.end(buffer);
   });
+
+  // Store both secure_url and public_id
+  req.file.filename = uploadResult.secure_url;
+  req.file.public_id = uploadResult.public_id;
 
   next();
 });
 
+// v.2 Upload only with secure_url
+// exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+//   if (!req.file) return next();
+
+//   const buffer = await sharp(req.file.buffer)
+//     .resize(500, 500)
+//     .toFormat('jpeg')
+//     .jpeg({ quality: 90 })
+//     .toBuffer();
+
+//   // Wrap Cloudinary upload in a Promise
+//   await new Promise((resolve, reject) => {
+//     const uploadStream = cloudinary.uploader.upload_stream(
+//       {
+//         folder: 'natours/users',
+//         public_id: `user-${req.user.id}-${Date.now()}`,
+//         resource_type: 'image',
+//       },
+//       (error, result) => {
+//         if (error) return reject(error);
+
+//         // Save Cloudinary URL for DB update
+//         req.file.filename = result.secure_url;
+//         resolve();
+//       },
+//     );
+
+//     uploadStream.end(buffer);
+//   });
+
+//   next();
+// });
+
+// v.1 upload and store in local
 // Middleware: resize photo
 // exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
 //   if (!req.file) return next();
@@ -68,7 +102,7 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
 //     .resize(500, 500)
 //     .toFormat('jpeg')
 //     .jpeg({ quality: 90 })
-//     .toFile(`public/img/users/${req.file.filename}`);
+//     .toFile(`public/img/users/${req.file.filename}`); <-- store locally
 
 //   next();
 // });
