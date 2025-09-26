@@ -56,7 +56,8 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
     uploadStream.end(buffer);
   });
 
-  // Store both secure_url (for displaying) and public_id (for deletion)
+  // Store both secure_url (for displaying)
+  // public_id (for deletion)
   req.file.filename = uploadResult.secure_url;
   req.file.public_id = uploadResult.public_id;
 
