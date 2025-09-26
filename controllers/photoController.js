@@ -1,5 +1,5 @@
 /* eslint-disable */
-// == Photo upload, remove and delete process ==== on cloudinary ============
+// == Photo upload, remove and delete process ==== on cloudinary ===
 const cloudinary = require('../utils/cloudinary');
 
 exports.handleUserPhoto = async (req, filteredBody, user) => {
