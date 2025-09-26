@@ -6,7 +6,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 // Import flexible env for future maintainability
-// const userFolder = process.env.CLOUDINARY_USER_FOLDER || 'natours/users';
+const userFolder = process.env.CLOUDINARY_USER_FOLDER || 'natours/users';
 
 // =============
 // Multer Setup
@@ -44,8 +44,7 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   const uploadResult = await new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        // folder: userFolder, // switch hard coded folder 'natours-2025/users' to flexible environment
-        folder: 'natours-2025/users',
+        folder: userFolder, // switch hard coded folder 'natours-2025/users' to flexible environment
         public_id: `user-${req.user.id}-${Date.now()}`,
         resource_type: 'image',
       },
