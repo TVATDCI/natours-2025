@@ -8,9 +8,9 @@ const AppError = require('../utils/appError');
 // Import flexible env for future maintainability
 const userFolder = process.env.CLOUDINARY_USER_FOLDER || 'natours/users';
 
-// =============================
+// =============
 // Multer Setup
-// =============================
+// =============
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
