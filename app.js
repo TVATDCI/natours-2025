@@ -31,6 +31,8 @@ app.set('views', path.join(__dirname, 'views'));
 // =======================================================
 app.use(globalsMiddleware);
 
+// Tell Express to trust the proxy Render, etc.
+app.set('trust proxy', 1);
 // ==========================================================================
 // Rate limiting: Limit 100 requests per IP per hour (applies to /api routes)
 // ==========================================================================
