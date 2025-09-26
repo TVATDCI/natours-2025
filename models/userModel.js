@@ -26,6 +26,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: 'default.jpg', // Add fallback to profile photo
     },
+    photoId: {
+      type: String, // store Cloudinary's public_id
+    },
 
     role: {
       type: String,
