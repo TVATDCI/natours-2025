@@ -26,9 +26,9 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-// ===============================
+// =========================================================================================
 // #: getMe - getting document based on current user id by taking the user.id from params.id
-// ===============================
+// =========================================================================================
 exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
   next();
@@ -73,9 +73,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
-// ===============================
+// ===================================
 // #: DELETE (DEACTIVATE) CURRENT USER
-// ===============================
+// ===================================
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
   res.status(204).json({
@@ -84,14 +84,14 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-// ===============================
+// ==========================
 // #: GET A SINGLE USER BY ID
-// ===============================
+// ==========================
 exports.getUser = factory.getOne(User);
 
-// ===============================
+// =================
 // #: CREATE A USER
-// ===============================
+// =================
 // POST /api/v1/users
 exports.createUser = catchAsync(async (req, res) => {
   const newUser = await User.create(req.body);
@@ -104,9 +104,9 @@ exports.createUser = catchAsync(async (req, res) => {
   });
 });
 
-// ===============================
+// =================
 // #: UPDATE A USER
-// ===============================
+// =================
 exports.updateUser = catchAsync(async (req, res, next) => {
   // Never allow password updates here — should be handled in a dedicated route
   if (req.body.password || req.body.passwordConfirm) {
@@ -140,4 +140,3 @@ exports.updateUser = catchAsync(async (req, res, next) => {
 // #: DELETE A USER
 // ===============================
 exports.deleteUser = factory.deleteOne(User);
-// ===================================================
