@@ -5,6 +5,9 @@ const cloudinary = require('../utils/cloudinary');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
+// Import flexible env for future maintainability
+const userFolder = process.env.CLOUDINARY_USER_FOLDER || 'natours/users';
+
 // =============================
 // Multer Setup
 // =============================
@@ -30,16 +33,18 @@ exports.uploadUserPhoto = upload.single('photo');
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
+  // Convert file buffer into optimized image buffer
   const buffer = await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
     .toBuffer();
 
+  // Upload to Cloudinary (wrapped in Promise)
   const uploadResult = await new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: 'natours-2025/users',
+        folder: userFolder, // switch hard coded folder 'natours-2025/users' to flexible environment
         public_id: `user-${req.user.id}-${Date.now()}`,
         resource_type: 'image',
       },
@@ -51,7 +56,7 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
     uploadStream.end(buffer);
   });
 
-  // Store both secure_url and public_id
+  // Store both secure_url (for displaying) and public_id (for deletion)
   req.file.filename = uploadResult.secure_url;
   req.file.public_id = uploadResult.public_id;
 
