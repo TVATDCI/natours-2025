@@ -38,18 +38,28 @@ const gracefulShutdown = (signal, err) => {
   console.error(`\n🔴 Received ${signal}. Shutting down gracefully...`);
   if (err) console.error(err.stack || `${err.name}: ${err.message}`);
 
-  server.close(() => {
-    console.log('🟢 Closed out remaining connections.');
-    process.exit(signal === 'unhandledRejection' ? 1 : 0);
-  });
+  let exitCode = 0;
+  if (signal === 'unhandledRejection' || signal === 'uncaughtException') {
+    exitCode = 1;
+  }
 
-  // Force shutdown if still hanging after 10s
-  setTimeout(() => {
+  const timeout = setTimeout(() => {
     console.error(
       '🟡 Could not close connections in time, forcefully shutting down',
     );
     process.exit(1);
   }, 10000);
+
+  server.close((err) => {
+    clearTimeout(timeout);
+    if (err) {
+      console.error('🔴 Error closing server:', err.stack || `${err.name}: ${err.message}`);
+      process.exit(1);
+    } else {
+      console.log('🟢 Closed out remaining connections.');
+      process.exit(exitCode);
+    }
+  });
 };
 
 // Handle SIGINT (Ctrl+C) and SIGTERM (Render/Heroku/etc.)
