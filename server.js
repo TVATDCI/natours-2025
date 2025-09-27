@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 // =============================
 process.on('uncaughtException', (err) => {
   console.error('🔴 Uncaught Exception! Shutting down...');
+  console.error(err.stack);
   console.error(err.name, err.message);
   process.exit(1);
 });
@@ -33,12 +34,34 @@ const server = app.listen(port, () => {
 });
 
 // =============================
-// Handle Unhandled Rejections
+// Very long Graceful shutdown functions 🫢
 // =============================
+const gracefulShutdown = (signal) => {
+  console.log(`\n🔴 Received ${signal}. Shutting down gracefully...`);
+
+  server.close(() => {
+    console.log('🟢 Closed out remaining connections.');
+    process.exit(0);
+  });
+
+  // Force shutdown if still hanging after 10s
+  setTimeout(() => {
+    console.error(
+      '⚠️ Could not close connections in time, forcefully shutting down',
+    );
+    process.exit(1);
+  }, 10000);
+};
+
+// Handle SIGINT (Ctrl+C) and SIGTERM (Render/Heroku/etc.)
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+
+// Handle unhandled rejections
 process.on('unhandledRejection', (err) => {
   console.error('🔴 Unhandled Rejection! Shutting down...');
   console.error(err.name, err.message);
-  server.close(() => {
-    process.exit(1);
-  });
+  gracefulShutdown('unhandledRejection');
+
+  server.close(() => process.exit(1));
 });
