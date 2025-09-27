@@ -20,7 +20,7 @@ export const signup = async (name, email, password, passwordConfirm) => {
 
     if (res.data.status === 'success') {
       showAlert('success', 'Account created successfully!');
-      window.setTimeout(() => location.assign('/'), 1500);
+      setTimeout(() => location.assign('/'), 1500);
     }
   } catch (err) {
     console.error('Signup error:', err.response || err);
