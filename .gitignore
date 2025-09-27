@@ -28,3 +28,6 @@ build/
 
 # Bundled output
 public/js/bundle/
+
+# Learning note
+note.text
