@@ -50,10 +50,15 @@ const gracefulShutdown = (signal, err) => {
     process.exit(1);
   }, 10000);
 
-  server.close(() => {
+  server.close((err) => {
     clearTimeout(timeout);
-    console.log('🟢 Closed out remaining connections.');
-    process.exit(exitCode);
+    if (err) {
+      console.error('🔴 Error closing server:', err.stack || `${err.name}: ${err.message}`);
+      process.exit(1);
+    } else {
+      console.log('🟢 Closed out remaining connections.');
+      process.exit(exitCode);
+    }
   });
 };
 
