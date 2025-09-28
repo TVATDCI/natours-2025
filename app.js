@@ -5,6 +5,8 @@ const path = require('path');
 const express = require('express');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+
+const bookingController = require('./controllers/bookingController');
 const corsMiddleware = require('./middleware/corsMiddleware');
 
 const globalsMiddleware = require('./middleware/globalMiddlewares');
@@ -14,6 +16,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+
 const viewRouter = require('./routes/viewRoutes');
 
 const AppError = require('./utils/appError');
@@ -30,10 +33,11 @@ app.set('views', path.join(__dirname, 'views'));
 // =======================================================
 // #: GLOBAL MIDDLEWARES - middleware/globalMiddlewares.js
 // =======================================================
-
 app.use(globalsMiddleware);
 
+// =======================================================
 // Tell Express to trust the proxy Render, etc.
+// =======================================================
 app.set('trust proxy', 1);
 // ==========================================================================
 // Rate limiting: Limit 100 requests per IP per hour (applies to /api routes)
@@ -45,8 +49,20 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
+// =============================================
 // Apply CORS from corsMiddlewares.js
+// =============================================
 app.use(corsMiddleware);
+
+// ==================================================================================
+// Webhook must be above BEFORE use(express.json(), wrapped inside securityMiddleware
+// ==================================================================================
+// No need for body-parser(bodyParser). express raw will do the job
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout,
+);
 // ===============================================================
 // #: SECURITY & SANITIZATION MIDDLEWARES - middleware/security.js
 // ===============================================================
