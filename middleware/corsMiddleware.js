@@ -5,21 +5,19 @@ const cors = require('cors');
 // So different frontend URLs in development and production
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://127.0.0.1:5173', // Vite dev
-  'https://natours-2025.onrender.com', // Production frontend
-];
-
-// process.env.FRONTEND_URL, // e.g., https://natours-2025.onrender.com
-// ].filter(Boolean); // removes undefined if FRONTEND_URL isn’t set
-// That way, if deployment switched (e.g., Vercel, Netlify), It can be done in config.env
+  'http://127.0.0.1:5173', // Future plan (Vite dev)
+  process.env.FRONTEND_URL,
+].filter(Boolean);
 
 const corsOptions = {
   // Allow requests with no origin (like mobile apps or curl requests)
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
-    } else {
+    } else if (process.env.NODE_ENV === 'development') {
       callback(new Error(`Not allowed by CORS: ${origin}`));
+    } else {
+      callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true, // Allow cookies and credentials
