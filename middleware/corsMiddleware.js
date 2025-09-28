@@ -9,6 +9,10 @@ const allowedOrigins = [
   'https://natours-2025.onrender.com', // Production frontend
 ];
 
+// process.env.FRONTEND_URL, // e.g., https://natours-2025.onrender.com
+// ].filter(Boolean); // removes undefined if FRONTEND_URL isn’t set
+// That way, if deployment switched (e.g., Vercel, Netlify), It can be done in config.env
+
 const corsOptions = {
   // Allow requests with no origin (like mobile apps or curl requests)
   origin: (origin, callback) => {
