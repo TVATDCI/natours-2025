@@ -49,5 +49,3 @@ globalsMiddleware.use(
 );
 
 module.exports = globalsMiddleware;
-
-// next stop app.js
