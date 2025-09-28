@@ -6,20 +6,22 @@ const cors = require('cors');
 const allowedOrigins = [
   'http://localhost:3000',
   process.env.FRONTEND_URL,
+  'https://example.com',
 ].filter(Boolean);
 
 const corsOptions = {
-  // Allow requests with no origin (like mobile apps or curl requests)
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (e.g., Postman, mobile apps)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
-    } else if (process.env.NODE_ENV === 'development') {
-      callback(new Error(`Not allowed by CORS: ${origin}`));
     } else {
-      callback(new Error('Not allowed by CORS'));
+      // Don’t throw an error — send a CORS rejection
+      callback(null, false);
     }
   },
-  credentials: true, // Allow cookies and credentials
+  credentials: true,
 };
 
 module.exports = cors(corsOptions);

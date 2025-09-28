@@ -5,6 +5,7 @@ const path = require('path');
 const express = require('express');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+// const cors = require('cors');
 const corsMiddleware = require('./middleware/corsMiddleware');
 
 const globalsMiddleware = require('./middleware/globalMiddlewares');
@@ -47,6 +48,8 @@ app.use('/api', limiter);
 
 // Apply CORS
 app.use(corsMiddleware);
+// app.use(cors());
+// app.options('*', cors());
 // ===============================================================
 // #: SECURITY & SANITIZATION MIDDLEWARES - middleware/security.js
 // ===============================================================
