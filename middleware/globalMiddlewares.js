@@ -30,6 +30,7 @@ globalsMiddleware.use(
       ],
       connectSrc: [
         "'self'",
+        'https://natours-2025.onrender.com',
         'https://*.tile.openstreetmap.org',
         'https://*.basemaps.cartocdn.com',
         'https://api.stripe.com',
