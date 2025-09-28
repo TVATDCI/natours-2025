@@ -1,14 +1,14 @@
 const express = require('express');
 const viewController = require('../controllers/viewController');
 const authController = require('../controllers/authController');
-const bookingController = require('../controllers/bookingController');
+// const bookingController = require('../controllers/bookingController');
 
 const router = express.Router();
 
 // Overview and tour detail pages: visible to everyone, but show different header if logged in
 router.get(
   '/',
-  bookingController.createBookingCheckout,
+  //
   authController.isLoggedIn,
   viewController.getOverview,
 );
