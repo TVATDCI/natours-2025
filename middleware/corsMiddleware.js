@@ -5,7 +5,6 @@ const cors = require('cors');
 // So different frontend URLs in development and production
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://127.0.0.1:5173', // Future plan (Vite dev)
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
