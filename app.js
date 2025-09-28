@@ -5,6 +5,7 @@ const path = require('path');
 const express = require('express');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const corsMiddleware = require('./middleware/corsMiddleware');
 
 const globalsMiddleware = require('./middleware/globalMiddlewares');
 const securityMiddleware = require('./middleware/security');
@@ -29,6 +30,7 @@ app.set('views', path.join(__dirname, 'views'));
 // =======================================================
 // #: GLOBAL MIDDLEWARES - middleware/globalMiddlewares.js
 // =======================================================
+
 app.use(globalsMiddleware);
 
 // Tell Express to trust the proxy Render, etc.
@@ -43,6 +45,9 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
+// Apply CORS
+app.use(corsMiddleware);
+app.options('*', corsMiddleware);
 // ===============================================================
 // #: SECURITY & SANITIZATION MIDDLEWARES - middleware/security.js
 // ===============================================================
