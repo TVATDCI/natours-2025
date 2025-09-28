@@ -47,7 +47,6 @@ app.use('/api', limiter);
 
 // Apply CORS
 app.use(corsMiddleware);
-app.options('*', corsMiddleware);
 // ===============================================================
 // #: SECURITY & SANITIZATION MIDDLEWARES - middleware/security.js
 // ===============================================================
