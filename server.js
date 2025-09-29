@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 // Handle Synchronous Exceptions
 // =============================
 process.on('uncaughtException', (err) => {
-  console.error('🔴 Uncaught Exception! Shutting down...');
+  console.error('🟥 Uncaught Exception! Shutting down...');
   console.error(err.stack || `${err.name}: ${err.message}`);
   process.exit(1);
 });
@@ -53,7 +53,10 @@ const gracefulShutdown = (signal, err) => {
   server.close((err) => {
     clearTimeout(timeout);
     if (err) {
-      console.error('🔴 Error closing server:', err.stack || `${err.name}: ${err.message}`);
+      console.error(
+        '🚩 Error closing server:',
+        err.stack || `${err.name}: ${err.message}`,
+      );
       process.exit(1);
     } else {
       console.log('🟢 Closed out remaining connections.');
