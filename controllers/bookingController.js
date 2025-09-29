@@ -12,11 +12,6 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   // 1) Get the currently booked tour
   const tour = await Tour.findById(req.params.tourId);
 
-  // console.log('⚡ getCheckoutSession called with:');
-  // console.log('tourId param:', req.params.tourId);
-  // console.log('user:', req.user && req.user.id);
-  // console.log('tour price:', tour.price);
-
   // 2) Create checkout session
   const session = await stripe.checkout.sessions.create({
     // Session infos
@@ -56,7 +51,7 @@ const createBookingCheckout = async (session) => {
   const tour = session.client_reference_id;
   const userDoc = await User.findOne({ email: session.customer_email });
   if (!userDoc) {
-    console.error(`⚠️ No user found for email: ${session.customer_email}`);
+    console.error(`📢 No user found for email: ${session.customer_email}`);
     return; // Avoid crashing
   }
 
@@ -64,8 +59,6 @@ const createBookingCheckout = async (session) => {
   const price = session.amount_total / 100;
   await Booking.create({ tour, user, price });
 };
-//   res.redirect(req.originalUrl.split('?')[0]); // [0] = root url '/'
-// });
 
 // 5) Webhook endpoint (Stripe → backend)
 exports.webhookCheckout = (req, res, next) => {
