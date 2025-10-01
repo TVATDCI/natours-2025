@@ -2,8 +2,8 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
-// const sanitizeQueryMiddleware = require('./sanitizeQuery');
-// const sanitizeHtmlMiddleware = require('./sanitizeHtml');
+const sanitizeQueryMiddleware = require('./sanitizeQuery');
+const sanitizeHtmlMiddleware = require('./sanitizeHtml');
 
 const securityMiddleware = express.Router();
 
@@ -24,7 +24,7 @@ securityMiddleware.use(
     ],
   }),
 );
-// securityMiddleware.use(sanitizeQueryMiddleware);
-// securityMiddleware.use(sanitizeHtmlMiddleware);
+securityMiddleware.use(sanitizeQueryMiddleware);
+securityMiddleware.use(sanitizeHtmlMiddleware);
 
 module.exports = securityMiddleware;
