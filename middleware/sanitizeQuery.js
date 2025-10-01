@@ -49,7 +49,10 @@ module.exports = (req, res, next) => {
       }
 
       // strip potentially harmful characters
-      cleaned = cleaned.replace(/[$<>]/g, '');
+      // only sanitize certain fields, not 'tour', 'user', 'alert'
+      if (!['tour', 'user', 'alert'].includes(key)) {
+        cleaned = cleaned.replace(/[$<>]/g, '');
+      }
 
       req.query[key] = cleaned;
     }
