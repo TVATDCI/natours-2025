@@ -8,6 +8,7 @@ import { updateSettings } from './updateSettings.js';
 import { leaflet } from './leaflet.js';
 import { leafletMap } from './leafletMap.js';
 import { bookTour } from './stripe.js';
+import { showAlert } from './alerts.js';
 
 // ==================
 // DOM Elements
@@ -109,3 +110,6 @@ if (bookBtn) {
     if (tourId) bookTour(tourId);
   });
 }
+
+const alertMessage = document.querySelector('body').dataset.alert;
+if (alertMessage) showAlert('success', alertMessage, 20);
