@@ -32,7 +32,16 @@ module.exports = (req, res, next) => {
       }
 
       // number conversion for numeric fields
-      if (['page', 'limit'].includes(key)) {
+      if (
+        [
+          'page',
+          'limit',
+          'price',
+          'ratingsAverage',
+          'ratingsQuantity',
+          'duration',
+        ].includes(key)
+      ) {
         const num = Number(cleaned);
         if (!Number.isNaN(num) && cleaned !== '') {
           cleaned = num;
