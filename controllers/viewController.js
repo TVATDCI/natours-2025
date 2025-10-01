@@ -5,15 +5,20 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 exports.alerts = (req, res, next) => {
-  console.log('🔔 Alert middleware triggered, query:', req.query);
+  console.log('🔎 alerts middleware triggered');
+  console.log('   req.originalUrl:', req.originalUrl);
+  console.log('   req.url:', req.url);
+  console.log('   req.query:', req.query);
   const { alert } = req.query;
   if (alert === 'booking') {
     res.locals.alert =
       'Booking successful! Please check your email for a confirmation. Note: If your booking does not show up here immediately, please come back later.';
     console.log('✅ res.locals.alert set:', res.locals.alert);
   }
+
   next();
 };
+
 // ===========================
 // #: GET OVERVIEW - ALL TOURS
 // ===========================
