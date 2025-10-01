@@ -2,11 +2,10 @@ doctype html
 html
     head
         include _head.pug
+
     body(data-alert=`${alert ? alert : ''}`)
         // HEADER
         include _header.pug
-
-
 
         // CONTENT
         block content
