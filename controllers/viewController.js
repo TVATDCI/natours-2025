@@ -102,7 +102,6 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
 // ==================================================================
 // #: UPDATE USER SETTINGS - IN USER ACCOUNT PAGE - SAVE SETTINGS BTN
 // ==================================================================
-
 exports.updateUserData = catchAsync(async (req, res, next) => {
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
