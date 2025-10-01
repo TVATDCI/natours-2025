@@ -14,6 +14,7 @@ module.exports = (req, res, next) => {
     'price',
     'tour',
     'user',
+    'alert',
   ];
 
   Object.entries(req.query).forEach(([key, value]) => {
