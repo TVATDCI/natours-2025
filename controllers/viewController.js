@@ -94,17 +94,24 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
   //   const tours = await Tour.find({ _id: { $in: tourIDs } });
 
   // populate user with bookings → then tours
+  // 1) Query the current user and populate their bookings → tours
   const userWithBookings = await User.findById(req.user.id).populate({
     path: 'bookings',
     populate: {
-      path: 'tour', // deep populate to get actual Tour
+      path: 'tour',
       model: 'Tour',
+      select: 'name duration difficulty imageCover', // add only fields you need
     },
   });
 
+  if (!userWithBookings || userWithBookings.bookings.length === 0) {
+    return next(new AppError('No bookings found for this user.', 404));
+  }
+
+  // 2) Extract tours
   const tours = userWithBookings.bookings.map((b) => b.tour);
 
-  // 4) Render template with those tours
+  // 3) Render overview with those tours
   res.status(200).render('overview', {
     title: 'My Tours',
     tours,
