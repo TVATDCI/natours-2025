@@ -3,7 +3,8 @@ html
     head
         include _head.pug
 
-    body(data-alert=`${alert ? alert : ''}`)
+    body(data-alert=alert || '')
+        //-  body(data-alert=`${alert ? alert : ''}`)
         // HEADER
         include _header.pug
 
