@@ -49,7 +49,10 @@ module.exports = (req, res, next) => {
       }
 
       // strip potentially harmful characters
+      //  cleaned = cleaned.replace(/[$<>]/g, '');
       // only sanitize certain fields, not 'tour', 'user', 'alert'
+      // Exempting 'tour', 'user', and 'alert' fields from sanitization could introduce security vulnerabilities.
+      // Consider implementing field-specific validation rules instead of blanket exemptions to prevent potential XSS or injection attacks. 'Co-pilot'
       if (!['tour', 'user', 'alert'].includes(key)) {
         cleaned = cleaned.replace(/[$<>]/g, '');
       }
