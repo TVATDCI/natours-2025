@@ -35,6 +35,7 @@ globalsMiddleware.use(
         'https://*.basemaps.cartocdn.com',
         'https://api.stripe.com',
         'https://q.stripe.com',
+        'https://hooks.stripe.com',
       ],
       frameSrc: [
         "'self'",
