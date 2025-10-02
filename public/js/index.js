@@ -112,4 +112,5 @@ if (bookBtn) {
 }
 
 const alertMessage = document.querySelector('body').dataset.alert;
+// console.log('🟢 Alert message from body:', alertMessage);
 if (alertMessage) showAlert('success', alertMessage, 20);

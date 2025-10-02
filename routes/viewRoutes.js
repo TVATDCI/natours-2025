@@ -20,19 +20,6 @@ router.get('/signup', viewController.getSignupForm);
 router.get('/me', authController.protect, viewController.getAccount);
 
 // Account page: logged in user can query bookings and see their booked tours
-router.get(
-  '/my-tours',
-  authController.protect,
-  (req, res, next) => {
-    console.log(
-      '💡 /my-tours req.query:',
-      req.query,
-      'res.locals.alert:',
-      res.locals.alert,
-    );
-    next();
-  },
-  viewController.getMyTours,
-);
+router.get('/my-tours', authController.protect, viewController.getMyTours);
 
 module.exports = router;
