@@ -8,7 +8,7 @@ exports.alerts = (req, res, next) => {
   const { alert } = req.query;
   if (alert === 'booking') {
     res.locals.alert =
-      'Booking successful! Please check your email for a confirmation. Note: If your booking does not show up here immediately, please come back later.';
+      'Booking successful! Please check your email for confirmation. If your booking does not show up immediately, please refresh or try again in a few minutes (Stripe may delay the first event after code changes).';
     // console.log('✅ res.locals.alert set:', res.locals.alert);
   }
 
