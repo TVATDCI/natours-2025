@@ -4,12 +4,6 @@ const authController = require('../controllers/authController');
 
 const router = express.Router();
 
-router.use((req, res, next) => {
-  console.log('🌍 Raw URL seen by Express:', req.originalUrl);
-  console.log('🌍 Query object:', req.query);
-  next();
-});
-
 router.use(viewController.alerts);
 
 // Overview and tour detail pages: visible to everyone, but show different header if logged in
