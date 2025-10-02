@@ -1,6 +1,6 @@
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
-const Booking = require('../models/bookingModel');
+// const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
@@ -84,14 +84,25 @@ exports.getAccount = (req, res) => {
 // =================================================================================
 
 exports.getMyTours = catchAsync(async (req, res, next) => {
-  // 1) Find all bookings for current user
-  const bookings = await Booking.find({ user: req.user.id });
+  //   // 1) Find all bookings for current user
+  //   const bookings = await Booking.find({ user: req.user.id });
 
-  // 2) Extract tour IDs from those bookings
-  const tourIDs = bookings.map((el) => el.tour);
+  //   // 2) Extract tour IDs from those bookings
+  //   const tourIDs = bookings.map((el) => el.tour);
 
-  // 3) Find tours id, using ($in operator), with those booked tour IDs
-  const tours = await Tour.find({ _id: { $in: tourIDs } });
+  //   // 3) Find tours id, using ($in operator), with those booked tour IDs
+  //   const tours = await Tour.find({ _id: { $in: tourIDs } });
+
+  // populate user with bookings → then tours
+  const userWithBookings = await User.findById(req.user.id).populate({
+    path: 'bookings',
+    populate: {
+      path: 'tour', // deep populate to get actual Tour
+      model: 'Tour',
+    },
+  });
+
+  const tours = userWithBookings.bookings.map((b) => b.tour);
 
   // 4) Render template with those tours
   res.status(200).render('overview', {
