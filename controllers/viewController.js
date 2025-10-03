@@ -104,20 +104,30 @@ exports.getAccount = (req, res) => {
 exports.getMyTours = catchAsync(async (req, res, next) => {
   // 1) Populate the user's bookings (and tours inside them)
   const userWithTours = await User.findById(req.user.id).populate({
-    path: 'bookings',
+    path: 'bookedTours', // virtual populate
     populate: {
-      path: 'tour',
+      path: 'tour', // nested populate for the tour inside each booking!
       model: 'Tour',
+      select: 'name durationWeeks price guides slug startDates', // select field required to render from pre-middleware
     },
   });
 
+  if (!userWithTours) {
+    return next(new AppError('User not found', 404));
+  }
+
+  console.log('✅ User found:', userWithTours.name);
+  console.log('📦 Populated bookedTours:', userWithTours.bookedTours);
+
   // 2) Extract tours from populated bookings
-  const tours = userWithTours.bookings.map((booking) => booking.tour);
+  const tours = (userWithTours.bookedTours || []).map((b) => b.tour);
+
+  console.log('🎒 Extracted tours:', tours);
 
   // 3) Render template with those tours
   res.status(200).render('overview', {
     title: 'My Tours',
-    tours,
+    tours: tours || [],
   });
 });
 
