@@ -79,49 +79,24 @@ exports.getAccount = (req, res) => {
 
 // =================================================================================
 // #: GET MY TOURS - USER CAN QUERY INSIDE THEIR ACCOUNT TO CHECK THEIR BOOKED TOURS
-// Note: This manually juggling IDs, two database queries (one for Booking, one for Tour).
-// TODO - Virtual populate can also be implemented from the tours doc!
-// After that the route name should be changed to getMyBookings 🤡, maybe!
+// Note: Replaces manual booking query approach with virtual populate implementation
 // =================================================================================
-
-// exports.getMyTours = catchAsync(async (req, res, next) => {
-//   // 1) Find all bookings for current user
-//   const bookings = await Booking.find({ user: req.user.id });
-
-//   // 2) Extract tour IDs from those bookings
-//   const tourIDs = bookings.map((el) => el.tour);
-
-//   // 3) Find tours id, using ($in operator), with those booked tour IDs
-//   const tours = await Tour.find({ _id: { $in: tourIDs } });
-
-//   // 4) Render template with those tours
-//   res.status(200).render('overview', {
-//     title: 'My Tours',
-//     tours,
-//   });
-// });
-
 exports.getMyTours = catchAsync(async (req, res, next) => {
   // 1) Populate the user's bookings (and tours inside them)
   const userWithTours = await User.findById(req.user.id).populate({
     path: 'bookedTours', // virtual populate
     populate: {
-      path: 'tour', // nested populate for the tour inside each booking!
+      path: 'tour', // nested populate for the tour inside each booking (bookingSchema.pre)
       model: 'Tour',
-      select: 'name durationWeeks price guides slug startDates', // select field required to render from pre-middleware
     },
   });
 
   if (!userWithTours) {
-    return next(new AppError('User not found', 404));
+    return next(new AppError('User not found - Who are You?', 404)); // << isOperational-Error message: err.message
   }
-
-  console.log('✅ User found:', userWithTours.name);
-  console.log('📦 Populated bookedTours:', userWithTours.bookedTours);
 
   // 2) Extract tours from populated bookings
   const tours = (userWithTours.bookedTours || []).map((b) => b.tour);
-
 
   // 3) Render template with those tours
   res.status(200).render('overview', {
