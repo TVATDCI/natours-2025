@@ -148,11 +148,24 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
-// ===================================================================================
-// Use virtual populate to connect 2 models and then take it review id from tour field.
-// ===================================================================================
+// ====================
+// #: Virtual populates
+// ====================
+
+// ===============================================
+// Use virtual populate to Connect Tour → Reviews.
+// ===============================================
 tourSchema.virtual('reviews', {
   ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+});
+
+// =======================================================
+// EXTRA: Use virtual populate to Connect Tour → Bookings
+// =======================================================
+tourSchema.virtual('bookings', {
+  ref: 'Booking',
   foreignField: 'tour',
   localField: '_id',
 });
