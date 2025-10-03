@@ -1,6 +1,5 @@
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
-const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
@@ -8,7 +7,7 @@ exports.alerts = (req, res, next) => {
   const { alert } = req.query;
   if (alert === 'booking') {
     res.locals.alert =
-      'Booking successful! Please check your email for confirmation. If your booking does not show up immediately, please refresh or try again in a few minutes (Stripe may delay the first event after code changes).';
+      'Booking successful! Please check your email for confirmation. If you are testing the booking and it does not show up immediately, please refresh or try again in a few minutes (Stripe may delay the first event). Thanks';
     // console.log('✅ res.locals.alert set:', res.locals.alert);
   }
 
@@ -38,7 +37,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 
   if (!tour) {
-    return next(new AppError('No tour found with that name', 404)); // << isOperational-Error message: err.message
+    return next(new AppError('No tour found with that name', 404));
   }
 
   res.status(200).render('tour', {
