@@ -148,9 +148,11 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
-// ===================================================================================
-// Use virtual populate to connect 2 models and then take it review id from tour field.
-// ===================================================================================
+// ====================
+// #: Virtual populates
+// ===============================================
+// Use virtual populate to Connect Tour → Reviews.
+// ===============================================
 tourSchema.virtual('reviews', {
   ref: 'Review',
   foreignField: 'tour',
@@ -174,7 +176,8 @@ tourSchema.pre('save', function (next) {
 // ====================
 tourSchema.pre(/^find/, function (next) {
   // console.log('Query middleware: About to execute a find operation...');
-  this.find({ secretTour: { $ne: true } }); // $ne= not equal to true - exclude secret tours. Now it is a secrete!
+  this.find({ secretTour: { $ne: true } });
+  // $ne= not equal to true - exclude secret tours. Now it is a secrete!
   // secretTour is now set to true: now it i a secrete not there if you look for it...uncomment this line to see it!
 
   this.start = Date.now(); // just for measuring query time (optional)

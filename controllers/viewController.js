@@ -79,21 +79,26 @@ exports.getAccount = (req, res) => {
 
 // =================================================================================
 // #: GET MY TOURS - USER CAN QUERY INSIDE THEIR ACCOUNT TO CHECK THEIR BOOKED TOURS
-// TODO - Virtual populate can also be implemented from the tours doc!
-// After that the route name should be changed to getMyBookings 🤡, maybe!
+// Note: Replaces manual booking query approach with virtual populate implementation
 // =================================================================================
-
 exports.getMyTours = catchAsync(async (req, res, next) => {
-  // 1) Find all bookings for current user
-  const bookings = await Booking.find({ user: req.user.id });
+  // 1) Populate the user's bookings (and tours inside them)
+  const userWithTours = await User.findById(req.user.id).populate({
+    path: 'bookedTours', // virtual populate
+    populate: {
+      path: 'tour', // nested populate for the tour inside each booking (bookingSchema.pre)
+      model: 'Tour',
+    },
+  });
 
-  // 2) Extract tour IDs from those bookings
-  const tourIDs = bookings.map((el) => el.tour);
+  if (!userWithTours) {
+    return next(new AppError('User not found', 404)); // << isOperational-Error message: err.message
+  }
 
-  // 3) Find tours id, using ($in operator), with those booked tour IDs
-  const tours = await Tour.find({ _id: { $in: tourIDs } });
+  // 2) Extract tours from populated bookings
+  const tours = (userWithTours.bookedTours || []).map((b) => b.tour);
 
-  // 4) Render template with those tours
+  // 3) Render template with those tours
   res.status(200).render('overview', {
     title: 'My Tours',
     tours,
