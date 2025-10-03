@@ -68,6 +68,10 @@ const userSchema = new mongoose.Schema(
   {
     timestamps: true, // Automatically adds createdAt & updatedAt
   },
+  {
+    toJSON: { virtuals: true }, // include virtuals when converting to JSON
+    toObject: { virtuals: true }, // include virtuals when converting to Objects
+  },
 );
 
 // ====================
@@ -75,11 +79,10 @@ const userSchema = new mongoose.Schema(
 // ================================================
 // Use virtual populate to Connect user → Bookings
 // ================================================
-
-userSchema.virtual('bookings', {
-  ref: 'Booking', // The model to use (bookingModel.js)
-  foreignField: 'user', // Field in Booking model
-  localField: '_id', // ObjectId in User model
+userSchema.virtual('bookedTours', {
+  ref: 'Booking', // The model to use
+  foreignField: 'user', // taken field in Booking model
+  localField: '_id', // Field in User model
 });
 
 // ======================
