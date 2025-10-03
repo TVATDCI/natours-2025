@@ -67,12 +67,25 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // Automatically adds createdAt & updatedAt
+    toJSON: { virtuals: true }, // include virtuals when converting to JSON
+    toObject: { virtuals: true }, // include virtuals when converting to Objects
   },
 );
 
 // ====================
-// Document Middleware
-// ====================
+// #: Virtual populates
+// ================================================
+// Use virtual populate to Connect user → Bookings
+// ================================================
+userSchema.virtual('bookedTours', {
+  ref: 'Booking', // The model to use
+  foreignField: 'user', // taken field in Booking model
+  localField: '_id', // Field in User model
+});
+
+// ======================
+// #: Document Middleware
+// ======================
 // 1) Hashing new password before saving
 userSchema.pre('save', async function (next) {
   // Only run if password is actually modified

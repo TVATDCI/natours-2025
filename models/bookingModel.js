@@ -27,10 +27,12 @@ const bookingSchema = new mongoose.Schema({
 });
 
 // Pre-middleware Auto-populate references whenever there is a query
+// Populate the tour with all fields the template requires
 bookingSchema.pre(/^find/, function (next) {
   this.populate('user').populate({
     path: 'tour',
-    select: 'name',
+    select:
+      'name duration difficulty summary imageCover startLocation startDates locations maxGroupSize price ratingsAverage ratingsQuantity slug guides',
   });
   next();
 });
