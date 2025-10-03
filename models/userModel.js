@@ -71,8 +71,20 @@ const userSchema = new mongoose.Schema(
 );
 
 // ====================
-// Document Middleware
-// ====================
+// #: Virtual populates
+// ================================================
+// Use virtual populate to Connect user → Bookings
+// ================================================
+
+userSchema.virtual('bookings', {
+  ref: 'Booking',
+  foreignField: 'user',
+  localField: '_id',
+});
+
+// ======================
+// #: Document Middleware
+// ======================
 // 1) Hashing new password before saving
 userSchema.pre('save', async function (next) {
   // Only run if password is actually modified
