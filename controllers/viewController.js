@@ -1,6 +1,6 @@
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
-// const Booking = require('../models/bookingModel');
+const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
@@ -84,7 +84,7 @@ exports.getAccount = (req, res) => {
 // =================================================================================
 
 exports.getMyTours = catchAsync(async (req, res, next) => {
-  //   // 1) Find all bookings for current user
+  // 1) Find all bookings for current user
   //   const bookings = await Booking.find({ user: req.user.id });
 
   //   // 2) Extract tour IDs from those bookings
@@ -95,21 +95,23 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
 
   // populate user with bookings → then tours
   // 1) Query the current user and populate their bookings → tours
-  const userWithBookings = await User.findById(req.user.id).populate({
-    path: 'bookings',
-    populate: {
-      path: 'tour',
-      model: 'Tour',
-      select: 'name duration difficulty imageCover', // add only fields you need
-    },
+  //   const bookings = await Booking.find({ user: req.user.id }).populate({
+  //     path: 'tour',
+  //     select: 'name duration difficulty price imageCover slug',
+  //   });
+
+  const bookings = await Booking.find({ user: req.user.id }).populate({
+    path: 'tour',
+    select: 'name duration difficulty price imageCover slug',
   });
 
-  if (!userWithBookings || userWithBookings.bookings.length === 0) {
-    return next(new AppError('No bookings found for this user.', 404));
-  }
+  const tours = bookings.map((b) => b.tour);
 
-  // 2) Extract tours
-  const tours = userWithBookings.bookings.map((b) => b.tour);
+  //   if (!bookings) {
+  //     return next(new AppError('No booking found with that name', 404)); // << isOperational-Error message: err.message
+  //   }
+
+  //   // 2) Extract tours from bookings
 
   // 3) Render overview with those tours
   res.status(200).render('overview', {
