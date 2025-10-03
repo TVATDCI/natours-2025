@@ -161,15 +161,6 @@ tourSchema.virtual('reviews', {
   localField: '_id',
 });
 
-// =======================================================
-// EXTRA: Use virtual populate to Connect Tour → Bookings
-// =======================================================
-tourSchema.virtual('bookings', {
-  ref: 'Booking',
-  foreignField: 'tour',
-  localField: '_id',
-});
-
 // =================================================
 // #: Document Middleware (.save() & .create() only)
 // =================================================
