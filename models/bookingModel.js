@@ -31,8 +31,22 @@ const bookingSchema = new mongoose.Schema({
 bookingSchema.pre(/^find/, function (next) {
   this.populate('user').populate({
     path: 'tour',
-    select:
-      'name duration difficulty summary imageCover startLocation startDates locations maxGroupSize price ratingsAverage ratingsQuantity slug guides',
+    select: [
+      'name',
+      'duration',
+      'difficulty',
+      'summary',
+      'imageCover',
+      'startLocation',
+      'startDates',
+      'locations',
+      'maxGroupSize',
+      'price',
+      'ratingsAverage',
+      'ratingsQuantity',
+      'slug',
+      'guides',
+    ].join(' '),
   });
   next();
 });
