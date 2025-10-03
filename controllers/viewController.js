@@ -92,7 +92,7 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
   });
 
   if (!userWithTours) {
-    return next(new AppError('User not found - Who are You?', 404)); // << isOperational-Error message: err.message
+    return next(new AppError('User not found', 404)); // << isOperational-Error message: err.message
   }
 
   // 2) Extract tours from populated bookings
