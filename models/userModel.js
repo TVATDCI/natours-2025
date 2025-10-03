@@ -67,8 +67,6 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // Automatically adds createdAt & updatedAt
-  },
-  {
     toJSON: { virtuals: true }, // include virtuals when converting to JSON
     toObject: { virtuals: true }, // include virtuals when converting to Objects
   },
