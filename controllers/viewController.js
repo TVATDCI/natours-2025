@@ -122,7 +122,6 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
   // 2) Extract tours from populated bookings
   const tours = (userWithTours.bookedTours || []).map((b) => b.tour);
 
-  console.log('🎒 Extracted tours:', tours);
 
   // 3) Render template with those tours
   res.status(200).render('overview', {
