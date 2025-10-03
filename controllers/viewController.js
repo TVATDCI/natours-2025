@@ -101,7 +101,7 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
   // 3) Render template with those tours
   res.status(200).render('overview', {
     title: 'My Tours',
-    tours: tours || [],
+    tours,
   });
 });
 
