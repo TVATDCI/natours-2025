@@ -76,11 +76,11 @@ const userSchema = new mongoose.Schema(
 // Use virtual populate to Connect user → Bookings
 // ================================================
 
-userSchema.virtual('bookings', {
-  ref: 'Booking',
-  foreignField: 'user',
-  localField: '_id',
-});
+// userSchema.virtual('bookings', {
+//   ref: 'Booking',
+//   foreignField: 'user',
+//   localField: '_id',
+// });
 
 // ======================
 // #: Document Middleware
