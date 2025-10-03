@@ -85,35 +85,15 @@ exports.getAccount = (req, res) => {
 
 exports.getMyTours = catchAsync(async (req, res, next) => {
   // 1) Find all bookings for current user
-  //   const bookings = await Booking.find({ user: req.user.id });
+  const bookings = await Booking.find({ user: req.user.id });
 
-  //   // 2) Extract tour IDs from those bookings
-  //   const tourIDs = bookings.map((el) => el.tour);
+  // 2) Extract tour IDs from those bookings
+  const tourIDs = bookings.map((el) => el.tour);
 
-  //   // 3) Find tours id, using ($in operator), with those booked tour IDs
-  //   const tours = await Tour.find({ _id: { $in: tourIDs } });
+  // 3) Find tours id, using ($in operator), with those booked tour IDs
+  const tours = await Tour.find({ _id: { $in: tourIDs } });
 
-  // populate user with bookings → then tours
-  // 1) Query the current user and populate their bookings → tours
-  //   const bookings = await Booking.find({ user: req.user.id }).populate({
-  //     path: 'tour',
-  //     select: 'name duration difficulty price imageCover slug',
-  //   });
-
-  const bookings = await Booking.find({ user: req.user.id }).populate({
-    path: 'tour',
-    select: 'name duration difficulty price imageCover slug',
-  });
-
-  const tours = bookings.map((b) => b.tour);
-
-  //   if (!bookings) {
-  //     return next(new AppError('No booking found with that name', 404)); // << isOperational-Error message: err.message
-  //   }
-
-  //   // 2) Extract tours from bookings
-
-  // 3) Render overview with those tours
+  // 4) Render template with those tours
   res.status(200).render('overview', {
     title: 'My Tours',
     tours,
