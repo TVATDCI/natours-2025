@@ -69,10 +69,20 @@ exports.getSignupForm = (req, res) => {
 // ====================================
 // #: GET ACCOUNT - A USER ACCOUNT PAGE
 // ====================================
-
 exports.getAccount = (req, res) => {
   res.status(200).render('account', {
     title: 'User account',
+  });
+};
+
+// ====================================
+// #: GET ADMIN - AN ADMIN MANAGEMENT PAGE
+// ====================================
+exports.getAdminDashboard = (req, res) => {
+  res.status(200).render('admin', {
+    title: 'Admin Dashboard',
+    user: req.user,
+    section: 'dashboard', // later used to switch content
   });
 };
 
