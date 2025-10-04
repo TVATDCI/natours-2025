@@ -949,6 +949,18 @@ body {
   cursor: pointer;
   font-family: inherit;
 }
+
+.nav__el--admin {
+  color: #55c57a;
+  font-weight: 600;
+  text-shadow: 0 0 3px rgba(85, 197, 122, 0.5);
+}
+
+/* .nav__el--logout {
+  color: #ff0022;
+  font-weight: 600;
+  text-shadow: 0 0 3px rgba(85, 197, 122, 0.5);
+} */
 .nav__el:hover,
 .nav__el:active {
   -webkit-transform: translateY(-2px);
@@ -1256,7 +1268,8 @@ body {
   margin: 0 auto;
 }
 
-.login-form {
+.login-form,
+.signup-form {
   margin: 0 auto;
   max-width: 55rem;
   background-color: #fff;
@@ -1357,3 +1370,11 @@ body {
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
 }
+
+.text__link {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 1.4rem;
+  color: #55c57a;
+  text-decoration: none;
+  transition: all 0.2s;

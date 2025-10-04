@@ -26,13 +26,16 @@ globalsMiddleware.use(
         'blob:',
         'https://*.tile.openstreetmap.org',
         'https://*.basemaps.cartocdn.com',
+        'https://res.cloudinary.com',
       ],
       connectSrc: [
         "'self'",
+        'https://natours-2025.onrender.com',
         'https://*.tile.openstreetmap.org',
         'https://*.basemaps.cartocdn.com',
         'https://api.stripe.com',
         'https://q.stripe.com',
+        'https://hooks.stripe.com',
       ],
       frameSrc: [
         "'self'",
@@ -47,5 +50,3 @@ globalsMiddleware.use(
 );
 
 module.exports = globalsMiddleware;
-
-// next stop app.js

@@ -14,6 +14,7 @@ module.exports = (req, res, next) => {
     'price',
     'tour',
     'user',
+    'alert',
   ];
 
   Object.entries(req.query).forEach(([key, value]) => {
@@ -31,7 +32,16 @@ module.exports = (req, res, next) => {
       }
 
       // number conversion for numeric fields
-      if (['page', 'limit'].includes(key)) {
+      if (
+        [
+          'page',
+          'limit',
+          'price',
+          'ratingsAverage',
+          'ratingsQuantity',
+          'duration',
+        ].includes(key)
+      ) {
         const num = Number(cleaned);
         if (!Number.isNaN(num) && cleaned !== '') {
           cleaned = num;
@@ -40,6 +50,12 @@ module.exports = (req, res, next) => {
 
       // strip potentially harmful characters
       cleaned = cleaned.replace(/[$<>]/g, '');
+      // only sanitize certain fields, not 'tour', 'user', 'alert'
+      // Exempting 'tour', 'user', and 'alert' fields from sanitization could introduce security vulnerabilities.
+      // Consider implementing field-specific validation rules instead of blanket exemptions to prevent potential XSS or injection attacks. 'Copilot'
+      //   if (!['tour', 'user', 'alert'].includes(key)) {
+      //     cleaned = cleaned.replace(/[$<>]/g, '');
+      //   }
 
       req.query[key] = cleaned;
     }

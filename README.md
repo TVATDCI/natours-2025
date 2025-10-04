@@ -215,8 +215,10 @@ project-root/
 │ ├── tourCardTemplate.pug
 │ └── tourTemplate.pug
 ├── middleware/
+│ ├── globalMiddlewares.js
 │ ├── sanitizeHtml.js
-│ └── sanitizeQuery.js
+│ ├── sanitizeQuery.js
+│ └── security.js
 ├── models/
 │ ├── reviewModel.js
 │ ├── tourModel.js
@@ -240,7 +242,6 @@ project-root/
 │ │ ├── leaflet.js
 │ │ ├── leaflet-map.js
 │ │ ├── login.js
-│ │ ├── mapbox.js
 │ │ ├── stripe.js
 │ │ └── updateSetting.js
 │ ├── overview.html
@@ -255,6 +256,7 @@ project-root/
 │ ├── apiFeatures.js
 │ ├── appError.js
 │ ├── catchAsync.js
+│ ├── cloudinary.js
 │ └── email.js
 ├── views/
 │ ├── \_footer.pug

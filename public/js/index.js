@@ -2,13 +2,18 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
+import { signup } from './signup.js';
 import { login, logout } from './login.js';
 import { updateSettings } from './updateSettings.js';
 import { leaflet } from './leaflet.js';
 import { leafletMap } from './leafletMap.js';
 import { bookTour } from './stripe.js';
+import { showAlert } from './alerts.js';
 
+// ==================
 // DOM Elements
+// ==================
+const signupForm = document.querySelector('.form--signup');
 const loginForm = document.querySelector('.form--login');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
@@ -19,6 +24,17 @@ const bookBtn = document.getElementById('book-tour');
 // ==================
 // Auth Handlers
 // ==================
+if (signupForm) {
+  signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('password-confirm').value;
+    signup(name, email, password, passwordConfirm);
+  });
+}
+
 if (loginForm) {
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -94,3 +110,7 @@ if (bookBtn) {
     if (tourId) bookTour(tourId);
   });
 }
+
+const alertMessage = document.querySelector('body').dataset.alert;
+// console.log('🟢 Alert message from body:', alertMessage);
+if (alertMessage) showAlert('success', alertMessage, 20);

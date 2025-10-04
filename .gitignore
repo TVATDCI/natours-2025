@@ -28,3 +28,7 @@ build/
 
 # Bundled output
 public/js/bundle/
+
+# Learning note
+note.txt
+readsecurity.md

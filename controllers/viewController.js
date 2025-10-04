@@ -1,8 +1,18 @@
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
-const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+
+exports.alerts = (req, res, next) => {
+  const { alert } = req.query;
+  if (alert === 'booking') {
+    res.locals.alert =
+      'Booking successful! Please check your email for confirmation. If you are testing the booking and it does not show up immediately, please refresh or try again in a few minutes (Stripe may delay the first event). Thanks';
+    // console.log('✅ res.locals.alert set:', res.locals.alert);
+  }
+
+  next();
+};
 
 // ===========================
 // #: GET OVERVIEW - ALL TOURS
@@ -27,7 +37,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 
   if (!tour) {
-    return next(new AppError('No tour found with that name', 404)); // << isOperational-Error message: err.message
+    return next(new AppError('No tour found with that name', 404));
   }
 
   res.status(200).render('tour', {
@@ -46,33 +56,58 @@ exports.getLoginForm = (req, res) => {
   });
 };
 
+// ================================
+// #: GET SIGNUP FORM - SIGNUP PAGE
+// ================================
+
+exports.getSignupForm = (req, res) => {
+  res.status(200).render('signup', {
+    title: 'Create your account',
+  });
+};
+
 // ====================================
 // #: GET ACCOUNT - A USER ACCOUNT PAGE
 // ====================================
-
 exports.getAccount = (req, res) => {
   res.status(200).render('account', {
     title: 'User account',
   });
 };
 
+// ====================================
+// #: GET ADMIN - AN ADMIN MANAGEMENT PAGE
+// ====================================
+exports.getAdminDashboard = (req, res) => {
+  res.status(200).render('admin', {
+    title: 'Admin Dashboard',
+    user: req.user,
+    section: 'dashboard', // later used to switch content
+  });
+};
+
 // =================================================================================
 // #: GET MY TOURS - USER CAN QUERY INSIDE THEIR ACCOUNT TO CHECK THEIR BOOKED TOURS
-// TODO - Virtual populate can also be implemented from the tours doc!
-// After that the route name should be changed to getMyBookings 🤡, maybe!
+// Note: Replaces manual booking query approach with virtual populate implementation
 // =================================================================================
-
 exports.getMyTours = catchAsync(async (req, res, next) => {
-  // 1) Find all bookings for current user
-  const bookings = await Booking.find({ user: req.user.id });
+  // 1) Populate the user's bookings (and tours inside them)
+  const userWithTours = await User.findById(req.user.id).populate({
+    path: 'bookedTours', // virtual populate
+    populate: {
+      path: 'tour', // nested populate for the tour inside each booking (bookingSchema.pre)
+      model: 'Tour',
+    },
+  });
 
-  // 2) Extract tour IDs from those bookings
-  const tourIDs = bookings.map((el) => el.tour);
+  if (!userWithTours) {
+    return next(new AppError('User not found', 404)); // << isOperational-Error message: err.message
+  }
 
-  // 3) Find tours id, using ($in operator), with those booked tour IDs
-  const tours = await Tour.find({ _id: { $in: tourIDs } });
+  // 2) Extract tours from populated bookings
+  const tours = (userWithTours.bookedTours || []).map((b) => b.tour);
 
-  // 4) Render template with those tours
+  // 3) Render template with those tours
   res.status(200).render('overview', {
     title: 'My Tours',
     tours,
@@ -82,7 +117,6 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
 // ==================================================================
 // #: UPDATE USER SETTINGS - IN USER ACCOUNT PAGE - SAVE SETTINGS BTN
 // ==================================================================
-
 exports.updateUserData = catchAsync(async (req, res, next) => {
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
