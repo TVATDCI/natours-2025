@@ -955,12 +955,6 @@ body {
   font-weight: 600;
   text-shadow: 0 0 3px rgba(85, 197, 122, 0.5);
 }
-
-/* .nav__el--logout {
-  color: #ff0022;
-  font-weight: 600;
-  text-shadow: 0 0 3px rgba(85, 197, 122, 0.5);
-} */
 .nav__el:hover,
 .nav__el:active {
   -webkit-transform: translateY(-2px);
