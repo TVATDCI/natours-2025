@@ -7,6 +7,9 @@ header.header
 
     nav.nav.nav--user
         if user
+            if user.role === 'admin'
+                a.nav__el(href='/admin') Admin Dashboard
+
             a.nav__el.nav__el--logout Logout
             a.nav__el(href='/me')
                 if user.photo && user.photo.startsWith('http')
@@ -16,6 +19,6 @@ header.header
                 else
                     img.nav__user-img(src='/img/users/default.jpg' alt='Default user')
                 span= user.name.split(' ')[0]
-        else
-            a.nav__el(href='/login') Log in
-            a.nav__el.nav__el--cta(href='/signup') Sign up
+            else
+                a.nav__el(href='/login') Log in
+                a.nav__el.nav__el--cta(href='/signup') Sign up
