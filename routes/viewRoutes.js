@@ -30,4 +30,20 @@ router.get(
   viewController.getAdminDashboard,
 );
 
+// Admin: Manage Tours route
+router.get(
+  '/admin/tours',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.getAdminTours,
+);
+
+// Admin: Manage Users route
+router.get(
+  '/admin/users',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.getAdminUsers,
+);
+
 module.exports = router;
