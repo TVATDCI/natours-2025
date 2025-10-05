@@ -1,5 +1,7 @@
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
+const Booking = require('../models/bookingModel');
+const Review = require('../models/reviewModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
@@ -79,7 +81,7 @@ exports.getAccount = (req, res) => {
 // #: GET ADMIN - AN ADMIN MANAGEMENT PAGE
 // =======================================
 exports.getAdminDashboard = (req, res) => {
-  res.status(200).render('admin', {
+  res.status(200).render('admin/dashboard', {
     title: 'Admin Dashboard',
     user: req.user,
     section: 'dashboard', // later used to switch content
@@ -92,7 +94,7 @@ exports.getAdminDashboard = (req, res) => {
 
 exports.getAdminTours = catchAsync(async (req, res, next) => {
   const tours = await Tour.find();
-  res.status(200).render('adminTours', {
+  res.status(200).render('admin/adminTours', {
     title: 'Manage Tours',
     user: req.user,
     section: 'tours',
@@ -106,7 +108,7 @@ exports.getAdminTours = catchAsync(async (req, res, next) => {
 
 exports.getAdminUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
-  res.status(200).render('adminUsers', {
+  res.status(200).render('admin/adminUsers', {
     title: 'Manage Users',
     user: req.user,
     section: 'users',
@@ -114,6 +116,33 @@ exports.getAdminUsers = catchAsync(async (req, res, next) => {
   });
 });
 
+// ==============================================
+// #: GET ADMIN USERS - MANAGE BOOKINGS
+// ==============================================
+
+exports.getAdminBookings = catchAsync(async (req, res, next) => {
+  const users = await Booking.find();
+  res.status(200).render('admin/adminBookings', {
+    title: 'Manage Bookings',
+    user: req.user,
+    section: 'bookings',
+    users,
+  });
+});
+
+// ==============================================
+// #: GET ADMIN USERS - MANAGE REVIEWS
+// ==============================================
+
+exports.getAdminReviews = catchAsync(async (req, res, next) => {
+  const users = await Review.find();
+  res.status(200).render('admin/adminReviews', {
+    title: 'Manage Reviews',
+    user: req.review,
+    section: 'reviews',
+    users,
+  });
+});
 // =================================================================================
 // #: GET MY TOURS - USER CAN QUERY INSIDE THEIR ACCOUNT TO CHECK THEIR BOOKED TOURS
 // Note: Replaces manual booking query approach with virtual populate implementation
