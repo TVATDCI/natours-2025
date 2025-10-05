@@ -24,13 +24,13 @@ router.get('/my-tours', authController.protect, viewController.getMyTours);
 
 // Admin view route
 router.get(
-  '/admin',
+  '/admin/dashboard',
   authController.protect,
   authController.restrictTo('admin'),
   viewController.getAdminDashboard,
 );
 
-// Admin: Manage Tours route
+// Admin: Manage Tour route
 router.get(
   '/admin/tours',
   authController.protect,
@@ -38,12 +38,28 @@ router.get(
   viewController.getAdminTours,
 );
 
-// Admin: Manage Users route
+// Admin: Manage User route
 router.get(
   '/admin/users',
   authController.protect,
   authController.restrictTo('admin'),
   viewController.getAdminUsers,
+);
+
+// Admin: Manage Booking route
+router.get(
+  '/admin/bookings',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.getAdminBookings,
+);
+
+// Admin: Manage Review route
+router.get(
+  '/admin/reviews',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.getAdminReviews,
 );
 
 module.exports = router;
