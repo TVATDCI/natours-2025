@@ -22,4 +22,28 @@ router.get('/me', authController.protect, viewController.getAccount);
 // Account page: logged in user can query bookings and see their booked tours
 router.get('/my-tours', authController.protect, viewController.getMyTours);
 
+// Admin view route
+router.get(
+  '/admin',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.getAdminDashboard,
+);
+
+// Admin: Manage Tours route
+router.get(
+  '/admin/tours',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.getAdminTours,
+);
+
+// Admin: Manage Users route
+router.get(
+  '/admin/users',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.getAdminUsers,
+);
+
 module.exports = router;

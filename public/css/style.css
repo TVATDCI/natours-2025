@@ -949,6 +949,12 @@ body {
   cursor: pointer;
   font-family: inherit;
 }
+
+.nav__el--admin {
+  color: #55c57a;
+  font-weight: 600;
+  text-shadow: 0 0 3px rgba(85, 197, 122, 0.5);
+}
 .nav__el:hover,
 .nav__el:active {
   -webkit-transform: translateY(-2px);
@@ -1366,3 +1372,26 @@ body {
   color: #55c57a;
   text-decoration: none;
   transition: all 0.2s;
+
+/*Admin Dashboard*/
+.admin-list {
+  list-style: none;
+  padding: 0;
+}
+
+.admin-list li {
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.admin-list a {
+  color: #55c57a;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.admin-list a:hover {
+  text-decoration: underline;
+}
+
+
