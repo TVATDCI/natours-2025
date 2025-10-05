@@ -75,9 +75,9 @@ exports.getAccount = (req, res) => {
   });
 };
 
-// ====================================
+// =======================================
 // #: GET ADMIN - AN ADMIN MANAGEMENT PAGE
-// ====================================
+// =======================================
 exports.getAdminDashboard = (req, res) => {
   res.status(200).render('admin', {
     title: 'Admin Dashboard',
@@ -85,6 +85,34 @@ exports.getAdminDashboard = (req, res) => {
     section: 'dashboard', // later used to switch content
   });
 };
+
+// ==============================================
+// #: GET ADMIN TOURS - MANAGE TOURS
+// ==============================================
+
+exports.getAdminTours = catchAsync(async (req, res, next) => {
+  const tours = await Tour.find();
+  res.status(200).render('adminTours', {
+    title: 'Manage Tours',
+    user: req.user,
+    section: 'tours',
+    tours,
+  });
+});
+
+// ==============================================
+// #: GET ADMIN USERS - MANAGE USERS
+// ==============================================
+
+exports.getAdminUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find();
+  res.status(200).render('adminUsers', {
+    title: 'Manage Users',
+    user: req.user,
+    section: 'users',
+    users,
+  });
+});
 
 // =================================================================================
 // #: GET MY TOURS - USER CAN QUERY INSIDE THEIR ACCOUNT TO CHECK THEIR BOOKED TOURS
