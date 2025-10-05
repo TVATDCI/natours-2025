@@ -140,7 +140,21 @@ body {
     to(#eb4d4b)
   );
   background-image: linear-gradient(to right, #ff7730, #eb4d4b);
-  font-size: 3.5rem;
+  font-size: 3rem;
+}
+
+.heading-secondary--admin {
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#ff7730),
+    to(#eb4d4b)
+  );
+  color: #fff;
+  background-image: linear-gradient(to right, #ff7730, #eb4d4b);
+  font-size: 2.5rem;
+  text-align: center;
 }
 
 .heading-primary,
@@ -929,6 +943,7 @@ body {
   justify-content: flex-end;
 }
 .nav__el,
+.nav__el--admin,
 .nav__el:link,
 .nav__el:visited {
   color: #f7f7f7;
@@ -950,18 +965,21 @@ body {
   font-family: inherit;
 }
 
-.nav__el--admin {
+.nav__el--admin,
+.nav__el--admin:link,
+.nav__el--admin:visited {
   color: #55c57a;
-  font-weight: 600;
-  text-shadow: 0 0 3px rgba(85, 197, 122, 0.5);
 }
 .nav__el:hover,
-.nav__el:active {
+.nav__el:active,
+.nav__el--admin:hover,
+.nav__el--admin:active {
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
   text-shadow: 0 0.7rem 1rem black;
 }
-.nav__el:not(:last-child) {
+.nav__el:not(:last-child),
+.nav__el--admin:not(:last-child) {
   margin-right: 3rem;
 }
 @media only screen and (max-width: 37.5em) {
@@ -1372,8 +1390,17 @@ body {
   color: #55c57a;
   text-decoration: none;
   transition: all 0.2s;
+}
 
 /*Admin Dashboard*/
+
+p {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
 .admin-list {
   list-style: none;
   padding: 0;
@@ -1393,5 +1420,3 @@ body {
 .admin-list a:hover {
   text-decoration: underline;
 }
-
-
