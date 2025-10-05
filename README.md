@@ -263,6 +263,11 @@ project-root/
 │ ├── \_head.pug
 │ ├── \_header.pug
 │ ├── \_reviewCard.pug
+│ ├── admin
+│ │ ├── dashboard.pug
+│ │ ├── adminBookings.pug
+│ │ ├── adminUsers.pug
+│ │ ├── adminUsers.pug
 │ ├── base.pug
 │ ├── overview.pug
 │ └── tour.pug
