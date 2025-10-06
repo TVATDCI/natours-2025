@@ -1,3 +1,15 @@
+mixin userNavItem(link, user)
+    a.nav__el(class=user.role === 'admin' ? 'nav__el--admin' : '')(href=link)
+        if user.photo && user.photo.startsWith('http')
+            img.nav__user-img(src=user.photo alt=`Photo of ${user.name}`)
+        else if user.photo
+            img.nav__user-img(src=`/img/users/${user.photo}` alt=`Photo of ${user.name}`)
+        else
+            img.nav__user-img(src='/img/users/default.jpg' alt='Default user')
+        span
+            | #{user.name.split(' ')[0]}
+            if user.role === 'admin'
+                span.user-role &nbsp;/&nbsp;#{user.role.charAt(0).toUpperCase() + user.role.slice(1)}
 header.header
     nav.nav.nav--tours
         a.nav__el(href='/') All tours
@@ -10,6 +22,7 @@ header.header
             a.nav__el.nav__el--logout Logout
             if user.role === 'admin'
                 a.nav__el--admin(href='/admin/dashboard')
+<<<<<<< HEAD
                     if user.photo && user.photo.startsWith('http')
                         img.nav__user-img(src=user.photo alt=`Photo of ${user.name}`)
                     else if user.photo
@@ -17,15 +30,13 @@ header.header
                     else
                         img.nav__user-img(src='/img/users/default.jpg' alt='Default user')
                     span= user.name.split(' ')[0]
+=======
+                +userNavItem('/admin/dashboard', user)
+                
+>>>>>>> origin/pre-production
             else
                 a.nav__el(href='/me')
-                    if user.photo && user.photo.startsWith('http')
-                        img.nav__user-img(src=user.photo alt=`Photo of ${user.name}`)
-                    else if user.photo
-                        img.nav__user-img(src=`/img/users/${user.photo}` alt=`Photo of ${user.name}`)
-                    else
-                        img.nav__user-img(src='/img/users/default.jpg' alt='Default user')
-                    span= user.name.split(' ')[0]
+                +userNavItem('/me', user)
         else
             a.nav__el(href='/login') Log in
             a.nav__el.nav__el--cta(href='/signup') Sign up
