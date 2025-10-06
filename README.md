@@ -267,7 +267,8 @@ project-root/
 │ │ ├── dashboard.pug
 │ │ ├── adminBookings.pug
 │ │ ├── adminUsers.pug
-│ │ ├── adminUsers.pug
+│ │ ├── adminTours.pug
+│ │ ├── adminReviews.pug
 │ ├── base.pug
 │ ├── overview.pug
 │ └── tour.pug
