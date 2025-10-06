@@ -18,7 +18,6 @@ block content
                     +navItem('#', 'My reviews', 'star')
                     +navItem('#', 'Billing', 'credit-card')
 
-                //- if user.role === 'admin'
                 .admin-nav
                     h5.admin-nav__heading Admin
                     ul.side-nav
@@ -73,12 +72,13 @@ block content
                     .user-view__form-container
                         h2.heading-secondary.ma-bt-md Manage Tours
                         if tours && tours.length
-                            ul.admin-list
+                            ul.admin-tours__list
                                 each tour in tours
-                                    li
-                                        a(href=`/admin/tours/${tour._id}`)= tour.name
+                                    li.admin-tours__item
+                                        a.admin-tours__link(href=`/admin/tours/${tour._id}`)
+                                            span.admin-tours__name= tour.name
                         else 
-                            p No tours found.
+                            p.admin-tours__empty No tours found.
             
                 else if section === 'users'
                     .user-view__form-container
