@@ -135,12 +135,12 @@ exports.getAdminBookings = catchAsync(async (req, res, next) => {
 // ==============================================
 
 exports.getAdminReviews = catchAsync(async (req, res, next) => {
-  const users = await Review.find();
+  const reviews = await Review.find();
   res.status(200).render('admin/adminReviews', {
     title: 'Manage Reviews',
-    user: req.review,
+    user: req.user,
     section: 'reviews',
-    users,
+    reviews,
   });
 });
 // =================================================================================
