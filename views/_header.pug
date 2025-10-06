@@ -22,18 +22,8 @@ header.header
             a.nav__el.nav__el--logout Logout
             if user.role === 'admin'
                 a.nav__el--admin(href='/admin/dashboard')
-<<<<<<< HEAD
-                    if user.photo && user.photo.startsWith('http')
-                        img.nav__user-img(src=user.photo alt=`Photo of ${user.name}`)
-                    else if user.photo
-                        img.nav__user-img(src=`/img/users/${user.photo}` alt=`Photo of ${user.name}`)
-                    else
-                        img.nav__user-img(src='/img/users/default.jpg' alt='Default user')
-                    span= user.name.split(' ')[0]
-=======
                 +userNavItem('/admin/dashboard', user)
                 
->>>>>>> origin/pre-production
             else
                 a.nav__el(href='/me')
                 +userNavItem('/me', user)
