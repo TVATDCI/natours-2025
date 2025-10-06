@@ -88,9 +88,9 @@ exports.getAdminDashboard = (req, res) => {
   });
 };
 
-// ==============================================
+// =================================
 // #: GET ADMIN TOURS - MANAGE TOURS
-// ==============================================
+// =================================
 
 exports.getAdminTours = catchAsync(async (req, res, next) => {
   const tours = await Tour.find();
@@ -102,9 +102,9 @@ exports.getAdminTours = catchAsync(async (req, res, next) => {
   });
 });
 
-// ==============================================
+// =================================
 // #: GET ADMIN USERS - MANAGE USERS
-// ==============================================
+// =================================
 
 exports.getAdminUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
@@ -116,9 +116,9 @@ exports.getAdminUsers = catchAsync(async (req, res, next) => {
   });
 });
 
-// ==============================================
+// ==============================
 // #: GET ADMIN - MANAGE BOOKINGS
-// ==============================================
+// ==============================
 
 exports.getAdminBookings = catchAsync(async (req, res, next) => {
   const bookings = await Booking.find();
@@ -130,9 +130,9 @@ exports.getAdminBookings = catchAsync(async (req, res, next) => {
   });
 });
 
-// ==============================================
+// =============================
 // #: GET ADMIN - MANAGE REVIEWS
-// ==============================================
+// =============================
 
 exports.getAdminReviews = catchAsync(async (req, res, next) => {
   const reviews = await Review.find();
@@ -143,6 +143,7 @@ exports.getAdminReviews = catchAsync(async (req, res, next) => {
     reviews,
   });
 });
+
 // =================================================================================
 // #: GET MY TOURS - USER CAN QUERY INSIDE THEIR ACCOUNT TO CHECK THEIR BOOKED TOURS
 // Note: Replaces manual booking query approach with virtual populate implementation
