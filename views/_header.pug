@@ -23,23 +23,10 @@ header.header
             if user.role === 'admin'
                 a.nav__el--admin(href='/admin/dashboard')
                 +userNavItem('/admin/dashboard', user)
-                //- if user.photo && user.photo.startsWith('http')
-                //-         img.nav__user-img(src=user.photo alt=`Photo of ${user.name}`)
-                //-     else if user.photo
-                //-         img.nav__user-img(src=`/img/users/${user.photo}` alt=`Photo of ${user.name}`)
-                //-     else
-                //-         img.nav__user-img(src='/img/users/default.jpg' alt='Default user')
-                //-     span= user.name.split(' ')[0]
+                
             else
                 a.nav__el(href='/me')
                 +userNavItem('/me', user)
-                    //- if user.photo && user.photo.startsWith('http')
-                    //-     img.nav__user-img(src=user.photo alt=`Photo of ${user.name}`)
-                    //- else if user.photo
-                    //-     img.nav__user-img(src=`/img/users/${user.photo}` alt=`Photo of ${user.name}`)
-                    //- else
-                    //-     img.nav__user-img(src='/img/users/default.jpg' alt='Default user')
-                    //- span= user.name.split(' ')[0]
         else
             a.nav__el(href='/login') Log in
             a.nav__el.nav__el--cta(href='/signup') Sign up
