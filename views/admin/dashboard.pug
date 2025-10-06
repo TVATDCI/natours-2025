@@ -1,4 +1,4 @@
-extends base
+extends ../base
 
 mixin navItem(link, text, icon, active)
     li(class=`${active ? 'side-nav--active' : ''}`)
@@ -30,10 +30,10 @@ block content
 
             .user-view__content
                 if section === 'dashboard'
-                    //- wrap both boxes + line in a single container (or keep indentation consistent)
+                    // 👇 wrap both boxes + line in a single container (or keep indentation consistent)
                     .dashboard-section
                         .user-view__form-container
-                            h2.heading-secondary.ma-bt-md Your account settings
+                            h2.heading-secondary.ma-bt-md Admin account settings
                             form.form.form-user-data
                                 .form__group
                                     label.form__label(for='name') Name
