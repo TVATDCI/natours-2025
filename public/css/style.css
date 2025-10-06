@@ -1450,22 +1450,77 @@ body {
 .admin-nav__heading {
   color: #fff;
 }
-.admin-list {
+
+/* ADMIN TOURS BLOCK */
+
+.admin-tours__list {
   list-style: none;
+  margin: 0;
   padding: 0;
+  border-top: 1px solid #eee;
 }
 
-.admin-list li {
-  padding: 1rem 0;
+.admin-tours__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 0;
   border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
 }
 
-.admin-list a {
-  color: #55c57a;
+.admin-tours__item:hover {
+  background-color: #f9f9f9;
+}
+
+.admin-tours__link {
   text-decoration: none;
+  font-size: 1.6rem;
   font-weight: 600;
+  color: #28b487;
+  transition: color 0.2s;
 }
 
-.admin-list a:hover {
+.admin-tours__link:hover {
+  color: #55c57a;
   text-decoration: underline;
 }
+
+.admin-tours__name {
+  display: inline-block;
+}
+
+.admin-tours__empty {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.5rem;
+  color: #999;
+  background: #f7f7f7;
+  border-radius: 5px;
+  margin-top: 1rem;
+}
+
+.admin-tour__details {
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.05);
+}
+
+.admin-tour__summary {
+  font-size: 1.5rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.admin-tour__desc {
+  font-size: 1.6rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.admin-tour__actions {
+  display: flex;
+  gap: 1rem;
+}
+
