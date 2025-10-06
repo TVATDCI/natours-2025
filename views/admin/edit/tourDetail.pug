@@ -1,0 +1,22 @@
+extends ../../base
+
+block content 
+    main.main
+        h2.heading-secondary.ma-bt-md  Manage Tour
+        .user-view
+            .user-view__content
+                if tour
+                    .admin-tour__details
+                        h3.heading-tertiary #{tour.name}
+                        p.admin-tour__summary
+                            | Difficulty: #{tour.difficulty} • Duration: #{tour.duration} days • Price: $#{tour.price}
+
+                        p.admin-tour__desc= tour.summary
+
+                        //- Buttons or future actions
+                        
+                        .admin-tour__actions
+                            a.btn.btn--small.btn--green(href=`/admin/tours/${tour._id}/edit`) Edit Tour
+                            a.btn.btn--small.btn--transparent_red(href=`/admin/tours/${tour._id}/delete`) Delete Tour
+                else
+                    p.admin-tour__empty No tour data available.      
