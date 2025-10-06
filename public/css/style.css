@@ -212,7 +212,7 @@ body {
   position: relative;
   -webkit-transition: all 0.4s;
   transition: all 0.4s;
-  font-weight: 400;
+  font-weight: 400;.nav__el--admin:not(:last-child)
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   /*Add later when we use this for the button in form*/
@@ -246,16 +246,29 @@ body {
 .btn--white::after {
   background-color: #fff;
 }
-.btn--transparent_green {
-  background-color: transparent;
-  color: #55c57a;
-}
+.btn--transparent_green,
 .btn--transparent_red {
-  background-color: transparent;
-  color: #eb4d4b;
+  display: inline-flex;            /* makes it easy to center text */
+  align-items: center;             /* vertically centers text */
+  justify-content: center;         /* horizontally centers text */
+  text-align: center;              /* centers multi-line text */
+  font-weight: 400;                /* optional – makes gradient pop more */
+  line-height: 1;                  /* keeps consistent height */
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
+
+.btn--transparent_green {
+  background-image: linear-gradient(to right, #7dd56f, #28b487);
+}
+
+.btn--transparent_red {
+  background-image: linear-gradient(to right, #ff7730, #ff0400);
+}
+
 .btn--green {
-  background-color: #55c57a;
+  background: linear-gradient(to right, #7dd56f, #28b487);
   color: #fff;
 }
 .btn--green::after {
@@ -947,44 +960,55 @@ body {
   -ms-flex-pack: end;
   justify-content: flex-end;
 }
+/* Base nav element */
 .nav__el,
 .nav__el--admin,
 .nav__el:link,
 .nav__el:visited {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #f7f7f7;
   text-transform: uppercase;
   font-size: 1.6rem;
   text-decoration: none;
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-transition: all 0.2s;
-  transition: all 0.2s;
   font-weight: 400;
   background: none;
   border: none;
   cursor: pointer;
   font-family: inherit;
+  transition: all 0.2s ease;
 }
 
+/* Admin variant — adds gradient text */
 .nav__el--admin,
 .nav__el--admin:link,
 .nav__el--admin:visited {
-  color: #55c57a;
+  font-weight: 600; /* slightly bolder for emphasis */
+  background-image: linear-gradient(to right, #7dd56f, #28b487);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  line-height: 1.2; /* keeps consistent height, avoids cropping on some browsers */
+  text-align: center;
 }
+
+/* Optional: hover feedback */
+/* .nav__el--admin:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+} */
+
 .nav__el:hover,
 .nav__el:active,
 .nav__el--admin:hover,
 .nav__el--admin:active {
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
-  text-shadow: 0 0.7rem 1rem black;
+  ext-shadow: 0 0.7rem 1rem rgba(85, 197, 122, 0.4);
 }
-.nav__el:not(:last-child),
-.nav__el--admin:not(:last-child) {
+
+.nav__el:not(:last-child) {
   margin-right: 3rem;
 }
 @media only screen and (max-width: 37.5em) {
@@ -1073,6 +1097,9 @@ body {
   width: 3.5rem;
   border-radius: 50%;
   margin-right: 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
 }
 
 .side-nav {
@@ -1180,7 +1207,7 @@ body {
     to(#28b487)
   );
   background-image: linear-gradient(to right bottom, #7dd56f, #28b487);
-  opacity: 0.7;
+  opacity: 0.5;
 }
 .card__picture-img {
   -o-object-fit: cover;
@@ -1398,13 +1425,19 @@ body {
 }
 
 /*Admin Dashboard*/
-
-p {
+.admin-intro {
   display: block;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  text-align: center;
+  margin: 0.5rem 0 1rem;
+  padding: 0.5rem 0 0.5rem 6rem;
+  text-align: left;
+
+  background-image: linear-gradient(to right, #7dd56f, #f6f8f8);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  line-height: 1.2;
 }
 .admin-list {
   list-style: none;
