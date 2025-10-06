@@ -5,22 +5,24 @@ const Review = require('../models/reviewModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
+// =============================================================
+// #: GLOBAL ALERT HANDLER (Stripe & Other Notifications)
+// =============================================================
 exports.alerts = (req, res, next) => {
   const { alert } = req.query;
   if (alert === 'booking') {
     res.locals.alert =
-      'Booking successful! Please check your email for confirmation. If you are testing the booking and it does not show up immediately, please refresh or try again in a few minutes (Stripe may delay the first event). Thanks';
-    // console.log('✅ res.locals.alert set:', res.locals.alert);
+      'Booking successful! Please check your email for confirmation. If you are testing the booking and it does not show up immediately, please refresh or try again in a few minutes (Stripe may delay the first event). Thanks!';
   }
-
   next();
 };
 
-// ===========================
-// #: GET OVERVIEW - ALL TOURS
-// ===========================
+// =============================================================
+// #: PUBLIC VIEWS (Overview, Single Tour, Auth Pages)
+// =============================================================
+
+// ----- Get Overview (All Tours)
 exports.getOverview = catchAsync(async (req, res, next) => {
-  // 1) Get tour data from the collection
   const tours = await Tour.find();
   res.status(200).render('overview', {
     title: 'All Tours',
@@ -28,19 +30,14 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   });
 });
 
-// ====================
-// #: GET TOUR - A TOUR
-// ====================
-
+// ----- Get Tour (Single Tour Page)
 exports.getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findOne({ slug: req.params.slug }).populate({
     path: 'reviews',
     fields: 'review rating user',
   });
 
-  if (!tour) {
-    return next(new AppError('No tour found with that name', 404));
-  }
+  if (!tour) return next(new AppError('No tour found with that name', 404));
 
   res.status(200).render('tour', {
     title: `${tour.name} Tour`,
@@ -48,133 +45,32 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-// ==============================
-// #: GET LOGIN FORM - LOGIN PAGE
-// ==============================
-
+// ----- Get Login Form
 exports.getLoginForm = (req, res) => {
   res.status(200).render('login', {
     title: 'Login Form',
   });
 };
 
-// ================================
-// #: GET SIGNUP FORM - SIGNUP PAGE
-// ================================
-
+// ----- Get Signup Form
 exports.getSignupForm = (req, res) => {
   res.status(200).render('signup', {
     title: 'Create your account',
   });
 };
 
-// ====================================
-// #: GET ACCOUNT - A USER ACCOUNT PAGE
-// ====================================
+// =============================================================
+// #: USER ACCOUNT & PERSONAL SETTINGS
+// =============================================================
+
+// ----- Get Account Page
 exports.getAccount = (req, res) => {
   res.status(200).render('account', {
-    title: 'User account',
+    title: 'User Account',
   });
 };
 
-// =======================================
-// #: GET ADMIN - AN ADMIN MANAGEMENT PAGE
-// =======================================
-exports.getAdminDashboard = (req, res) => {
-  res.status(200).render('admin/dashboard', {
-    title: 'Admin Dashboard',
-    user: req.user,
-    section: 'dashboard', // later used to switch content
-  });
-};
-
-// =================================
-// #: GET ADMIN TOURS - MANAGE TOURS
-// =================================
-
-exports.getAdminTours = catchAsync(async (req, res, next) => {
-  const tours = await Tour.find();
-  res.status(200).render('admin/adminTours', {
-    title: 'Manage Tours',
-    user: req.user,
-    section: 'tours',
-    tours,
-  });
-});
-
-// =================================
-// #: GET ADMIN USERS - MANAGE USERS
-// =================================
-
-exports.getAdminUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-  res.status(200).render('admin/adminUsers', {
-    title: 'Manage Users',
-    user: req.user,
-    section: 'users',
-    users,
-  });
-});
-
-// ==============================
-// #: GET ADMIN - MANAGE BOOKINGS
-// ==============================
-
-exports.getAdminBookings = catchAsync(async (req, res, next) => {
-  const bookings = await Booking.find();
-  res.status(200).render('admin/adminBookings', {
-    title: 'Manage Bookings',
-    user: req.user,
-    section: 'bookings',
-    bookings,
-  });
-});
-
-// =============================
-// #: GET ADMIN - MANAGE REVIEWS
-// =============================
-
-exports.getAdminReviews = catchAsync(async (req, res, next) => {
-  const reviews = await Review.find();
-  res.status(200).render('admin/adminReviews', {
-    title: 'Manage Reviews',
-    user: req.user,
-    section: 'reviews',
-    reviews,
-  });
-});
-
-// =================================================================================
-// #: GET MY TOURS - USER CAN QUERY INSIDE THEIR ACCOUNT TO CHECK THEIR BOOKED TOURS
-// Note: Replaces manual booking query approach with virtual populate implementation
-// =================================================================================
-exports.getMyTours = catchAsync(async (req, res, next) => {
-  // 1) Populate the user's bookings (and tours inside them)
-  const userWithTours = await User.findById(req.user.id).populate({
-    path: 'bookedTours', // virtual populate
-    populate: {
-      path: 'tour', // nested populate for the tour inside each booking (bookingSchema.pre)
-      model: 'Tour',
-    },
-  });
-
-  if (!userWithTours) {
-    return next(new AppError('User not found', 404)); // << isOperational-Error message: err.message
-  }
-
-  // 2) Extract tours from populated bookings
-  const tours = (userWithTours.bookedTours || []).map((b) => b.tour);
-
-  // 3) Render template with those tours
-  res.status(200).render('overview', {
-    title: 'My Tours',
-    tours,
-  });
-});
-
-// ==================================================================
-// #: UPDATE USER SETTINGS - IN USER ACCOUNT PAGE - SAVE SETTINGS BTN
-// ==================================================================
+// ----- Update User Data (Settings)
 exports.updateUserData = catchAsync(async (req, res, next) => {
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
@@ -189,7 +85,81 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
   );
 
   res.status(200).render('account', {
-    title: 'User account',
+    title: 'User Account',
     user: updatedUser,
+  });
+});
+
+// ----- Get My Tours (Booked Tours)
+exports.getMyTours = catchAsync(async (req, res, next) => {
+  const userWithTours = await User.findById(req.user.id).populate({
+    path: 'bookedTours',
+    populate: { path: 'tour', model: 'Tour' },
+  });
+
+  if (!userWithTours) return next(new AppError('User not found', 404));
+
+  const tours = (userWithTours.bookedTours || []).map((b) => b.tour);
+
+  res.status(200).render('overview', {
+    title: 'My Tours',
+    tours,
+  });
+});
+
+// =============================================================
+// #: ADMIN DASHBOARD & MANAGEMENT SECTIONS
+// =============================================================
+
+// ----- Get Admin Dashboard
+exports.getAdminDashboard = (req, res) => {
+  res.status(200).render('admin/dashboard', {
+    title: 'Admin Dashboard',
+    user: req.user,
+    section: 'dashboard',
+  });
+};
+
+// ----- Manage Tours
+exports.getAdminTours = catchAsync(async (req, res, next) => {
+  const tours = await Tour.find();
+  res.status(200).render('admin/adminTours', {
+    title: 'Manage Tours',
+    user: req.user,
+    section: 'tours',
+    tours,
+  });
+});
+
+// ----- Manage Users
+exports.getAdminUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find();
+  res.status(200).render('admin/adminUsers', {
+    title: 'Manage Users',
+    user: req.user,
+    section: 'users',
+    users,
+  });
+});
+
+// ----- Manage Bookings
+exports.getAdminBookings = catchAsync(async (req, res, next) => {
+  const bookings = await Booking.find();
+  res.status(200).render('admin/adminBookings', {
+    title: 'Manage Bookings',
+    user: req.user,
+    section: 'bookings',
+    bookings,
+  });
+});
+
+// ----- Manage Reviews
+exports.getAdminReviews = catchAsync(async (req, res, next) => {
+  const reviews = await Review.find();
+  res.status(200).render('admin/adminReviews', {
+    title: 'Manage Reviews',
+    user: req.user,
+    section: 'reviews',
+    reviews,
   });
 });
