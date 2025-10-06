@@ -987,9 +987,6 @@ body {
 .nav__el--admin,
 .nav__el--admin:link,
 .nav__el--admin:visited {
-<<<<<<< HEAD
-  color: #7dd56f;
-=======
   font-weight: 600; /* slightly bolder for emphasis */
   background-image: linear-gradient(to right, #7dd56f, #28b487);
   background-clip: text;
@@ -997,7 +994,6 @@ body {
   color: transparent;
   line-height: 1.2; /* keeps consistent height, avoids cropping on some browsers */
   text-align: center;
->>>>>>> origin/pre-production
 }
 
 /* Optional: hover feedback */
@@ -1523,4 +1519,3 @@ body {
   display: flex;
   gap: 1rem;
 }
-
