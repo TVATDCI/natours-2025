@@ -117,7 +117,7 @@ exports.getAdminUsers = catchAsync(async (req, res, next) => {
 });
 
 // ==============================================
-// #: GET ADMIN USERS - MANAGE BOOKINGS
+// #: GET ADMIN - MANAGE BOOKINGS
 // ==============================================
 
 exports.getAdminBookings = catchAsync(async (req, res, next) => {
