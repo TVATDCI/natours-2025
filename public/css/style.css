@@ -1008,7 +1008,7 @@ body {
 .nav__el--admin:active {
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
-  ext-shadow: 0 0.7rem 1rem rgba(85, 197, 122, 0.4);
+  text-shadow: 0 0.7rem 1rem rgba(85, 197, 122, 0.4);
 }
 
 .nav__el:not(:last-child) {
