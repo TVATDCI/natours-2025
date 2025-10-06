@@ -54,7 +54,7 @@ router.get(
   viewController.getAdminBookings,
 );
 
-// Admin: Manage Review route
+// Admin: Manage Reviews route
 router.get(
   '/admin/reviews',
   authController.protect,
