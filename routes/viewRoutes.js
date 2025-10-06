@@ -30,7 +30,7 @@ router.get(
   viewController.getAdminDashboard,
 );
 
-// Admin: Manage Tour route
+// Admin: Manage Tours route
 router.get(
   '/admin/tours',
   authController.protect,
