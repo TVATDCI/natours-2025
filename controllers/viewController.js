@@ -121,12 +121,12 @@ exports.getAdminUsers = catchAsync(async (req, res, next) => {
 // ==============================================
 
 exports.getAdminBookings = catchAsync(async (req, res, next) => {
-  const users = await Booking.find();
+  const bookings = await Booking.find();
   res.status(200).render('admin/adminBookings', {
     title: 'Manage Bookings',
     user: req.user,
     section: 'bookings',
-    users,
+    bookings,
   });
 });
 
