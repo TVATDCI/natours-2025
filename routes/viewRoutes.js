@@ -46,7 +46,7 @@ router.get(
   viewController.getAdminUsers,
 );
 
-// Admin: Manage Booking route
+// Admin: Manage Bookings route
 router.get(
   '/admin/bookings',
   authController.protect,
