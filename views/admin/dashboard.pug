@@ -19,14 +19,14 @@ block content
                     +navItem('#', 'My reviews', 'star')
                     +navItem('#', 'Billing', 'credit-card')
 
-                if user.role === 'admin'
-                    .admin-nav
-                        h5.admin-nav__heading Admin
-                        ul.side-nav
-                            +navItem('/admin/tours', 'Manage tours', 'map')
-                            +navItem('/admin/users', 'Manage users', 'users')
-                            +navItem('/admin/reviews', 'Manage reviews', 'star')
-                            +navItem('/admin/bookings', 'Manage bookings', 'briefcase')
+                //- if user.role === 'admin'
+                .admin-nav
+                    h5.admin-nav__heading Admin
+                    ul.side-nav
+                        +navItem('/admin/tours', 'Manage tours', 'map')
+                        +navItem('/admin/users', 'Manage users', 'users')
+                        +navItem('/admin/reviews', 'Manage reviews', 'star')
+                        +navItem('/admin/bookings', 'Manage bookings', 'briefcase')
 
             .user-view__content
                 if section === 'dashboard'
