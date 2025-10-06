@@ -212,7 +212,10 @@ body {
   position: relative;
   -webkit-transition: all 0.4s;
   transition: all 0.4s;
-  font-weight: 400;.nav__el--admin:not(:last-child)
+  font-weight: 400;
+}
+
+.nav__el--admin:not(:last-child) {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   /*Add later when we use this for the button in form*/
