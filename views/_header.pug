@@ -1,5 +1,5 @@
 mixin userNavItem(link, user)
-    a.nav__el(class=user.role === 'admin' ? 'nav__el--admin' : '')(href=link)
+    a(class=`nav__el ${user.role === 'admin' ? 'nav__el--admin' : ''}` href=link)
         if user.photo && user.photo.startsWith('http')
             img.nav__user-img(src=user.photo alt=`Photo of ${user.name}`)
         else if user.photo
