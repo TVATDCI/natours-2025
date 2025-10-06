@@ -38,7 +38,7 @@ router.get(
   viewController.getAdminTours,
 );
 
-// Admin: Manage User route
+// Admin: Manage Users route
 router.get(
   '/admin/users',
   authController.protect,
