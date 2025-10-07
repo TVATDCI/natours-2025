@@ -9,7 +9,7 @@ mixin navItem(link, text, icon, active)
 
 block content
     main.main
-        h2.heading-secondary--admin Admin Dashboard
+        h2.heading-secondary--admin Manage Tours Dashboard
         .user-view
             nav.user-view__menu
                 ul.side-nav
@@ -75,12 +75,17 @@ block content
                             ul.admin-tours__list
                                 each tour in tours
                                     li.admin-tours__item
-                                        a.admin-tours__link(href=`/admin/tours/${tour._id}`)
-                                            span.admin-tours__name= tour.name
+                                        a.admin-tours__link(href=`/admin/tours/${tour._id}`)= tour.name
                         else 
-                            p.admin-tours__empty No tours found.
+                            p No tours found.
             
                 else if section === 'users'
                     .user-view__form-container
                         h2.heading-secondary.ma-bt-md Manage Users
-                        p (Coming soon)
+                        if users && users.length
+                            ul.admin-users__list
+                                each usr in users
+                                    li.admin-users__item
+                                        a.admin-users__link(href=`/admin/users/${user._id}`)= usr.name
+                        else 
+                            p.admin-users__empty No users found.
