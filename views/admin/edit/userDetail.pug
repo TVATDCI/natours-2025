@@ -1,0 +1,33 @@
+extends ../../base
+
+block content
+    main.main
+        h2.heading-secondary.ma-bt-md Manage User
+        .user-view
+            .user-view__content
+                if user
+                    .admin-user__details
+                        h3.heading-secondary.ma-bt-md #{selectedUser.name}
+                        
+                        p.admin-user__summary
+                            | Role: #{selectedUser.role} • Email: #{selectedUser.email}
+
+                        if selectedUser.photo && selectedUser.photo.startsWith('http')
+                            img.admin-user__photo(src=selectedUser.photo alt=`Photo of ${selectedUser.name}`)
+                        else if selectedUser.photo
+                            img.admin-user__photo(src=`/img/users/${selectedUser.photo}` alt=`Photo of ${selectedUser.name}`)
+                        else
+                            img.admin-user__photo(src='/img/users/default.jpg' alt='Default user')
+                        
+                        .admin-user__desc
+                            p
+                                | Account Created: #{selectedUser.createdAt.toDateString ? selectedUser.createdAt.toDateString() : selectedUser.createdAt}
+                            p
+                                | Active: #{selectedUser.active ? 'Yes' : 'No'}   
+
+                        //- Buttons or future actions
+                        .admin-user__actions
+                            a.btn.btn--small.btn--green(href=`/admin/users/${selectedUser._id}/edit`) Edit User
+                            a.btn.btn--small.btn--transparent_red(href=`/admin/users/${selectedUser._id}/delete`) Delete User
+                else
+                    p.admin-user__empty No user data available. 
