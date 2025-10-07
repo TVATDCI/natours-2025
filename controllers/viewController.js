@@ -134,7 +134,6 @@ exports.getAdminTours = catchAsync(async (req, res, next) => {
 // ----- Manage / Edit Tour Details
 exports.getAdminTourDetail = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
-  console.log('Tour name:', tour.name);
 
   if (!tour) {
     return next(new AppError('No tour found with that ID', 404));
