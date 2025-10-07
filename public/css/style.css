@@ -37,6 +37,14 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  .text__link {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 1.4rem;
+    color: #55c57a;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
@@ -210,17 +218,12 @@ body {
   display: inline-block;
   text-decoration: none;
   position: relative;
-  -webkit-transition: all 0.4s;
   transition: all 0.4s;
   font-weight: 400;
-}
-
-.nav__el--admin:not(:last-child) {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  /*Add later when we use this for the button in form*/
-  border: none;
+  border: none; /* 💥 ADD THIS LINE */
+  background: none; /* optional – avoids weird gray default backgrounds */
   cursor: pointer;
+  font-family: inherit;
 }
 
 .btn:hover {
@@ -237,9 +240,11 @@ body {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
+button.btn:focus,
 .btn:focus {
   outline: none;
-  background-color: #01250d;
+  box-shadow: 0 0 0 3px rgba(85, 197, 122, 0.4);
+  background-color: inherit; /* don’t darken background */
 }
 
 .btn--white {
@@ -249,13 +254,14 @@ body {
 .btn--white::after {
   background-color: #fff;
 }
+
 .btn--transparent_green,
 .btn--transparent_red {
   display: inline-flex; /* makes it easy to center text */
   align-items: center; /* vertically centers text */
   justify-content: center; /* horizontally centers text */
   text-align: center; /* centers multi-line text */
-  font-weight: 400; /* optional – makes gradient pop more */
+  font-weight: 600; /* optional – makes gradient pop more */
   line-height: 1; /* keeps consistent height */
   background-clip: text;
   -webkit-background-clip: text;
@@ -264,6 +270,11 @@ body {
 
 .btn--transparent_green {
   background-image: linear-gradient(to right, #7dd56f, #28b487);
+}
+
+/* To combine with btn--transparent as a fall back when the clip text does not appear */
+.text__link {
+  color: #55c57a;
 }
 
 .btn--transparent_red {
@@ -276,10 +287,11 @@ body {
 }
 .btn--green::after {
   background-color: #55c57a;
+  -webkit-text-fill-color: transparent;
 }
 
 .btn--small {
-  padding: 1.25rem 3rem !important;
+  padding: 1.25rem 2rem !important;
   font-size: 1.4rem !important;
 }
 
@@ -288,7 +300,7 @@ body {
 .btn-small:visited {
   background-color: #55c57a;
   color: #fff;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   padding: 1.25rem 3rem;
   border-radius: 10rem;
   text-transform: uppercase;
@@ -299,10 +311,6 @@ body {
   text-decoration: none;
   font-weight: 400;
   border: none;
-}
-
-.btn-small:hover {
-  background-color: #7dd56f;
 }
 
 .btn-text:link,
@@ -366,6 +374,7 @@ body {
   height: 3.5rem;
 }
 @media only screen and (max-width: 62.5em) {
+  button.btn:focus,
   .header__logo {
     -webkit-box-ordinal-group: 0;
     -ms-flex-order: -1;
@@ -603,22 +612,6 @@ body {
   width: 32px;
   height: 40px;
 }
-
-/*
-.mapboxgl-popup {
-  max-width: 25rem;
-}
-  */
-/*
-.mapboxgl-popup-content {
-  text-align: center;
-  font-family: 'Lato', sans-serif;
-  padding: 1.5rem !important;
-  font-size: 1.4rem;
-  -webkit-box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important;
-}
-  */
 
 /* Leaflet popups */
 .leaflet-popup-content {
@@ -994,6 +987,14 @@ body {
   color: transparent;
   line-height: 1.2; /* keeps consistent height, avoids cropping on some browsers */
   text-align: center;
+}
+
+.nav__el--admin:not(:last-child) {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  /*Add later when we use this for the button in form*/
+  border: none;
+  cursor: pointer;
 }
 
 /* Optional: hover feedback */
@@ -1418,16 +1419,7 @@ body {
   transform: translateY(-2px);
 }
 
-.text__link {
-  display: inline-block;
-  margin-top: 1rem;
-  font-size: 1.4rem;
-  color: #55c57a;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-/*Admin Dashboard*/
+/* ADMIN DASHBOARD */
 .admin-intro {
   display: block;
   font-size: 1.75rem;
