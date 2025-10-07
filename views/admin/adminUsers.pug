@@ -85,8 +85,9 @@ block content
                         h2.heading-secondary.ma-bt-md Manage Users
                         if users && users.length
                             ul.admin-users__list
+                                //- To avoid this name collision, change the variable name in the each loop:
                                 each usr in users
                                     li.admin-users__item
-                                        a.admin-users__link(href=`/admin/users/${user._id}`)= usr.name
+                                        a.admin-users__link(href=`/admin/users/${usr._id}`)= usr.name
                         else 
                             p.admin-users__empty No users found.
