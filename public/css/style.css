@@ -200,6 +200,7 @@ body {
   z-index: 10;
 }
 
+/* Base button */
 .btn,
 .btn:link,
 .btn:visited {
@@ -210,38 +211,36 @@ body {
   display: inline-block;
   text-decoration: none;
   position: relative;
-  -webkit-transition: all 0.4s;
-  transition: all 0.4s;
-  font-weight: 400;
-}
-
-.nav__el--admin:not(:last-child) {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  /*Add later when we use this for the button in form*/
   border: none;
   cursor: pointer;
+  font-family: inherit;
+  font-weight: 400;
+  transition: all 0.4s;
 }
 
 .btn:hover {
-  -webkit-transform: translateY(-3px);
   transform: translateY(-3px);
-  -webkit-box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
 }
 
 .btn:active {
-  -webkit-transform: translateY(-1px);
   transform: translateY(-1px);
-  -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
 .btn:focus {
   outline: none;
-  background-color: #01250d;
+  box-shadow: 0 0 0 3px rgba(85, 197, 122, 0.4);
+  background-color: inherit;
 }
 
+/* Small button */
+.btn--small {
+  padding: 1.25rem 2rem !important;
+  font-size: 1.4rem !important;
+}
+
+/* White button */
 .btn--white {
   background-color: #fff;
   color: #777;
@@ -249,27 +248,8 @@ body {
 .btn--white::after {
   background-color: #fff;
 }
-.btn--transparent_green,
-.btn--transparent_red {
-  display: inline-flex; /* makes it easy to center text */
-  align-items: center; /* vertically centers text */
-  justify-content: center; /* horizontally centers text */
-  text-align: center; /* centers multi-line text */
-  font-weight: 400; /* optional – makes gradient pop more */
-  line-height: 1; /* keeps consistent height */
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
 
-.btn--transparent_green {
-  background-image: linear-gradient(to right, #7dd56f, #28b487);
-}
-
-.btn--transparent_red {
-  background-image: linear-gradient(to right, #ff7730, #ff0400);
-}
-
+/* Green button */
 .btn--green {
   background: linear-gradient(to right, #7dd56f, #28b487);
   color: #fff;
@@ -278,33 +258,27 @@ body {
   background-color: #55c57a;
 }
 
-.btn--small {
-  padding: 1.25rem 3rem !important;
-  font-size: 1.4rem !important;
+/* Transparent gradient text buttons */
+.btn--transparent_green,
+.btn--transparent_red {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: 600; /* gradient pop */
+  line-height: 1;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.btn--transparent_green {
+  background-image: linear-gradient(to right, #7dd56f, #28b487);
+}
+.btn--transparent_red {
+  background-image: linear-gradient(to right, #ff7730, #ff0400);
 }
 
-.btn-small,
-.btn-small:link,
-.btn-small:visited {
-  background-color: #55c57a;
-  color: #fff;
-  font-size: 1.4rem;
-  padding: 1.25rem 3rem;
-  border-radius: 10rem;
-  text-transform: uppercase;
-  position: relative;
-  -webkit-transition: all 0.2s;
-  transition: all 0.2s;
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: 400;
-  border: none;
-}
-
-.btn-small:hover {
-  background-color: #7dd56f;
-}
-
+/* Text-style button */
 .btn-text:link,
 .btn-text:visited {
   color: #55c57a;
@@ -312,23 +286,18 @@ body {
   text-decoration: none;
   border-bottom: 1px solid #55c57a;
   padding: 3px;
-  -webkit-transition: all 0.2s;
   transition: all 0.2s;
 }
 
 .btn-text:hover {
   background-color: #55c57a;
   color: #fff;
-  -webkit-box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
-  -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
 }
 
 .btn-text:active {
-  -webkit-transform: translateY(0);
   transform: translateY(0);
-  -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
@@ -603,22 +572,6 @@ body {
   width: 32px;
   height: 40px;
 }
-
-/*
-.mapboxgl-popup {
-  max-width: 25rem;
-}
-  */
-/*
-.mapboxgl-popup-content {
-  text-align: center;
-  font-family: 'Lato', sans-serif;
-  padding: 1.5rem !important;
-  font-size: 1.4rem;
-  -webkit-box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important;
-}
-  */
 
 /* Leaflet popups */
 .leaflet-popup-content {
@@ -1416,15 +1369,6 @@ body {
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
-}
-
-.text__link {
-  display: inline-block;
-  margin-top: 1rem;
-  font-size: 1.4rem;
-  color: #55c57a;
-  text-decoration: none;
-  transition: all 0.2s;
 }
 
 /*Admin Dashboard*/
