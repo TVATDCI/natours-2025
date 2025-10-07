@@ -7,11 +7,11 @@ block content
             .user-view__content
                 if tour
                     .admin-tour__details
-                        h3.heading-tertiary #{tour.name}
-                        p.admin-tour__summary
-                            | Difficulty: #{tour.difficulty} • Duration: #{tour.duration} days • Price: $#{tour.price}
+                        h3.heading-secondary.ma-bt-md #{tour.name}
+                            p.admin-tour__summary
+                                | Difficulty: #{tour.difficulty} • Duration: #{tour.duration} days • Price: $#{tour.price}
 
-                        p.admin-tour__desc= tour.summary
+                            p.admin-tour__desc= tour.summary
 
                         //- Buttons or future actions
                         

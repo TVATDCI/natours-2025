@@ -1,4 +1,7 @@
 extends ../base
+include ../includes/adminSideNav
+include ../includes/adminToursList.pug
+include ../includes/adminUsersList.pug
 
 mixin navItem(link, text, icon, active)
     li(class=`${active ? 'side-nav--active' : ''}`)
@@ -9,8 +12,7 @@ mixin navItem(link, text, icon, active)
 
 block content
     main.main
-        h2.heading-secondary--admin Admin Dashboard
-        p Manage all resources from the menu on the left.
+        h2.heading-secondary--admin Manage Users Dashboard
         .user-view
             nav.user-view__menu
                 ul.side-nav
@@ -71,17 +73,25 @@ block content
                                     button.btn.btn--small.btn--green.btn--save-password Save password
             
                 else if section === 'tours'
-                    .user-view__form-container
-                        h2.heading-secondary.ma-bt-md Manage Tours
-                        if tours && tours.length
-                            ul.admin-list
-                                each tour in tours
-                                    li
-                                        a(href=`/admin/tours/${tour._id}`)= tour.name
-                        else 
-                            p No tours found.
+                    +adminToursList(tours)
+                    //- .user-view__form-container
+                    //-     h2.heading-secondary.ma-bt-md Manage Tours
+                    //-     if tours && tours.length
+                    //-         ul.admin-tours__list
+                    //-             each tour in tours
+                    //-                 li.admin-tours__item
+                    //-                     a.admin-tours__link(href=`/admin/tours/${tour._id}`)= tour.name
+                    //-     else 
+                    //-         p No tours found.
             
                 else if section === 'users'
-                    .user-view__form-container
-                        h2.heading-secondary.ma-bt-md Manage Users
-                        p (Coming soon)
+                    +adminUsersList(users)
+                    //- .user-view__form-container
+                    //-     h2.heading-secondary.ma-bt-md Manage Users
+                    //-     if users && users.length
+                    //-         ul.admin-users__list
+                    //-             each usr in users
+                    //-                 li.admin-users__item
+                    //-                     a.admin-users__link(href=`/admin/users/${usr._id}`)= usr.name
+                    //-     else 
+                    //-         p.admin-users__empty No users found.
