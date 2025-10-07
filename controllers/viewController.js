@@ -131,6 +131,21 @@ exports.getAdminTours = catchAsync(async (req, res, next) => {
   });
 });
 
+// ----- Manage / Edit Tour Details
+exports.getAdminTourDetail = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findById(req.params.id);
+
+  if (!tour) {
+    return next(new AppError('No tour found with that ID', 404));
+  }
+
+  res.status(200).render('admin/edit/tourDetail', {
+    title: `Manage ${tour.name}`,
+    user: req.user,
+    tour,
+  });
+});
+
 // ----- Manage Users
 exports.getAdminUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
