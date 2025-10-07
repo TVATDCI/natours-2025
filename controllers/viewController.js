@@ -170,7 +170,7 @@ exports.getAdminUserDetail = catchAsync(async (req, res, next) => {
   res.status(200).render('admin/edit/userDetail', {
     title: `Manage ${user.name}`,
     user: req.user, // the logged-in admin
-    selectedUser: user, // the user we are viewing
+    selectedUser: user, // the user being viewed
   });
 });
 
