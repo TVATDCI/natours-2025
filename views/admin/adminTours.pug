@@ -1,5 +1,6 @@
 extends ../base
 include ../includes/adminSideNav
+include ../includes/adminUsersList.pug
 
 //- mixin navItem(link, text, icon, active)
 //-     li(class=`${active ? 'side-nav--active' : ''}`)
@@ -83,13 +84,13 @@ block content
                     //-         p No tours found.
             
                 else if section === 'users'
-                    .user-view__form-container
-                        h2.heading-secondary.ma-bt-md Manage Users
-                        if users && users.length
-                            ul.admin-users__list
-                                //- To avoid this name collision, change the variable name in the each loop:
-                                each usr in users
-                                    li.admin-users__item
-                                        a.admin-users__link(href=`/admin/users/${usr._id}`)= usr.name
-                        else 
-                            p.admin-users__empty No users found.
+                    +adminUsersList(users)
+                    //- .user-view__form-container
+                    //-     h2.heading-secondary.ma-bt-md Manage Users
+                    //-     if users && users.length
+                    //-         ul.admin-users__list
+                    //-             each usr in users
+                    //-                 li.admin-users__item
+                    //-                     a.admin-users__link(href=`/admin/users/${usr._id}`)= usr.name
+                    //-     else 
+                    //-         p.admin-users__empty No users found.
