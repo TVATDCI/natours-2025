@@ -1391,16 +1391,18 @@ body {
   color: #fff;
 }
 
-/* ADMIN TOURS BLOCK */
+/* ADMIN BLOCK */
 
-.admin-tours__list {
+.admin-tours__list,
+.admin-users__list {
   list-style: none;
   margin: 0;
   padding: 0;
   border-top: 1px solid #eee;
 }
 
-.admin-tours__item {
+.admin-tours__item,
+.admin-users__item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1409,11 +1411,13 @@ body {
   transition: background-color 0.2s ease;
 }
 
-.admin-tours__item:hover {
+.admin-tours__item:hover,
+.admin-users__item:hover {
   background-color: #f9f9f9;
 }
 
-.admin-tours__link {
+.admin-tours__link,
+.admin-users__link {
   text-decoration: none;
   font-size: 1.6rem;
   font-weight: 600;
@@ -1421,16 +1425,20 @@ body {
   transition: color 0.2s;
 }
 
-.admin-tours__link:hover {
+.admin-tours__link:hover,
+.admin-users__link:hover {
   color: #55c57a;
   text-decoration: underline;
 }
 
-.admin-tours__name {
+.admin-tours__name,
+.admin-users__name {
   display: inline-block;
 }
 
-.admin-tours__empty {
+.admin-tours__empty,
+.admin-users__empty,
+.admin-user__empty {
   padding: 2rem;
   text-align: center;
   font-size: 1.5rem;
@@ -1440,26 +1448,42 @@ body {
   margin-top: 1rem;
 }
 
-.admin-tour__details {
+.admin-tour__details,
+.admin-users__details,
+.admin-user__details {
   background: #fff;
   border-radius: 8px;
   padding: 2rem;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.05);
 }
 
-.admin-tour__summary {
+.admin-tour__summary,
+.admin-users__summery,
+.admin-user__summary {
   font-size: 1.5rem;
   color: #555;
   margin-bottom: 1rem;
 }
 
-.admin-tour__desc {
+.admin-user__photo img {
+  width: 10rem;
+  height: 10rem;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1.5rem;
+}
+
+.admin-tour__desc,
+.admin-users__desc,
+.admin-user__desc {
   font-size: 1.6rem;
   color: #666;
   margin-bottom: 2rem;
 }
 
-.admin-tour__actions {
+.admin-tour__actions,
+.admin-users__actions,
+.admin-user__actions {
   display: flex;
   gap: 1rem;
 }
