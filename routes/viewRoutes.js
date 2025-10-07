@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use(viewController.alerts);
 
-// Overview and tour detail pages: visible to everyone, but show different header if logged in
+// Overview and tour detail pages: visible to everyone, but show different header if logged in + slug for the SEO
 router.get('/', authController.isLoggedIn, viewController.getOverview);
 router.get('/tours/:slug', authController.isLoggedIn, viewController.getTour);
 
@@ -30,7 +30,7 @@ router.get(
   viewController.getAdminDashboard,
 );
 
-// Admin: Manage Tours route
+// Admin: Manage Tours route =======
 router.get(
   '/admin/tours',
   authController.protect,
@@ -38,7 +38,15 @@ router.get(
   viewController.getAdminTours,
 );
 
-// Admin: Manage Users route
+// Admin: View/Edit a single tour
+router.get(
+  '/admin/tours/:id',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.getAdminTourDetail,
+);
+
+// Admin: Manage Users route =======
 router.get(
   '/admin/users',
   authController.protect,
@@ -46,7 +54,7 @@ router.get(
   viewController.getAdminUsers,
 );
 
-// Admin: Manage Bookings route
+// Admin: Manage Bookings route =====
 router.get(
   '/admin/bookings',
   authController.protect,
@@ -54,7 +62,7 @@ router.get(
   viewController.getAdminBookings,
 );
 
-// Admin: Manage Reviews route
+// Admin: Manage Reviews route =====
 router.get(
   '/admin/reviews',
   authController.protect,
