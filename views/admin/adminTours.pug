@@ -1,30 +1,32 @@
 extends ../base
+include ../includes/adminSideNav
 
-mixin navItem(link, text, icon, active)
-    li(class=`${active ? 'side-nav--active' : ''}`)
-        a(href=link)
-            svg
-                use(xlink:href=`img/icons.svg#icon-${icon}`)
-            | #{text}
+//- mixin navItem(link, text, icon, active)
+//-     li(class=`${active ? 'side-nav--active' : ''}`)
+//-         a(href=link)
+//-             svg
+//-                 use(xlink:href=`img/icons.svg#icon-${icon}`)
+//-             | #{text}
 
 block content
     main.main
         h2.heading-secondary--admin Manage Tours Dashboard
         .user-view
-            nav.user-view__menu
-                ul.side-nav
-                    +navItem('#', 'Settings', 'settings', true)
-                    +navItem('/my-tours', 'My bookings', 'briefcase')
-                    +navItem('#', 'My reviews', 'star')
-                    +navItem('#', 'Billing', 'credit-card')
+            +adminSideNav(section)
+            //- nav.user-view__menu
+            //-     ul.side-nav
+            //-         +navItem('#', 'Settings', 'settings', true)
+            //-         +navItem('/my-tours', 'My bookings', 'briefcase')
+            //-         +navItem('#', 'My reviews', 'star')
+            //-         +navItem('#', 'Billing', 'credit-card')
 
-                .admin-nav
-                    h5.admin-nav__heading Admin
-                    ul.side-nav
-                        +navItem('/admin/tours', 'Manage tours', 'map')
-                        +navItem('/admin/users', 'Manage users', 'users')
-                        +navItem('/admin/reviews', 'Manage reviews', 'star')
-                        +navItem('/admin/bookings', 'Manage bookings', 'briefcase')
+            //-     .admin-nav
+            //-         h5.admin-nav__heading Admin
+            //-         ul.side-nav
+            //-             +navItem('/admin/tours', 'Manage tours', 'map')
+            //-             +navItem('/admin/users', 'Manage users', 'users')
+            //-             +navItem('/admin/reviews', 'Manage reviews', 'star')
+            //-             +navItem('/admin/bookings', 'Manage bookings', 'briefcase')
 
             .user-view__content
                 if section === 'dashboard'
@@ -84,8 +86,9 @@ block content
                         h2.heading-secondary.ma-bt-md Manage Users
                         if users && users.length
                             ul.admin-users__list
+                                //- To avoid this name collision, change the variable name in the each loop:
                                 each usr in users
                                     li.admin-users__item
-                                        a.admin-users__link(href=`/admin/users/${user._id}`)= usr.name
+                                        a.admin-users__link(href=`/admin/users/${usr._id}`)= usr.name
                         else 
                             p.admin-users__empty No users found.
