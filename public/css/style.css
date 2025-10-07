@@ -37,14 +37,6 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  .text__link {
-    display: inline-block;
-    margin-top: 1rem;
-    font-size: 1.4rem;
-    color: #55c57a;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
@@ -218,12 +210,21 @@ body {
   display: inline-block;
   text-decoration: none;
   position: relative;
+  -webkit-transition: all 0.4s;
   transition: all 0.4s;
   font-weight: 400;
-  border: none; /* 💥 ADD THIS LINE */
-  background: none; /* optional – avoids weird gray default backgrounds */
+
+  border: none;
   cursor: pointer;
   font-family: inherit;
+}
+
+.nav__el--admin:not(:last-child) {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  /*Add later when we use the button is used in form*/
+  border: none;
+  cursor: pointer;
 }
 
 .btn:hover {
@@ -240,11 +241,9 @@ body {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
-button.btn:focus,
 .btn:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(85, 197, 122, 0.4);
-  background-color: inherit; /* don’t darken background */
+  background-color: #01250d;
 }
 
 .btn--white {
@@ -254,14 +253,13 @@ button.btn:focus,
 .btn--white::after {
   background-color: #fff;
 }
-
 .btn--transparent_green,
 .btn--transparent_red {
   display: inline-flex; /* makes it easy to center text */
   align-items: center; /* vertically centers text */
   justify-content: center; /* horizontally centers text */
   text-align: center; /* centers multi-line text */
-  font-weight: 600; /* optional – makes gradient pop more */
+  font-weight: 400; /* optional – makes gradient pop more */
   line-height: 1; /* keeps consistent height */
   background-clip: text;
   -webkit-background-clip: text;
@@ -270,11 +268,6 @@ button.btn:focus,
 
 .btn--transparent_green {
   background-image: linear-gradient(to right, #7dd56f, #28b487);
-}
-
-/* To combine with btn--transparent as a fall back when the clip text does not appear */
-.text__link {
-  color: #55c57a;
 }
 
 .btn--transparent_red {
@@ -287,11 +280,10 @@ button.btn:focus,
 }
 .btn--green::after {
   background-color: #55c57a;
-  -webkit-text-fill-color: transparent;
 }
 
 .btn--small {
-  padding: 1.25rem 2rem !important;
+  padding: 1.25rem 3rem !important;
   font-size: 1.4rem !important;
 }
 
@@ -300,17 +292,19 @@ button.btn:focus,
 .btn-small:visited {
   background-color: #55c57a;
   color: #fff;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   padding: 1.25rem 3rem;
   border-radius: 10rem;
   text-transform: uppercase;
   position: relative;
   -webkit-transition: all 0.2s;
   transition: all 0.2s;
-  cursor: pointer;
   text-decoration: none;
   font-weight: 400;
-  border: none;
+}
+
+.btn-small:hover {
+  background-color: #7dd56f;
 }
 
 .btn-text:link,
@@ -374,7 +368,6 @@ button.btn:focus,
   height: 3.5rem;
 }
 @media only screen and (max-width: 62.5em) {
-  button.btn:focus,
   .header__logo {
     -webkit-box-ordinal-group: 0;
     -ms-flex-order: -1;
@@ -612,6 +605,22 @@ button.btn:focus,
   width: 32px;
   height: 40px;
 }
+
+/*
+.mapboxgl-popup {
+  max-width: 25rem;
+}
+  */
+/*
+.mapboxgl-popup-content {
+  text-align: center;
+  font-family: 'Lato', sans-serif;
+  padding: 1.5rem !important;
+  font-size: 1.4rem;
+  -webkit-box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important;
+}
+  */
 
 /* Leaflet popups */
 .leaflet-popup-content {
@@ -987,14 +996,6 @@ button.btn:focus,
   color: transparent;
   line-height: 1.2; /* keeps consistent height, avoids cropping on some browsers */
   text-align: center;
-}
-
-.nav__el--admin:not(:last-child) {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  /*Add later when we use this for the button in form*/
-  border: none;
-  cursor: pointer;
 }
 
 /* Optional: hover feedback */
@@ -1419,7 +1420,7 @@ button.btn:focus,
   transform: translateY(-2px);
 }
 
-/* ADMIN DASHBOARD */
+/*Admin Dashboard*/
 .admin-intro {
   display: block;
   font-size: 1.75rem;
