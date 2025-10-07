@@ -1,5 +1,6 @@
 extends ../base
 include ../includes/adminSideNav
+include ../includes/adminToursList.pug
 
 //- mixin navItem(link, text, icon, active)
 //-     li(class=`${active ? 'side-nav--active' : ''}`)
@@ -72,15 +73,16 @@ block content
                                     button.btn.btn--small.btn--green.btn--save-password Save password
             
                 else if section === 'tours'
-                    .user-view__form-container
-                        h2.heading-secondary.ma-bt-md Manage Tours
-                        if tours && tours.length
-                            ul.admin-tours__list
-                                each tour in tours
-                                    li.admin-tours__item
-                                        a.admin-tours__link(href=`/admin/tours/${tour._id}`)= tour.name
-                        else 
-                            p No tours found.
+                    +adminToursList(tours)
+                    //- .user-view__form-container
+                    //-     h2.heading-secondary.ma-bt-md Manage Tours
+                    //-     if tours && tours.length
+                    //-         ul.admin-tours__list
+                    //-             each tour in tours
+                    //-                 li.admin-tours__item
+                    //-                     a.admin-tours__link(href=`/admin/tours/${tour._id}`)= tour.name
+                    //-     else 
+                    //-         p No tours found.
             
                 else if section === 'users'
                     .user-view__form-container
