@@ -1,5 +1,8 @@
 extends ../base
+include ../includes/adminSideNav
 
 block content 
     main.main
-        h2.heading-secondary--admin Admin Reviews
+        h2.heading-secondary--admin Manage Reviews
+        .user-view
+            +adminSideNav(section)
