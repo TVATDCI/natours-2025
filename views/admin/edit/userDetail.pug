@@ -1,9 +1,11 @@
 extends ../../base
+include ../../includes/adminSideNav
 
 block content
     main.main
-        h2.heading-secondary.ma-bt-md Manage User
+        h2.heading-secondary--admin Edit User
         .user-view
+            +adminSideNav('users')
             .user-view__content
                 if user
                     .admin-user__details
