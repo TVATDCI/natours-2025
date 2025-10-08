@@ -1,22 +1,57 @@
+//- views/admin/edit/tourDetail.pug
 extends ../../base
+include ../../includes/adminSideNav
 
-block content 
-    main.main
-        h2.heading-secondary.ma-bt-md  Manage Tour
-        .user-view
-            .user-view__content
-                if tour
-                    .admin-tour__details
-                        h3.heading-secondary.ma-bt-md #{tour.name}
-                            p.admin-tour__summary
-                                | Difficulty: #{tour.difficulty} • Duration: #{tour.duration} days • Price: $#{tour.price}
+block content
+  main.main
+    h2.heading-secondary.ma-bt-md Manage Tour
+    .user-view
+      +adminSideNav('tours')
+      .user-view__content
+        if tour
+          .admin-tour__details
+            h3.heading-secondary.ma-bt-md #{tour.name}
 
-                            p.admin-tour__desc= tour.summary
+            //- Display image (support remote/local)
+            if tour.imageCover && tour.imageCover.startsWith('http')
+              img.admin-tour__img(src=tour.imageCover, alt=tour.name)
+            else if tour.imageCover
+              img.admin-tour__img(src=`/img/tours/${tour.imageCover}`, alt=tour.name)
+            else
+              img.admin-tour__img(src='/img/tours/default.jpg', alt='No image')
 
-                        //- Buttons or future actions
-                        
-                        .admin-tour__actions
-                            a.btn.btn--small.btn--green(href=`/admin/tours/${tour._id}/edit`) Edit Tour
-                            a.btn.btn--small.btn--transparent_red(href=`/admin/tours/${tour._id}/delete`) Delete Tour
-                else
-                    p.admin-tour__empty No tour data available.      
+            //- Edit form (method-override or your preferred update route)
+            form.form.form--edit-tour(action=`/admin/tours/${tour._id}?_method=PATCH`, method='POST', enctype='multipart/form-data')
+              .form__group
+                label.form__label(for='name') Name
+                input#name.form__input(type='text', name='name', value=tour.name || '')
+
+              .form__group
+                label.form__label(for='price') Price
+                input#price.form__input(type='number', name='price', value=tour.price || '')
+
+              .form__group
+                label.form__label(for='duration') Duration (days)
+                input#duration.form__input(type='number', name='duration', value=tour.duration || '')
+
+              .form__group
+                label.form__label(for='difficulty') Difficulty
+                select#difficulty.form__input(name='difficulty')
+                  option(value='easy' selected=(tour.difficulty === 'easy')) easy
+                  option(value='medium' selected=(tour.difficulty === 'medium')) medium
+                  option(value='difficult' selected=(tour.difficulty === 'difficult')) difficult
+
+              .form__group
+                label.form__label(for='summary') Summary
+                textarea#summary.form__input(name='summary')= tour.summary || ''
+
+              //- Upload new image (optional)
+              .form__group.form__photo-upload
+                label.form__label(for='imageCover') Cover Image
+                input#imageCover(type='file', name='imageCover' accept='image/*')
+
+              .form__group.right
+                button.btn.btn--green(type='submit') Save changes
+                a.btn.btn--transparent_red(href=`/admin/tours/${tour._id}/delete`) Delete Tour
+        else
+          p.admin-tour__empty No tour data available.
