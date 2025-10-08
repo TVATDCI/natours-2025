@@ -298,6 +298,7 @@ body {
 
 .btn-text:active {
   transform: translateY(0);
+  });
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
@@ -770,7 +771,7 @@ body {
 
 .user-view {
   background-color: #fff;
-  max-width: 120rem;
+  max-width: 160rem;
   margin: 0 auto;
   min-height: 100vh;
   border-radius: 3px;
@@ -784,7 +785,7 @@ body {
 .user-view__menu {
   -webkit-box-flex: 32rem;
   -ms-flex: 32rem 0 0px;
-  flex: 32rem 0 0;
+  flex: 0 0 24rem;
   background-image: -webkit-gradient(
     linear,
     left top,
@@ -793,7 +794,7 @@ body {
     to(#28b487)
   );
   background-image: linear-gradient(to right bottom, #7dd56f, #28b487);
-  padding: 4rem 0;
+  padding: 4.2rem 0;
 }
 .user-view__content {
   -webkit-box-flex: 1;
@@ -1434,6 +1435,9 @@ body {
 .admin-tours__name,
 .admin-users__name {
   display: inline-block;
+  text-align: center;
+
+  border: 1px solid red;
 }
 
 .admin-tours__empty,
@@ -1465,12 +1469,14 @@ body {
   margin-bottom: 1rem;
 }
 
-.admin-user__photo img {
+.admin-users__photo {
   width: 10rem;
   height: 10rem;
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 1.5rem;
+
+  border: 1px solid red;
 }
 
 .admin-tour__desc,
@@ -1487,3 +1493,17 @@ body {
   display: flex;
   gap: 1rem;
 }
+
+.admin-card__actions {
+  display: flex;
+  gap: .6rem;
+  margin-top: 1rem;
+}
+.admin-tour__img {
+  width: 100%;
+  max-width: 36rem;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+  object-fit: cover;
+}
+
