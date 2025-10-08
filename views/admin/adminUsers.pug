@@ -3,53 +3,14 @@ include ../includes/adminSideNav
 include ../includes/adminToursList.pug
 include ../includes/adminUsersList.pug
 
+
 block content
     main.main
         h2.heading-secondary--admin Manage Users Dashboard
         .user-view
             +adminSideNav(section)
-            
             .user-view__content
                 if section === 'dashboard'
-                    //- wrap both boxes + line in a single container (or keep indentation consistent)
-                    .dashboard-section
-                        .user-view__form-container
-                            h2.heading-secondary.ma-bt-md Your account settings
-                            form.form.form-user-data
-                                .form__group
-                                    label.form__label(for='name') Name
-                                    input#name.form__input(type='text', value=user.name, required)
-                                .form__group.ma-bt-md
-                                    label.form__label(for='email') Email address
-                                    input#email.form__input(type='email', value=user.email, required)
-                                .form__group.form__photo-upload
-                                    if user.photo && user.photo.startsWith('http')
-                                        img.nav__user-img(src=user.photo alt=`Photo of ${user.name}`)
-                                    else if user.photo
-                                        img.nav__user-img(src=`/img/users/${user.photo}` alt=`Photo of ${user.name}`)
-                                    else
-                                        img.nav__user-img(src='/img/users/default.jpg' alt='Default user')
-                                    button#remove-photo(type="button").btn.btn--small.btn--transparent_red Remove photo
-                                    input.form_upload(type='file' accept='image/*' id='photo' name='photo' style="display:none")
-                                    label(for='photo').btn.btn--small.btn--transparent_green Upload Photo
-                                    button.btn.btn--small.btn--green Save settings
-            
-                        .line &nbsp;
-            
-                        .user-view__form-container
-                            h2.heading-secondary.ma-bt-md Password change
-                            form.form.form-user-password
-                                .form__group
-                                    label.form__label(for='password-current') Current password
-                                    input#password-current.form__input(type='password' placeholder='••••••••', required, minlength='8')
-                                .form__group
-                                    label.form__label(for='password') New password
-                                    input#password.form__input(type='password' placeholder='••••••••', required, minlength='8')
-                                .form__group.ma-bt-lg
-                                    label.form__label(for='password-confirm') Confirm password
-                                    input#password-confirm.form__input(type='password' placeholder='••••••••', required, minlength='8')
-                                .form__group.right
-                                    button.btn.btn--small.btn--green.btn--save-password Save password
             
                 else if section === 'tours'
                     +adminToursList(tours)
