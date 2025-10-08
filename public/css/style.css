@@ -1426,6 +1426,12 @@ body {
   transition: color 0.2s;
 }
 
+.admin-users__meta {
+    display: block;
+    font-size: 1.5rem;
+    color: #090909;
+}
+
 .admin-tours__link:hover,
 .admin-users__link:hover {
   color: #55c57a;
@@ -1437,7 +1443,6 @@ body {
   display: inline-block;
   text-align: center;
 
-  border: 1px solid red;
 }
 
 .admin-tours__empty,
@@ -1475,8 +1480,6 @@ body {
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 1.5rem;
-
-  border: 1px solid red;
 }
 
 .admin-tour__desc,
