@@ -1,30 +1,14 @@
 extends ../base
+include ../includes/adminSideNav
+include ../includes/adminToursList.pug
+include ../includes/adminUsersList.pug
 
-mixin navItem(link, text, icon, active)
-    li(class=`${active ? 'side-nav--active' : ''}`)
-        a(href=link)
-            svg
-                use(xlink:href=`img/icons.svg#icon-${icon}`)
-            | #{text}
 
 block content
     main.main
-        h2.heading-secondary--admin Admin Dashboard
+        h2.heading-secondary--admin Manage Tours Dashboard
         .user-view
-            nav.user-view__menu
-                ul.side-nav
-                    +navItem('#', 'Settings', 'settings', true)
-                    +navItem('/my-tours', 'My bookings', 'briefcase')
-                    +navItem('#', 'My reviews', 'star')
-                    +navItem('#', 'Billing', 'credit-card')
-
-                .admin-nav
-                    h5.admin-nav__heading Admin
-                    ul.side-nav
-                        +navItem('/admin/tours', 'Manage tours', 'map')
-                        +navItem('/admin/users', 'Manage users', 'users')
-                        +navItem('/admin/reviews', 'Manage reviews', 'star')
-                        +navItem('/admin/bookings', 'Manage bookings', 'briefcase')
+            +adminSideNav(section)
 
             .user-view__content
                 if section === 'dashboard'
@@ -69,18 +53,6 @@ block content
                                     button.btn.btn--small.btn--green.btn--save-password Save password
             
                 else if section === 'tours'
-                    .user-view__form-container
-                        h2.heading-secondary.ma-bt-md Manage Tours
-                        if tours && tours.length
-                            ul.admin-tours__list
-                                each tour in tours
-                                    li.admin-tours__item
-                                        a.admin-tours__link(href=`/admin/tours/${tour._id}`)
-                                            span.admin-tours__name= tour.name
-                        else 
-                            p.admin-tours__empty No tours found.
-            
+                    +adminToursList(tours)
                 else if section === 'users'
-                    .user-view__form-container
-                        h2.heading-secondary.ma-bt-md Manage Users
-                        p (Coming soon)
+                    +adminUsersList(users)

@@ -149,11 +149,27 @@ exports.getAdminTourDetail = catchAsync(async (req, res, next) => {
 // ----- Manage Users
 exports.getAdminUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
+
   res.status(200).render('admin/adminUsers', {
     title: 'Manage Users',
     user: req.user,
     section: 'users',
     users,
+  });
+});
+
+// ----- Manage / Edit User Details
+exports.getAdminUserDetail = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(new AppError('No user found with that ID', 404));
+  }
+
+  res.status(200).render('admin/edit/userDetail', {
+    title: `Manage ${user.name}`,
+    user: req.user, // the logged-in admin
+    selectedUser: user, // the user being viewed
   });
 });
 

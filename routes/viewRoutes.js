@@ -54,6 +54,14 @@ router.get(
   viewController.getAdminUsers,
 );
 
+// Admin: Manage Users Detail route =======
+router.get(
+  '/admin/users/:id',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.getAdminUserDetail,
+);
+
 // Admin: Manage Bookings route =====
 router.get(
   '/admin/bookings',

@@ -1,0 +1,10 @@
+mixin adminToursList(tours)
+  .user-view__form-container
+    h2.heading-secondary.ma-bt-md Manage Tours
+    if tours && tours.length
+      ul.admin-tours__list
+        each tour in tours
+          li.admin-tours__item
+            a.admin-tours__link(href=`/admin/tours/${tour._id}`)= tour.name
+    else
+      p.admin-tours__empty No tours found.

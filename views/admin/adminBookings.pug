@@ -1,5 +1,8 @@
 extends ../base
+include ../includes/adminSideNav
 
 block content 
     main.main
-        h2.heading-secondary--admin Admin Bookings
+        h2.heading-secondary--admin Manage Bookings
+        .user-view
+            +adminSideNav(section)
