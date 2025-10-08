@@ -2,34 +2,65 @@ extends ../../base
 include ../../includes/adminSideNav
 
 block content
-    main.main
-        h2.heading-secondary--admin Edit User
-        .user-view
-            +adminSideNav('users')
-            .user-view__content
-                if user
-                    .admin-user__details
-                        h3.heading-secondary.admin-users__name #{selectedUser.name}
-                        
-                        p.admin-user__summary
-                            | Role: #{selectedUser.role} • Email: #{selectedUser.email}
+  main.main
+    h2.heading-secondary--admin Edit User --
+    .user-view
+      +adminSideNav('users')
 
-                        if selectedUser.photo && selectedUser.photo.startsWith('http')
-                            img.admin-users__photo(src=selectedUser.photo alt=`Photo of ${selectedUser.name}`)
-                        else if selectedUser.photo
-                            img.admin-users__photo(src=`/img/users/${selectedUser.photo}` alt=`Photo of ${selectedUser.name}`)
-                        else
-                            img.admin-users__photo(src='/img/users/default.jpg' alt='Default user')
-                        
-                        .admin-user__desc
-                            p
-                                | Account Created: #{selectedUser.createdAt.toDateString ? selectedUser.createdAt.toDateString() : selectedUser.createdAt}
-                            p
-                                | Active: #{selectedUser.active ? 'Yes' : 'No'}   
+      .user-view__content
+        if selectedUser
+          .admin-user__container
+            //- Left: profile card
+            .admin-user__details
+              h3.heading-secondary.admin-users__name #{selectedUser.name}
 
-                        //- Buttons or future actions
-                        .admin-user__actions
-                            a.btn.btn--small.btn--green(href=`/admin/users/${selectedUser._id}/edit`) Edit User
-                            a.btn.btn--small.btn--transparent_red(href=`/admin/users/${selectedUser._id}/delete`) Delete User
-                else
-                    p.admin-user__empty No user data available. 
+              if selectedUser.photo && selectedUser.photo.startsWith('http')
+                img.admin-users__photo(src=selectedUser.photo alt=`Photo of ${selectedUser.name}`)
+              else if selectedUser.photo
+                img.admin-users__photo(src=`/img/users/${selectedUser.photo}` alt=`Photo of ${selectedUser.name}`)
+              else
+                img.admin-users__photo(src='/img/users/default.jpg' alt='Default user')
+
+              p.admin-user__summary
+                | Role: #{selectedUser.role} • Email: #{selectedUser.email}
+
+              .admin-user__desc
+                p
+                  | Account Created: #{selectedUser.createdAt.toDateString ? selectedUser.createdAt.toDateString() : selectedUser.createdAt}
+                p
+                  | Active: #{selectedUser.active ? 'Yes' : 'No'}
+
+            //- Right: editable form
+            .admin-user__edit
+              form.form.form--edit-user(action=`/admin/users/${selectedUser._id}?_method=PATCH`, method='POST', enctype='multipart/form-data')
+                .form__group
+                  label.form__label(for='name') Name
+                  input#name.form__input(type='text', name='name', value=selectedUser.name || '')
+
+                .form__group
+                  label.form__label(for='email') Email
+                  input#email.form__input(type='email', name='email', value=selectedUser.email || '')
+
+                .form__group
+                  label.form__label(for='role') Role
+                  select#role.form__input(name='role')
+                    option(value='admin' selected=(selectedUser.role === 'admin')) Admin
+                    option(value='lead-guide' selected=(selectedUser.role === 'lead-guide')) Lead Guide
+                    option(value='guide' selected=(selectedUser.role === 'guide')) Guide
+                    option(value='user' selected=(selectedUser.role === 'user')) User
+
+                .form__group
+                  label.form__label(for='active') Active
+                  select#active.form__input(name='active')
+                    option(value='true' selected=(selectedUser.active)) Yes
+                    option(value='false' selected=(!selectedUser.active)) No
+
+                .form__group.form__photo-upload
+                  label.form__label(for='photo') Profile photo
+                  input#photo.form__input(type='file', name='photo', accept='image/*')
+
+                .form__group.right
+                  button.btn.btn--green(type='submit') Save changes
+                  a.btn.btn--transparent_red(href=`/admin/users/${selectedUser._id}/delete`) Delete User
+        else
+          p.admin-user__empty No user data available.
