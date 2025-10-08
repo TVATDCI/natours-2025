@@ -1457,13 +1457,20 @@ body {
   margin-top: 1rem;
 }
 
+.admin-user__container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: flex-start;
+}
+
 .admin-tour__details,
 .admin-users__details,
 .admin-user__details {
   background: #fff;
-  border-radius: 8px;
   padding: 2rem;
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.05);
+  border-radius: 1.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
 }
 
 .admin-tour__summary,
@@ -1479,7 +1486,14 @@ body {
   height: 10rem;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 1.5rem;
+  margin: 1rem 0;
+}
+
+.admin-user__edit {
+  background-color: #f9f9f9;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05);
 }
 
 .admin-tour__desc,
