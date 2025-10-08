@@ -7,17 +7,17 @@ block content
             .user-view__content
                 if user
                     .admin-user__details
-                        h3.heading-secondary.ma-bt-md #{selectedUser.name}
+                        h3.heading-secondary.admin-users__name #{selectedUser.name}
                         
                         p.admin-user__summary
                             | Role: #{selectedUser.role} • Email: #{selectedUser.email}
 
                         if selectedUser.photo && selectedUser.photo.startsWith('http')
-                            img.admin-user__photo(src=selectedUser.photo alt=`Photo of ${selectedUser.name}`)
+                            img.admin-users__photo(src=selectedUser.photo alt=`Photo of ${selectedUser.name}`)
                         else if selectedUser.photo
-                            img.admin-user__photo(src=`/img/users/${selectedUser.photo}` alt=`Photo of ${selectedUser.name}`)
+                            img.admin-users__photo(src=`/img/users/${selectedUser.photo}` alt=`Photo of ${selectedUser.name}`)
                         else
-                            img.admin-user__photo(src='/img/users/default.jpg' alt='Default user')
+                            img.admin-users__photo(src='/img/users/default.jpg' alt='Default user')
                         
                         .admin-user__desc
                             p
