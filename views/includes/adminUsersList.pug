@@ -8,17 +8,17 @@ mixin adminUsersList(users)
         - const groupUsers = users.filter(u => u.role === roleGroup);
         if groupUsers.length
           h3.heading-tertiary.ma-bt-sm= roleGroup.charAt(0).toUpperCase() + roleGroup.slice(1) + 's'
-          ul.admin-users__list
+          ul.admin-user__list
             each usr in groupUsers
-              li.admin-users__item
-                .admin-users__info
-                  a.admin-users__link(href=`/admin/users/${usr._id}`)= usr.name
-                  span.admin-users__meta= usr.email
+              li.admin-user__item
+                .admin-user__info
+                  a.admin-user__link(href=`/admin/users/${usr._id}`)= usr.name
+                  span.admin-user__meta= usr.email
 
-                .admin-users__actions
-                  a.btn.btn--small.btn--green(href=`/admin/users/${usr._id}`) Edit
+                .admin-user__actions
+                  a.btn.btn--small.btn--transparent_green(href=`/admin/users/${usr._id}`) Edit
         else
           //- optional: skip empty roles
           //- p.admin-users__empty No #{roleGroup}s found
     else
-      p.admin-users__empty No users found.
+      p.admin-user__empty No users found.
