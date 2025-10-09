@@ -160,7 +160,7 @@ exports.getAdminUsers = catchAsync(async (req, res, next) => {
 
 // ----- Manage / Edit User Details
 exports.getAdminUserDetail = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).select('+active'); // include the hidden field as active from userModel
 
   if (!user) {
     return next(new AppError('No user found with that ID', 404));

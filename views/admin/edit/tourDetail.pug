@@ -11,9 +11,9 @@ block content
 
       .user-view__content
         if tour
-          h3.heading-secondary.ma-bt-md #{tour.name}
 
           .admin-tour__detail
+            h3.heading-secondary.admin-tour__name #{tour.name}
             //- Display image (support remote/local)
             if tour.imageCover && tour.imageCover.startsWith('http')
               img.admin-tour__img(src=tour.imageCover, alt=tour.name)
