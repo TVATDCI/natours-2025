@@ -295,8 +295,7 @@ body {
 
 .btn-text:active {
     transform: translateY(0);
-});
-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
 .btn-text:focus {
