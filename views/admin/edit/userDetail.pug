@@ -29,7 +29,7 @@ block content
                 
                 | Account Created: 
                p
-                 span.admin-user__meta Active:
+                 span.admin-user__meta Account Created:
                    | #{selectedUser.createdAt.toDateString ? selectedUser.createdAt.toDateString() :  selectedUser.createdAt}
                p
                   span.admin-user__value= selectedUser.active ? 'Yes' : 'No'
