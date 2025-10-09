@@ -80,9 +80,9 @@ body {
 }
 
 .line {
-    margin: 6rem 0;
+    .admin-user__name margin: 6rem 0;
     width: 100%;
-    height: 1px;
+    .admin-user__name height: 1px;
     background-color: #e0e0e0;
 }
 
@@ -112,41 +112,31 @@ body {
     background-color: #ff0400;
 }
 
+/* Base h2 heading style */
 .heading-secondary {
+    display: inline-block;
     font-size: 2.25rem;
-    text-transform: uppercase;
     font-weight: 700;
-    background-image: -webkit-gradient(linear,
-            left top,
-            right top,
-            from(#7dd56f),
-            to(#28b487));
-    background-image: linear-gradient(to right, #7dd56f, #28b487);
-    -webkit-background-clip: text;
-    color: transparent;
+    text-transform: uppercase;
     letter-spacing: 0.1rem;
     line-height: 1.3;
-    display: inline-block;
+
+    background-image: linear-gradient(to right, #7dd56f, #28b487);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
+/* Error modifier — only changes color & size */
 .heading-secondary--error {
-    background-image: -webkit-gradient(linear,
-            left top,
-            right top,
-            from(#ff7730),
-            to(#eb4d4b));
     background-image: linear-gradient(to right, #ff7730, #eb4d4b);
     font-size: 3rem;
 }
 
+/* Admin modifier — changes color scheme, size, alignment */
 .heading-secondary--admin {
-    background-image: -webkit-gradient(linear,
-            left top,
-            right top,
-            from(#ff7730),
-            to(#eb4d4b));
-    color: #fff;
     background-image: linear-gradient(to right, #ff7730, #eb4d4b);
+    color: #fff;
     font-size: 2.5rem;
     text-align: center;
 }
@@ -259,8 +249,8 @@ body {
     justify-content: center;
     text-align: center;
     font-weight: 600;
-    /* gradient pop */admin-user__detail
-    line-height: 1;
+    /* gradient pop */
+    admin-user__detail line-height: 1;
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -1133,7 +1123,7 @@ box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 
 .side-nav a:link,
 .side-nav a:visited {
-    padding: 1rem 4rem;
+    padding: 1rem 2rem;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -1218,10 +1208,15 @@ box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     width: 100%;
     height: 100%;
     background-image: -webkit-gradient(linear,
-            left top,
-            right bottom,
-            from(#7dd56f),
-            to(#28b487));
+        left top,
+        /* .admin-tour__detail--width {
+    width: 80%;
+    border: 2px solid red;
+    background: blue;
+} */
+        right bottom,
+        from(#7dd56f),
+        to(#28b487));
     background-image: linear-gradient(to right bottom, #7dd56f, #28b487);
     opacity: 0.5;
 }
@@ -1461,72 +1456,90 @@ box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 } */
 
 .admin-nav__heading {
-  color: #fff;
+    color: #fff;
+    text-align: center;
 }
 
 
 .admin-user__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid #eee;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #eee;
 }
 
 .admin-tours__item,
 .admin-user__item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.2rem 0;
-  border-bottom: 1px solid #eee;
-  transition: background-color 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
 }
 
 .admin-user__item:hover {
-  background-color: #f9f9f9;
+    background-color: #f9f9f9;
 }
 
 .admin-tours__link,
 .admin-user__link {
-  text-decoration: none;
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #28b487;
-  transition: color 0.2s;
+    text-decoration: none;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #28b487;
+    transition: color 0.2s;
 }
 
 .admin-tours__link:hover,
 .admin-user__link:hover {
-  color: #55c57a;
-  text-decoration: underline;
+    color: #55c57a;
+    text-decoration: underline;
+}
+
+.admin-tour__desc,
+.admin-user__desc {
+    margin-bottom: 1rem;
 }
 
 /* Meta info (users) */
 .admin-user__meta {
-  display: block;
-  font-size: 1.5rem;
-  color: #090909;
+    display: block;
+    font-size: 1.5rem;
+    color: #1b3517;
+}
+
+.admin-user__status {
+    font-weight: 600;
+}
+
+.admin-user__status--active {
+    color: #28b487;
+}
+
+.admin-user__status--inactive {
+    color: #ff4d4d;
 }
 
 /* Empty states */
 .admin-tours__empty,
 .admin-user__empty {
-  padding: 2rem;
-  text-align: center;
-  font-size: 1.5rem;
-  color: #999;
-  background: #f7f7f7;
-  border-radius: 5px;
-  margin-top: 1rem;
+    padding: 2rem;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #999;
+    background: #f7f7f7;
+    border-radius: 5px;
+    margin-top: 1rem;
 }
 
 /* User / Tour detail container */
 .admin-user__container,
 .admin-tour__container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: flex-start;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: flex-start;
 }
 
 /* Detail cards */
@@ -1535,12 +1548,12 @@ box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
-  background: #f9f9f9;
-  padding: 2rem;
-  border-radius: 1.5rem;
-  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+    background: #f9f9f9;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 
-  transition: all 0.4s;
+    transition: all 0.4s;
 }
 
 .admin-user__detail:hover {
@@ -1551,54 +1564,59 @@ box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 
 .admin-tour__summary,
 .admin-user__summary {
-  font-size: 1.5rem;
-  color: #090909;
-  margin: 1rem 0;
-  font-size: 1.5rem;
-}
-
-.admin-tour__desc,
-.admin-user__desc {
-  font-size: 1.6rem;
-  color: #1b3517;
-  margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #090909;
+    margin: 1rem 0;
+    font-size: 1.5rem;
 }
 
 /* Photos */
 .admin-user__photo {
-  width: 10rem;
-  height: 10rem;
-  border-radius: 50%;
-  object-fit: cover;
-  margin: 1rem 0;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 1rem 0;
 }
 
 /* Edit / form blocks */
 .admin-user__edit {
-  background-color: #f9f9f9;
-  padding: 2rem;
-  border-radius: 1.5rem;
-  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05);
+    background-color: #f9f9f9;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
 }
 
 /* Actions */
 .admin-tour__actions,
 .admin-user__actions,
 .admin-card__actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
 }
 
 .admin-card__actions {
-  gap: 0.6rem;
+    gap: 0.6rem;
 }
 
 /* Tour images */
 .admin-tour__img {
-  width: 100%;
-  max-width: 36rem;
-  border-radius: 8px;
-  margin-bottom: 1.2rem;
-  object-fit: cover;
+    width: 100%;
+    max-width: 36rem;
+    border-radius: 8px;
+    margin-bottom: 1.2rem;
+    object-fit: cover;
+}
+
+/* Test code*/
+.admin-user__name {
+    border: 1px solid red;
+}
+
+.admin-tour__name {
+    display: block;
+    /* override inline-block */
+    text-align: center;
+    border: 1px solid red;
 }
