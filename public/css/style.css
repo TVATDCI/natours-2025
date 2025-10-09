@@ -1627,15 +1627,14 @@ body {
   object-fit: cover;
 }
 
-/* Test code*/
-.admin-user__name {
-  border: 1px solid red;
-}
+
+
+
+
 
 .admin-tour__name {
   display: block;
   /* override inline-block */
   text-align: center;
-  border: 1px solid red;
   margin-bottom: 1rem;
 }
