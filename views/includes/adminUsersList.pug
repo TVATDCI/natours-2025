@@ -18,7 +18,7 @@ mixin adminUsersList(users)
                 .admin-user__actions
                   a.btn.btn--small.btn--transparent_green(href=`/admin/users/${usr._id}`) Edit
         else
-          //- optional: skip empty roles
-          //- p.admin-users__empty No #{roleGroup}s found
+          // optional: skip empty roles
+          p.admin-users__empty No #{roleGroup}s found
     else
       p.admin-user__empty No users found.
