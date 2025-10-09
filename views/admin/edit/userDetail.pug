@@ -22,19 +22,22 @@ block content
               else
                 img.admin-user__photo(src='/img/users/default.jpg' alt='Default user')
 
-              p.admin-user__summary
-                | Role: #{selectedUser.role} • Email: #{selectedUser.email}
-
               .admin-user__desc
-                
-                | Account Created: 
-               p
-                 span.admin-user__meta Active:
-                   | #{selectedUser.createdAt.toDateString ? selectedUser.createdAt.toDateString() :  selectedUser.createdAt}
-               p
-                  span.admin-user__value= selectedUser.active ? 'Yes' : 'No'
+                p
+                  span.admin-user__meta
+                  | Role: #{selectedUser.role}
+                p 
+                  span.admin-user__meta
+                  | Email: #{selectedUser.email}
 
-            
+                p 
+                   span.admin-user__meta Account Created:
+                   | #{selectedUser.createdAt.toDateString ? selectedUser.createdAt.toDateString() : selectedUser.createdAt}
+                p
+                   span.admin-user__meta Active:
+                   | 
+                   span.admin-user__status(class=selectedUser.active ? 'admin-user__status--active' : 'admin-user__status--inactive')= selectedUser.active ? 'Yes' : 'No'
+
             //- RIGHT COLUMN: EDIT FORM
             
             .admin-user__edit
