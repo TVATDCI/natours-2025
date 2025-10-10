@@ -1,8 +1,19 @@
 extends ../base
 include ../includes/adminSideNav
+include ../includes/adminToursList.pug
+include ../includes/adminUsersList.pug
+include ../includes/adminReviewsList.pug
 
 block content 
     main.main
         h2.heading-secondary--admin Manage Reviews
         .user-view
             +adminSideNav(section)
+            .user-view__content
+                if section === 'dashboard'            
+                else if section === 'tours'
+                    +adminToursList(tours)
+                else if section === 'users'
+                    +adminUsersList(users)
+                else if section === 'reviews'
+                    +adminReviewsList(reviews)
