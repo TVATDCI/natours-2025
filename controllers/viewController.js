@@ -209,14 +209,3 @@ exports.getAdminReviews = catchAsync(async (req, res, next) => {
     totalPages,
   });
 });
-
-// // ----- Manage Reviews
-// exports.getAdminReviews = catchAsync(async (req, res, next) => {
-//   const reviews = await Review.find();
-//   res.status(200).render('admin/adminReviews', {
-//     title: 'Manage Reviews',
-//     user: req.user,
-//     section: 'reviews',
-//     reviews,
-//   });
-// });
