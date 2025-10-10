@@ -4,42 +4,44 @@ include ../../includes/adminSideNav
 block content
   main.main
     h2.heading-secondary--admin Edit User
+
     .user-view
       +adminSideNav('users')
 
       .user-view__content
         if selectedUser
           .admin-user__container
-            
+
             //- LEFT USER CARD
             .admin-user__detail
               h3.heading-secondary.admin-user__name #{selectedUser.name}
 
               if selectedUser.photo && selectedUser.photo.startsWith('http')
-                img.admin-user__photo(src=selectedUser.photo alt=`Photo of ${selectedUser.name}`)
+                img.admin-user__photo(src=selectedUser.photo, alt=`Photo of ${selectedUser.name}`)
               else if selectedUser.photo
-                img.admin-user__photo(src=`/img/users/${selectedUser.photo}` alt=`Photo of ${selectedUser.name}`)
+                img.admin-user__photo(src=`/img/users/${selectedUser.photo}`, alt=`Photo of ${selectedUser.name}`)
               else
-                img.admin-user__photo(src='/img/users/default.jpg' alt='Default user')
-
-              .admin-user__desc
+                img.admin-user__photo(src='/img/users/default.jpg', alt='Default user')
+              
+              .admin-user__desc                
                 p
-                  span.admin-user__meta
-                  | Role: #{selectedUser.role}
-                p 
-                  span.admin-user__meta
-                  | Email: #{selectedUser.email}
-
-                p 
-                   span.admin-user__meta Account Created:
-                   | #{selectedUser.createdAt.toDateString ? selectedUser.createdAt.toDateString() : selectedUser.createdAt}
+                  span.admin-user__meta Account Created:
+                  | #{selectedUser.createdAt.toDateString ? selectedUser.createdAt.toDateString() : selectedUser.createdAt}
                 p
-                   span.admin-user__meta Active:
-                   | 
-                   span.admin-user__status(class=selectedUser.active ? 'admin-user__status--active' : 'admin-user__status--inactive')= selectedUser.active ? 'Yes' : 'No'
+                  span.admin-user__meta Active:
+                  span.admin-user__status(
+                    class=selectedUser.active
+                      ? 'admin-user__status--active'
+                      : 'admin-user__status--inactive'
+                  ) #{selectedUser.active ? 'Yes' : 'No'}
+                p
+                  span.admin-user__meta Role:
+                  | #{selectedUser.role}
+                p
+                  span.admin-user__meta Email:
+                  | #{selectedUser.email}
 
             //- RIGHT COLUMN: EDIT FORM
-            
             .admin-user__edit
               form.form.form--edit-user(
                 action=`/admin/users/${selectedUser._id}?_method=PATCH`,
