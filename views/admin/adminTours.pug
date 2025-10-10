@@ -3,15 +3,13 @@ include ../includes/adminSideNav
 include ../includes/adminToursList.pug
 include ../includes/adminUsersList.pug
 
-
 block content
     main.main
-        h2.heading-secondary--admin Manage Tours Dashboard
+        h2.heading-secondary--admin Manage Tours
         .user-view
             +adminSideNav(section)
             .user-view__content
-                if section === 'dashboard'
-            
+                if section === 'dashboard'            
                 else if section === 'tours'
                     +adminToursList(tours)
                 else if section === 'users'
