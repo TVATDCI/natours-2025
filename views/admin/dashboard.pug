@@ -9,9 +9,8 @@ block content
         .user-view
             +adminSideNav(section)
 
-            .user-view__content
-                if section === 'dashboard'
-                    //- wrap both boxes + line in a single container (or keep indentation consistent)
+            .user-view__content               
+                if section === 'dashboard'                    
                     .dashboard-section
                         .user-view__form-container
                             h2.heading-secondary.ma-bt-md Admin account settings
