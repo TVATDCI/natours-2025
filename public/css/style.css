@@ -1469,7 +1469,9 @@ body {
   text-align: center;
 }
 
-.admin-user__list {
+/* ====== LISTS ====== */
+.admin-user__list,
+.admin-reviews__list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -1477,7 +1479,8 @@ body {
 }
 
 .admin-tours__item,
-.admin-user__item {
+.admin-user__item,
+.admin-reviews__item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1486,7 +1489,9 @@ body {
   transition: background-color 0.2s ease;
 }
 
-.admin-user__item:hover {
+.admin-tours__item:hover,
+.admin-user__item:hover,
+.admin-reviews__item:hover {
   background-color: #f9f9f9;
 }
 
@@ -1505,12 +1510,14 @@ body {
   text-decoration: underline;
 }
 
+/* ====== META & STATUS ====== */
 .admin-tour__desc,
 .admin-user__desc {
   margin-bottom: 1rem;
 }
 
-.admin-user__meta {
+.admin-user__meta,
+.admin-reviews__meta {
   display: block;
   font-size: 1.25em;
   font-weight: 500;
@@ -1529,8 +1536,10 @@ body {
   color: #ff4d4d;
 }
 
+/* ====== EMPTY STATES ====== */
 .admin-tours__empty,
-.admin-user__empty {
+.admin-user__empty,
+.admin-reviews__empty {
   padding: 2rem;
   text-align: center;
   font-size: 1.5rem;
@@ -1540,6 +1549,7 @@ body {
   margin-top: 1rem;
 }
 
+/* ====== CONTAINERS ====== */
 .admin-user__container,
 .admin-tour__container {
   display: grid;
@@ -1548,7 +1558,7 @@ body {
   align-items: flex-start;
 }
 
-/* Detail cards */
+/* ====== DETAIL CARDS ====== */
 .admin-tour__detail,
 .admin-user__detail {
   display: flex;
@@ -1558,7 +1568,6 @@ body {
   padding: 2rem;
   border-radius: 1.5rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-
   transition: all 0.4s;
 }
 
@@ -1570,12 +1579,12 @@ body {
   background-color: #fff;
 }
 
+/* ====== TEXT & IMAGES ====== */
 .admin-tour__summary,
 .admin-user__summary {
   font-size: 1.5rem;
   color: #090909;
   margin: 1rem 0;
-  font-size: 1.5rem;
 }
 
 .admin-user__photo {
@@ -1586,6 +1595,14 @@ body {
   margin: 1rem 0;
 }
 
+.admin-reviews__text {
+  font-size: 1.5rem;
+  color: #e71515;
+  margin-top: 0.8rem;
+  line-height: 1.4;
+}
+
+/* ====== EDIT PANEL ====== */
 .admin-user__edit {
   background-color: #f9f9f9;
   padding: 2rem;
@@ -1593,6 +1610,7 @@ body {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
 }
 
+/* ====== ACTION BUTTONS ====== */
 .admin-tour__actions,
 .admin-user__actions,
 .admin-card__actions {
@@ -1605,6 +1623,7 @@ body {
   gap: 0.6rem;
 }
 
+/* ====== IMAGES ====== */
 .admin-tour__img {
   width: 100%;
   max-width: 36rem;
@@ -1615,4 +1634,30 @@ body {
 
 .admin-tour__name {
   margin-bottom: 1rem;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.pagination__link {
+  text-decoration: none;
+  color: #28b487;
+  font-weight: 600;
+  font-size: 1.4rem;
+  transition: color 0.2s;
+}
+
+.pagination__link:hover {
+  color: #55c57a;
+}
+
+.pagination__info {
+  font-size: 1.4rem;
+  color: #999;
 }
