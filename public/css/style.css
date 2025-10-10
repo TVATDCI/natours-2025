@@ -129,13 +129,13 @@ body {
 
 /* Error modifier — only changes color & size */
 .heading-secondary--error {
-  background-image: linear-gradient(to right, #ff7730, #eb4d4b);
+  background-image: linear-gradient(to right, #ff7730, #ff0400);
   font-size: 3rem;
 }
 
 /* Admin modifier — changes color scheme, size, alignment */
 .heading-secondary--admin {
-  background-image: linear-gradient(to right, #ff7730, #eb4d4b);
+  background-image: linear-gradient(to right, #ff7730, #ff0400);
   color: #fff;
   font-size: 2.5rem;
   text-align: center;
@@ -1462,15 +1462,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* ============================= */
 /* ========== ADMIN ============ */
-/* ============================= */
-
-/* Intro & headings */
-/* .admin-user__info {
-  font-size: 1.25rem;
-  color: #04f8ab;
-} */
 
 .admin-nav__heading {
   color: #fff;
@@ -1503,7 +1495,7 @@ body {
   text-decoration: none;
   font-size: 1.6rem;
   font-weight: 600;
-  color: #28b487;
+  color: #999;
   transition: color 0.2s;
 }
 
@@ -1518,11 +1510,11 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Meta info (users) */
 .admin-user__meta {
   display: block;
-  font-size: 1.5rem;
-  color: #1b3517;
+  font-size: 1.25em;
+  font-weight: 500;
+  color: #55c57a;
 }
 
 .admin-user__status {
@@ -1530,14 +1522,13 @@ body {
 }
 
 .admin-user__status--active {
-  color: #28b487;
+  color: #999;
 }
 
 .admin-user__status--inactive {
   color: #ff4d4d;
 }
 
-/* Empty states */
 .admin-tours__empty,
 .admin-user__empty {
   padding: 2rem;
@@ -1549,7 +1540,6 @@ body {
   margin-top: 1rem;
 }
 
-/* User / Tour detail container */
 .admin-user__container,
 .admin-tour__container {
   display: grid;
@@ -1573,7 +1563,8 @@ body {
 }
 
 .admin-user__detail:hover,
-.admin-tour__detail:hover {
+.admin-tour__detail:hover,
+.admin-user__edit:hover {
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
   background-color: #fff;
@@ -1587,7 +1578,6 @@ body {
   font-size: 1.5rem;
 }
 
-/* Photos */
 .admin-user__photo {
   width: 10rem;
   height: 10rem;
@@ -1596,7 +1586,6 @@ body {
   margin: 1rem 0;
 }
 
-/* Edit / form blocks */
 .admin-user__edit {
   background-color: #f9f9f9;
   padding: 2rem;
@@ -1604,7 +1593,6 @@ body {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
 }
 
-/* Actions */
 .admin-tour__actions,
 .admin-user__actions,
 .admin-card__actions {
@@ -1617,7 +1605,6 @@ body {
   gap: 0.6rem;
 }
 
-/* Tour images */
 .admin-tour__img {
   width: 100%;
   max-width: 36rem;
@@ -1626,14 +1613,6 @@ body {
   object-fit: cover;
 }
 
-
-
-
-
-
 .admin-tour__name {
-  display: block;
-  /* override inline-block */
-  text-align: center;
   margin-bottom: 1rem;
 }
