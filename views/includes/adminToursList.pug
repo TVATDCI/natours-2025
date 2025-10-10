@@ -1,4 +1,3 @@
-//- views/includes/adminToursList.pug
 mixin adminToursList(tours)
   .card-container
     if tours && tours.length
@@ -7,7 +6,7 @@ mixin adminToursList(tours)
           .card__header
             .card__picture
               .card__picture-overlay &nbsp;
-              //- Support cloudinary URLs or local filenames
+              //- Options: cloudinary URLs or local filenames
               if tour.imageCover && tour.imageCover.startsWith('http')
                 img.card__picture-img(src=tour.imageCover, alt=tour.name)
               else if tour.imageCover
