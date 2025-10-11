@@ -1,10 +1,13 @@
 mixin reviewCard(review)
   .reviews__card
     .reviews__avatar
-      if review.user && review.user.photo
-        img.reviews__avatar-img(src=(review.user.photo.startsWith('http') ? review.user.photo : `/img/users/${review.user.photo}`), alt=`${review.user ? review.user.name : 'User'}`)
+      if review.user && review.user.photo && review.user.photo.startsWith('http')
+        img.reviews__avatar-img(src=review.user.photo alt=`Photo of ${review.user.name}`)
+      else if review.user && review.user.photo
+        img.reviews__avatar-img(src=`/img/users/${review.user.photo}` alt=`Photo of ${review.user.name}`)
       else
-        img.reviews__avatar-img(src='/img/users/default.jpg', alt='user')
+        img.reviews__avatar-img(src='/img/users/default.jpg' alt='Default user')
+
       if review.user
         h6.reviews__user= review.user.name
       else
