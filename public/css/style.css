@@ -1512,19 +1512,21 @@ body {
 
 /* ====== META & STATUS ====== */
 .admin-tour__desc,
-.admin-user__desc {
+.admin-user__desc,
+.admin-review__desc {
   margin-bottom: 1rem;
 }
 
 .admin-user__meta,
-.admin-reviews__meta {
+.admin-review__meta {
   display: block;
   font-size: 1.25em;
   font-weight: 500;
   color: #55c57a;
 }
 
-.admin-user__status {
+.admin-user__status,
+.admin-review__status {
   font-weight: 600;
 }
 
@@ -1600,6 +1602,7 @@ body {
   color: #e71515;
   margin-top: 0.8rem;
   line-height: 1.4;
+  padding: 1rem;
 }
 
 /* ====== EDIT PANEL ====== */
@@ -1613,7 +1616,8 @@ body {
 /* ====== ACTION BUTTONS ====== */
 .admin-tour__actions,
 .admin-user__actions,
-.admin-card__actions {
+.admin-card__actions,
+.admin-review__actions {
   display: flex;
   gap: 1rem;
   margin-top: 1rem;
