@@ -196,6 +196,7 @@ exports.getAdminReviews = catchAsync(async (req, res, next) => {
   const reviews = await Review.find()
     .populate('user', 'name photo')
     .populate('tour', 'name')
+    .sort('-createdAt')
     .skip(skip)
     .limit(limit);
 
