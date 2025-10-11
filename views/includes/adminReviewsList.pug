@@ -1,20 +1,16 @@
-include adminReviewCard.pug
+include ./mixins/adminReviewCard.pug
+include ./mixins/pagination.pug
 
 mixin adminReviewsList(reviews, currentPage, totalPages)
 
     if reviews && reviews.length
+      +pagination(currentPage, totalPages, '/admin/reviews')
       .card-container
         each review in reviews
           +adminReviewCard(review)
 
       //- Pagination controls
-      if totalPages > 1
-        .pagination
-          if currentPage > 1
-            a.pagination__link(href=`?page=${currentPage - 1}`) Prev
-          span.pagination__info Page #{currentPage} of #{totalPages}
-          if currentPage < totalPages
-            a.pagination__link(href=`?page=${currentPage + 1}`) Next
+      +pagination(currentPage, totalPages, '/admin/reviews')
     else
       p.admin-reviews__empty No reviews found.
 
