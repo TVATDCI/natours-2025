@@ -1,11 +1,11 @@
-include reviewCard.pug
+include adminReviewCard.pug
 
 mixin adminReviewsList(reviews, currentPage, totalPages)
 
     if reviews && reviews.length
       .card-container
         each review in reviews
-          +reviewCard(review)
+          +adminReviewCard(review)
 
       //- Pagination controls
       if totalPages > 1
