@@ -830,6 +830,10 @@ body {
   padding: 7rem 0;
 }
 
+.user-view__content--admin {
+  padding: 4rem 0 0 7rem;
+}
+
 .user-view__form-container {
   max-width: 68rem;
   margin: 0 auto;
@@ -1646,7 +1650,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  margin-top: 2rem;
+  margin: 0 0 2rem 0;
 }
 
 .pagination__link {
