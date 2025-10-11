@@ -13,19 +13,16 @@ mixin adminReviewCard(review)
       else
         h6.reviews__user Unknown
 
-    .admin-reviews__desc
+    .admin-review__desc
       p
         span.admin-review__meta Tour:
-        span.admin-review__status
-        | #{review.tour ? review.tour.name : 'N/A'}
+        span.admin-review__status #{review.tour ? review.tour.name : 'N/A'}
       p
-        span.admin-review_meta Rating:
-        | #{review.rating}
+        span.admin-review__meta Rating: #{review.rating}
       p
-        span.admin-review_meta Created:
-        | #{new Date(review.createdAt).toLocaleDateString()}
+        span.admin-review__meta Created: #{new Date(review.createdAt).toLocaleDateString()}
 
-    p.reviews__text
+    p.admin-reviews__text
       - const maxLen = 150
       = review.review && review.review.length > maxLen ? review.review.substring(0, maxLen) + '…' : review.review
 
@@ -38,5 +35,5 @@ mixin adminReviewCard(review)
           svg.reviews__star
             use(xlink:href='/img/icons.svg#icon-star')
 
-    .reviews__actions
-      a.btn.btn--small.btn--green(href=`/admin/reviews/${review._id}`) Edit
+    .admin-review__actions
+      a.btn.btn--small.btn--green(href=`/admin/reviews/${review._id}`) Edit / Delete / Reply / TBC
