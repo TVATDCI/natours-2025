@@ -8,7 +8,7 @@ block content
         h2.heading-secondary--admin Manage Tours
         .user-view
             +adminSideNav(section)
-            .user-view__content
+            .user-view__content.user-view__content--admin
                 if section === 'dashboard'            
                 else if section === 'tours'
                     +adminToursList(tours)

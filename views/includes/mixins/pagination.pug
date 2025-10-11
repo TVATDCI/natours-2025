@@ -1,0 +1,9 @@
+//- views/includes/mixins/pagination.pug
+mixin pagination(currentPage, totalPages, baseUrl)
+  if totalPages > 1
+    .pagination
+      if currentPage > 1
+        a.pagination__link(href=`${baseUrl}?page=${currentPage - 1}`) Prev
+      span.pagination__info Page #{currentPage} of #{totalPages}
+      if currentPage < totalPages
+        a.pagination__link(href=`${baseUrl}?page=${currentPage + 1}`) Next
