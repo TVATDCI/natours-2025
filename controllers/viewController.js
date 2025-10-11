@@ -184,21 +184,21 @@ exports.getAdminBookings = catchAsync(async (req, res, next) => {
   });
 });
 
-// ----- Manage Reviews (with pagination)
+// ----- Manage Reviews
 exports.getAdminReviews = catchAsync(async (req, res, next) => {
-  const page = req.query.page * 1 || 1;
-  const limit = 10;
+  const page = req.query.page * 1 || 1; // default to page 1
+  const limit = 10; // reviews per page
   const skip = (page - 1) * limit;
 
   const totalReviews = await Review.countDocuments();
+  const totalPages = Math.ceil(totalReviews / limit);
+
   const reviews = await Review.find()
-    .populate('user', 'name email')
+    .populate('user', 'name photo')
     .populate('tour', 'name')
     .sort('-createdAt')
     .skip(skip)
     .limit(limit);
-
-  const totalPages = Math.ceil(totalReviews / limit);
 
   res.status(200).render('admin/adminReviews', {
     title: 'Manage Reviews',
@@ -209,14 +209,3 @@ exports.getAdminReviews = catchAsync(async (req, res, next) => {
     totalPages,
   });
 });
-
-// // ----- Manage Reviews
-// exports.getAdminReviews = catchAsync(async (req, res, next) => {
-//   const reviews = await Review.find();
-//   res.status(200).render('admin/adminReviews', {
-//     title: 'Manage Reviews',
-//     user: req.user,
-//     section: 'reviews',
-//     reviews,
-//   });
-// });
