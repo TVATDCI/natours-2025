@@ -1,3 +1,26 @@
+include ../../includes/reviewCard.pug
+
+//- .user-view__form-container
+//-   h2.heading-secondary.ma-bt-md Manage Reviews
+//-   if reviews && reviews.length
+//-     ul.admin-reviews__list
+//-       each rev in reviews
+//-         li.admin-reviews__item
+//-           +reviewCard(rev)
+
+//-     //- Pagination controls
+//-     if totalPages > 1
+//-       .pagination
+//-         if currentPage > 1
+//-           - const prev = currentPage - 1
+//-           a.pagination__link(href=`?page=${prev}`, data-page=prev) Prev
+//-         span.pagination__info Page #{currentPage} of #{totalPages}
+//-         if currentPage < totalPages
+//-           - const next = currentPage + 1
+//-           a.pagination__link(href=`?page=${next}`, data-page=next) Next
+//-   else
+//-     p.admin-reviews__empty No reviews found.
+
 mixin adminReviewsList(reviews, currentPage, totalPages)
   .user-view__form-container
     h2.heading-secondary.ma-bt-md Manage Reviews
