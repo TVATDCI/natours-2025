@@ -1646,18 +1646,19 @@ body {
 }
 
 .pagination__link {
+  padding: 0.5rem 1rem;
+  background: #55c57a;
+  color: #fff;
+  border-radius: 5px;
   text-decoration: none;
-  color: #28b487;
-  font-weight: 600;
-  font-size: 1.4rem;
-  transition: color 0.2s;
+  transition: background 0.2s ease;
 }
 
 .pagination__link:hover {
-  color: #55c57a;
+  background: #28b487;
 }
 
 .pagination__info {
   font-size: 1.4rem;
-  color: #999;
+  color: #333;
 }
