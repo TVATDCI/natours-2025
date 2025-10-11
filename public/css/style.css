@@ -834,6 +834,10 @@ body {
   padding: 4rem 0 0 7rem;
 }
 
+.user-view__content-tour--detail {
+  padding: 0;
+}
+
 .user-view__form-container {
   max-width: 68rem;
   margin: 0 auto;
@@ -1586,6 +1590,10 @@ body {
 }
 
 /* ====== TEXT & IMAGES ====== */
+.admin-tour__name {
+  margin-bottom: 1rem;
+}
+
 .admin-tour__summary,
 .admin-user__summary {
   font-size: 1.5rem;
@@ -1638,10 +1646,6 @@ body {
   border-radius: 8px;
   margin-bottom: 1.2rem;
   object-fit: cover;
-}
-
-.admin-tour__name {
-  margin-bottom: 1rem;
 }
 
 /* Pagination */
