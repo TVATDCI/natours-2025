@@ -1,0 +1,77 @@
+// utils/email.js
+const nodemailer = require('nodemailer');
+const pug = require('pug');
+const { convert } = require('html-to-text'); // htmlToText.fromString(html)
+
+module.exports = class Email {
+  constructor(user, url) {
+    this.to = user.email;
+    this.firstName = user.name.split(' ')[0];
+    this.url = url;
+    this.from = `Natours - 2025<${process.env.EMAIL_FROM}>`;
+  }
+
+  newTransport() {
+    if (process.env.NODE_ENV === 'production') {
+      // === Production: SendGrid === npm run start🛝
+      // sendgrid free trial ends on November 15th, 2025.
+      return nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SENDGRID_USERNAME,
+          pass: process.env.SENDGRID_PASSWORD,
+        },
+      });
+    }
+
+    // === Development: Mailtrap ===
+    return nodemailer.createTransport({
+      host: process.env.MAILTRAP_HOST,
+      port: process.env.MAILTRAP_PORT,
+      auth: {
+        user: process.env.MAILTRAP_USERNAME,
+        pass: process.env.MAILTRAP_PASSWORD,
+      },
+    });
+  }
+
+  // ===============
+  // SEND FUNCTION
+  // ================
+
+  // Send the actual email
+  async send(template, subject) {
+    // 1) Render HTML from pug template
+    const html = pug.renderFile(
+      `${__dirname}/../views/emails/${template}.pug`,
+      {
+        firstName: this.firstName,
+        url: this.url,
+        subject,
+      },
+    );
+
+    // 2) Define email options
+    const mailOptions = {
+      from: this.from,
+      to: this.to,
+      subject,
+      html,
+      text: convert(html), // htmlToText.fromString(html), // generate plain text automatically
+    };
+
+    // 3) Create a transport & Send email
+    await this.newTransport().sendMail(mailOptions);
+  }
+
+  async sendWelcome() {
+    await this.send('welcome', 'Welcome to the Natours - 2025!'); // send welcome email
+  }
+
+  async sendPasswordReset() {
+    await this.send(
+      'passwordReset',
+      'Your password reset token (valid for only 10 minutes)',
+    );
+  }
+};
