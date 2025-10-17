@@ -64,7 +64,8 @@ module.exports = class Email {
         // console.log(`📧 Dev email sent to ${this.to}`);
       }
     } catch (err) {
-      // console.error('🔴 Email send failed:', err.response?.body || err);
+      // Log a sanitized version of the error for debugging
+      console.error('🔴 Email send failed:', err && err.response && err.response.body ? err.response.body : err.message || err);
       throw new Error('Email delivery failed');
     }
   }
