@@ -1,8 +1,12 @@
-// utils/email.js
 const nodemailer = require('nodemailer');
 const pug = require('pug');
 const { convert } = require('html-to-text');
 const sgMail = require('@sendgrid/mail');
+
+// Set SendGrid API key on global
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
 module.exports = class Email {
   constructor(user, url) {
@@ -36,15 +40,14 @@ module.exports = class Email {
     try {
       if (process.env.NODE_ENV === 'production') {
         // === Send via Twilio SendGrid API ===
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-        console.log('🟢 Using SendGrid API to send email...');
+        // console.log('🟢 Using SendGrid API to send email...');
         await sgMail.send(msg);
 
         console.log(`📨 Email successfully sent to ${this.to}`);
       } else {
         // === Development: use Mailtrap ===
-        console.log('🧰 Using Mailtrap (development mode)');
+        //( console.log('🧰 Using Mailtrap (development mode)');
 
         const transporter = nodemailer.createTransport({
           host: process.env.MAILTRAP_HOST,
@@ -58,10 +61,11 @@ module.exports = class Email {
         await transporter.verify();
         await transporter.sendMail(msg);
 
-        console.log(`📧 Dev email sent to ${this.to}`);
+        // console.log(`📧 Dev email sent to ${this.to}`);
       }
     } catch (err) {
-      console.error('🔴 Email send failed:', err.response?.body || err);
+      // Log a sanitized version of the error for debugging
+      console.error('🔴 Email send failed:', err && err.response && err.response.body ? err.response.body : err.message || err);
       throw new Error('Email delivery failed');
     }
   }
