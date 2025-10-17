@@ -1,47 +1,20 @@
 // utils/email.js
 const nodemailer = require('nodemailer');
 const pug = require('pug');
-const { convert } = require('html-to-text'); // htmlToText.fromString(html)
+const { convert } = require('html-to-text');
+const sgMail = require('@sendgrid/mail');
 
 module.exports = class Email {
   constructor(user, url) {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
-    this.from = `Natours - 2025<${process.env.EMAIL_FROM}>`;
+    this.from = `Natours - 2025 <${process.env.EMAIL_FROM}>`;
   }
 
-  newTransport() {
-    if (process.env.NODE_ENV === 'production') {
-      // === Production: SendGrid === npm run start🛝
-      // sendgrid free trial ends on November 15th, 2025.
-      return nodemailer.createTransport({
-        service: 'SendGrid',
-        auth: {
-          user: process.env.SENDGRID_USERNAME,
-          pass: process.env.SENDGRID_PASSWORD,
-        },
-      });
-    }
-
-    // === Development: Mailtrap ===
-    return nodemailer.createTransport({
-      host: process.env.MAILTRAP_HOST,
-      port: process.env.MAILTRAP_PORT,
-      auth: {
-        user: process.env.MAILTRAP_USERNAME,
-        pass: process.env.MAILTRAP_PASSWORD,
-      },
-    });
-  }
-
-  // ===============
-  // SEND FUNCTION
-  // ================
-
-  // Send the actual email
+  // === Email sending logic ===
   async send(template, subject) {
-    // 1) Render HTML from pug template
+    // 1. Render Pug template into HTML
     const html = pug.renderFile(
       `${__dirname}/../views/emails/${template}.pug`,
       {
@@ -51,21 +24,50 @@ module.exports = class Email {
       },
     );
 
-    // 2) Define email options
-    const mailOptions = {
-      from: this.from,
+    // 2. Define message
+    const msg = {
       to: this.to,
+      from: this.from,
       subject,
+      text: convert(html),
       html,
-      text: convert(html), // htmlToText.fromString(html), // generate plain text automatically
     };
 
-    // 3) Create a transport & Send email
-    await this.newTransport().sendMail(mailOptions);
+    try {
+      if (process.env.NODE_ENV === 'production') {
+        // === Send via Twilio SendGrid API ===
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+        console.log('🟢 Using SendGrid API to send email...');
+        await sgMail.send(msg);
+
+        console.log(`📨 Email successfully sent to ${this.to}`);
+      } else {
+        // === Development: use Mailtrap ===
+        console.log('🧰 Using Mailtrap (development mode)');
+
+        const transporter = nodemailer.createTransport({
+          host: process.env.MAILTRAP_HOST,
+          port: process.env.MAILTRAP_PORT,
+          auth: {
+            user: process.env.MAILTRAP_USERNAME,
+            pass: process.env.MAILTRAP_PASSWORD,
+          },
+        });
+
+        await transporter.verify();
+        await transporter.sendMail(msg);
+
+        console.log(`📧 Dev email sent to ${this.to}`);
+      }
+    } catch (err) {
+      console.error('🔴 Email send failed:', err.response?.body || err);
+      throw new Error('Email delivery failed');
+    }
   }
 
   async sendWelcome() {
-    await this.send('welcome', 'Welcome to the Natours - 2025!'); // send welcome email
+    await this.send('welcome', 'Welcome to Natours - 2025!');
   }
 
   async sendPasswordReset() {
