@@ -40,7 +40,6 @@ module.exports = class Email {
     try {
       if (process.env.NODE_ENV === 'production') {
         // === Send via Twilio SendGrid API ===
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
         // console.log('🟢 Using SendGrid API to send email...');
         await sgMail.send(msg);
