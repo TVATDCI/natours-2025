@@ -11,7 +11,7 @@ const router = express.Router();
 // ===============================
 router.post('/signup', authController.signup);
 router.post('/login', authController.login); // sending data
-router.get('/logout', authController.logout); // getting data
+router.post('/logout', authController.logout);
 
 //
 router.post('/forgotPassword', authController.forgotPassword);

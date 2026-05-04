@@ -48,6 +48,7 @@ block content
                 method='POST',
                 enctype='multipart/form-data'
               )
+                input(type='hidden', name='_csrf', value=csrfToken)
                 .form__group
                   label.form__label(for='name') Name
                   input#name.form__input(type='text', name='name', value=selectedUser.name || '')

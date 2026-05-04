@@ -29,6 +29,7 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true,
+    sameSite: 'strict',
   };
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
@@ -46,10 +47,14 @@ const createSendToken = (user, statusCode, res) => {
 // #: SIGN UP - CREATE NEW DOCUMENT
 // ================================
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create(req.body);
+  const newUser = await User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    passwordConfirm: req.body.passwordConfirm,
+  });
 
   const url = `${req.protocol}://${req.get('host')}/me`;
-  // console.log(`URL:📧: ${url}`);
   await new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, res);
