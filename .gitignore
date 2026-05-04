@@ -29,6 +29,9 @@ build/
 # Bundled output
 public/js/bundle/
 
+# Planning artifacts (Cognitive Microservices)
+.sisyphus/
+
 # Learning note
 note.txt
 readsecurity.md
