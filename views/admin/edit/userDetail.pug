@@ -77,26 +77,6 @@ block content
 
                 .form__group.right
                   button.btn.btn--green(type='submit') Save changes
-                  button.btn.btn--transparent_red(type='button', onclick=`deleteUser('${selectedUser._id}', '${csrfToken}')`) Delete User
+                  a.btn.btn--transparent_red(href=`/admin/users/${selectedUser._id}/delete`) Delete User
         else
           p.admin-user__empty No user data available.
-
-script.
-  async function deleteUser(userId, csrfToken) {
-    if (!confirm('Are you sure you want to delete this user?')) return;
-    try {
-      const res = await fetch(`/api/v1/users/${userId}`, {
-        method: 'DELETE',
-        headers: { 'CSRF-Token': csrfToken }
-      });
-      const data = await res.json();
-      if (data.status === 'success') {
-        alert('User deleted successfully');
-        window.location.href = '/admin/users';
-      } else {
-        alert(data.message || 'Failed to delete user');
-      }
-    } catch (err) {
-      alert('Error deleting user');
-    }
-  }
