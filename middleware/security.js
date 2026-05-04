@@ -10,6 +10,7 @@ const securityMiddleware = express.Router();
 securityMiddleware.use(express.json({ limit: '10kb' }));
 securityMiddleware.use(express.urlencoded({ extended: true, limit: '10kb' }));
 securityMiddleware.use(cookieParser());
+
 securityMiddleware.use(mongoSanitize());
 securityMiddleware.use(
   hpp({

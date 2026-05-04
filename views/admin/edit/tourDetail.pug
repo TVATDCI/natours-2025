@@ -21,12 +21,12 @@ block content
             else
               img.admin-tour__img(src='/img/tours/default.jpg', alt='No image')
 
-            //- Edit form (method-override or your preferred update route)
             form.form.form--edit-tour(
               action=`/admin/tours/${tour._id}?_method=PATCH`,
               method='POST',
               enctype='multipart/form-data'
             )
+              input(type='hidden', name='_csrf', value=csrfToken)
               .form__group
                 label.form__label(for='name') Name
                 input#name.form__input(type='text', name='name', value=tour.name || '')

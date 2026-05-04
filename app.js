@@ -43,11 +43,22 @@ app.set('trust proxy', 1);
 // Rate limiting: Limit 100 requests per IP per hour (applies to /api routes)
 // ==========================================================================
 const limiter = rateLimit({
-  max: 100, // limit each IP
-  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 100,
+  windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour!',
 });
 app.use('/api', limiter);
+
+const authLimiter = rateLimit({
+  max: 10,
+  windowMs: 15 * 60 * 1000,
+  message:
+    'Too many auth attempts from this IP, please try again after 15 minutes!',
+  skipSuccessfulRequests: true,
+});
+app.use('/api/v1/users/signup', authLimiter);
+app.use('/api/v1/users/login', authLimiter);
+app.use('/api/v1/users/forgotPassword', authLimiter);
 
 // =============================================
 // Apply CORS from corsMiddlewares.js

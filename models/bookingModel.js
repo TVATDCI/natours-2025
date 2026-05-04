@@ -24,30 +24,17 @@ const bookingSchema = new mongoose.Schema({
     type: Boolean,
     default: true, // initially assume booking is paid (simplified)
   },
+  stripeEventId: {
+    type: String,
+  },
 });
 
+bookingSchema.index({ stripeEventId: 1 }, { unique: true, sparse: true });
+
 // Pre-middleware Auto-populate references whenever there is a query
-// Populate the tour with all fields the template requires
+// Keep user data available by default, but require explicit tour population.
 bookingSchema.pre(/^find/, function (next) {
-  this.populate('user').populate({
-    path: 'tour',
-    select: [
-      'name',
-      'duration',
-      'difficulty',
-      'summary',
-      'imageCover',
-      'startLocation',
-      'startDates',
-      'locations',
-      'maxGroupSize',
-      'price',
-      'ratingsAverage',
-      'ratingsQuantity',
-      'slug',
-      'guides',
-    ].join(' '),
-  });
+  this.populate('user');
   next();
 });
 

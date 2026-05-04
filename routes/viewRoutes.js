@@ -46,6 +46,13 @@ router.get(
   viewController.getAdminTourDetail,
 );
 
+router.get(
+  '/admin/tours/:id/delete',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.deleteAdminTour,
+);
+
 // Admin: Manage Users route =======
 router.get(
   '/admin/users',
@@ -60,6 +67,13 @@ router.get(
   authController.protect,
   authController.restrictTo('admin'),
   viewController.getAdminUserDetail,
+);
+
+router.get(
+  '/admin/users/:id/delete',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.deleteAdminUser,
 );
 
 // Admin: Manage Bookings route =====

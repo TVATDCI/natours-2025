@@ -4,6 +4,27 @@ const helmet = require('helmet');
 
 const globalsMiddleware = express.Router();
 
+const parseAdditionalConnectSources = () => {
+  const configuredSources = process.env.CSP_CONNECT_SRC;
+
+  if (!configuredSources) return [];
+
+  return configuredSources
+    .split(',')
+    .map((source) => source.trim())
+    .filter(Boolean);
+};
+
+const connectSrc = [
+  "'self'",
+  ...parseAdditionalConnectSources(),
+  'https://*.tile.openstreetmap.org',
+  'https://*.basemaps.cartocdn.com',
+  'https://api.stripe.com',
+  'https://q.stripe.com',
+  'https://hooks.stripe.com',
+];
+
 // Logging in dev mode
 if (process.env.NODE_ENV === 'development') {
   globalsMiddleware.use(morgan('dev'));
@@ -28,15 +49,7 @@ globalsMiddleware.use(
         'https://*.basemaps.cartocdn.com',
         'https://res.cloudinary.com',
       ],
-      connectSrc: [
-        "'self'",
-        'https://natours-2025.onrender.com',
-        'https://*.tile.openstreetmap.org',
-        'https://*.basemaps.cartocdn.com',
-        'https://api.stripe.com',
-        'https://q.stripe.com',
-        'https://hooks.stripe.com',
-      ],
+      connectSrc: [...new Set(connectSrc)],
       frameSrc: [
         "'self'",
         'https://js.stripe.com',

@@ -4,6 +4,7 @@ const stripe = require('stripe')(process.env.STRIPE_TEST_KEY);
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
+const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
 const factory = require('./handlerFactory');
@@ -46,22 +47,45 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-// 4) Helper: actually create booking in DB
-const createBookingCheckout = async (session) => {
-  const tour = session.client_reference_id;
-  const userDoc = await User.findOne({ email: session.customer_email });
-  if (!userDoc) {
-    console.error(`📢 No user found for email: ${session.customer_email}`);
-    return; // Avoid crashing
-  }
+const isDuplicateStripeEventError = (error) =>
+  error &&
+  error.code === 11000 &&
+  (error.keyPattern?.stripeEventId || error.keyValue?.stripeEventId);
 
-  const user = userDoc.id;
-  const price = session.amount_total / 100;
-  await Booking.create({ tour, user, price });
+// 4) Helper: actually create booking in DB
+const createBookingCheckout = async (session, eventId) => {
+  const tour = session.client_reference_id;
+  const customerEmail = session.customer_email;
+  const amountTotal = session.amount_total;
+
+  if (!eventId)
+    throw new AppError('Stripe event ID is required for booking.', 500);
+
+  if (!tour || !customerEmail || amountTotal == null)
+    throw new AppError(
+      'Stripe checkout session is missing required booking fields.',
+      500,
+    );
+
+  const userDoc = await User.findOne({ email: customerEmail });
+  if (!userDoc)
+    throw new AppError('No user found for Stripe checkout session.', 500);
+
+  try {
+    await Booking.create({
+      tour,
+      user: userDoc.id,
+      price: amountTotal / 100,
+      stripeEventId: eventId,
+    });
+  } catch (error) {
+    if (isDuplicateStripeEventError(error)) return;
+    throw error;
+  }
 };
 
 // 5) Webhook endpoint (Stripe → backend)
-exports.webhookCheckout = (req, res, next) => {
+exports.webhookCheckout = catchAsync(async (req, res) => {
   const signature = req.headers['stripe-signature'];
 
   let event;
@@ -76,10 +100,10 @@ exports.webhookCheckout = (req, res, next) => {
   }
 
   if (event.type === 'checkout.session.completed')
-    createBookingCheckout(event.data.object);
+    await createBookingCheckout(event.data.object, event.id);
 
   res.status(200).json({ received: true });
-};
+});
 
 // 4) CRUD operations (use factory functions for reusability)
 exports.createBooking = factory.createOne(Booking);

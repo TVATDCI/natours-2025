@@ -44,7 +44,12 @@ if (loginForm) {
   });
 }
 
-if (logoutBtn) logoutBtn.addEventListener('click', logout);
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    logout();
+  });
+}
 
 // ==================
 // User Data Handlers

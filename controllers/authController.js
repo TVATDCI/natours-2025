@@ -29,6 +29,7 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true,
+    sameSite: 'lax',
   };
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
@@ -46,10 +47,14 @@ const createSendToken = (user, statusCode, res) => {
 // #: SIGN UP - CREATE NEW DOCUMENT
 // ================================
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create(req.body);
+  const newUser = await User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    passwordConfirm: req.body.passwordConfirm,
+  });
 
   const url = `${req.protocol}://${req.get('host')}/me`;
-  // console.log(`URL:📧: ${url}`);
   await new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, res);
@@ -74,9 +79,10 @@ exports.login = catchAsync(async (req, res, next) => {
 // #: LOGOUT Sending JWT with a mock 'logged-out' cookie
 // =====================================================
 exports.logout = (req, res) => {
-  res.cookie('jwt', 'theuserhasloggedoutthisisamockcookies', {
-    expires: new Date(Date.now() + 10 * 1000), // Expires in 10 secs
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
+    sameSite: 'lax',
   });
   res.status(200).json({ status: 'success' });
 };
@@ -138,16 +144,6 @@ exports.isLoggedIn = async (req, res, next) => {
   }
   next();
 };
-
-exports.restrictTo =
-  (...roles) =>
-  (req, res, next) => {
-    if (!roles.includes(req.user.role))
-      return next(
-        new AppError('You do not have permission to perform this action', 403),
-      );
-    next();
-  };
 
 // =====================================
 // #: RESTRICT access by role (...roles)

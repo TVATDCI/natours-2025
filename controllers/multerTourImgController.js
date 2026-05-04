@@ -3,6 +3,7 @@
 // ======================================================
 const multer = require('multer');
 const sharp = require('sharp');
+const mongoose = require('mongoose');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -38,12 +39,12 @@ exports.uploadTourImages = upload.fields([
 // Resize Uploaded Images
 // ---------------------
 exports.resizeTourImages = catchAsync(async (req, res, next) => {
-  // Skip if no files uploaded
   if (!req.files.imageCover || !req.files.images) return next();
 
-  // ------------------
-  // 1) Cover Image
-  // ------------------
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return next(new AppError('Invalid tour ID.', 400));
+  }
+
   const coverFilename = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
 
   await sharp(req.files.imageCover[0].buffer)

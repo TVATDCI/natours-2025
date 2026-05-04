@@ -1,5 +1,7 @@
 # natours-2025
 
+> **⚠️ Security Notice:** This project failed its latest automated security audit (2026-05-04) with **8 critical vulnerabilities**. See [Security Status](#security-status) below. **Do not deploy to production without addressing critical findings.**
+
 ## Project Overview – Natours API
 
 Digging [Compleat Node.js, Express, MongoDB](https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/) with [Jonas Schmedtmann](https://codingheroes.io/).
@@ -4438,6 +4440,81 @@ app.use(
 - Avoid `'unsafe-inline'` in `scriptSrc` whenever possible; keep it only in `styleSrc` if needed.
 - This file should be updated whenever new external integrations are added.
   [Back to the top](#natours-2025)
+
+---
+
+## Security Status
+
+**Last Audit:** 2026-05-04  
+**Result:** `FAIL` 🔴 — 8 critical findings, 6 warnings  
+**Auditor:** `security-auditor` skill (Cognitive Microservices)  
+**Report:** `.sisyphus/notepads/natours-stability-refactor/security-audit-2026-05-04.md`
+
+### Critical Findings
+
+| # | Finding | Risk | Location |
+|---|---------|------|----------|
+| 1 | Plaintext secrets in config.env | Data breach | config.env |
+| 2 | No CSRF protection | Session hijacking | Project-wide |
+| 3 | Mass assignment (role escalation) | Privilege escalation | authController.js |
+| 4 | Weak JWT secret | Authentication bypass | config.env |
+| 5 | Cookie missing SameSite | CSRF | authController.js |
+| 6 | Logout via GET | CSRF | userRoutes.js |
+| 7 | No auth rate limiting | Brute force | app.js |
+| 8 | Unvalidated file paths | Path traversal | multerTourImgController.js |
+
+### Pre-Deploy Checklist
+
+Before deploying to production:
+- [ ] Rotate ALL secrets and move to hosting platform env vars
+- [ ] Install `csurf` for CSRF protection
+- [ ] Whitelist signup fields (prevent role escalation)
+- [ ] Generate secure JWT secret (`crypto.randomBytes(64)`)
+- [ ] Add `sameSite: 'strict'` to cookies
+- [ ] Change logout from GET to POST
+- [ ] Add auth-specific rate limiting
+- [ ] Validate ObjectId before file system access
+
+### Running Security Audits
+
+```bash
+# If using the Cognitive Microservices workflow:
+# Trigger "security review" or "pre-deploy scan" 
+# The security-auditor skill will scan and produce a structured report
+```
+
+---
+
+## Cognitive Microservices Workflow
+
+This project now uses the **Cognitive Microservices** architecture for structured development:
+
+### Available Skills
+
+| Skill | Trigger | Purpose |
+|-------|---------|---------|
+| `discovery-orchestrator` | "I have an idea", "not sure about scope" | Clarify requirements |
+| `sisyphus-plan` | "create plan", "break into issues" | Plan & execute |
+| `momus-reviewer` | "review plan", "find blockers" | Deep review before execution |
+| `security-auditor` | "security review", "audit" | Pre-deployment vulnerability scan |
+| `reference-checker` | "check references" | Verify no conflicts before creation |
+
+### Workflow
+```
+discovery → plan → review → security audit → execute → publish
+```
+
+### Skill Location
+```
+~/.config/opencode/skills/
+├── security-auditor/SKILL.md
+├── momus-reviewer/SKILL.md
+├── sisyphus-plan/SKILL.md
+├── discovery-orchestrator/SKILL.md
+└── reference-checker/SKILL.md
+```
+
+[Back to the top](#natours-2025)
 
 ```
 

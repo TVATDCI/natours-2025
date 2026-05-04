@@ -14,6 +14,12 @@ exports.alerts = (req, res, next) => {
     res.locals.alert =
       'Booking successful! Please check your email for confirmation. If you are testing the booking and it does not show up immediately, please refresh or try again in a few minutes (Stripe may delay the first event). Thanks!';
   }
+  if (alert === 'userDeleted') {
+    res.locals.alert = 'User has been successfully deleted.';
+  }
+  if (alert === 'tourDeleted') {
+    res.locals.alert = 'Tour has been successfully deleted.';
+  }
   next();
 };
 
@@ -146,6 +152,11 @@ exports.getAdminTourDetail = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.deleteAdminTour = catchAsync(async (req, res, next) => {
+  await Tour.findByIdAndDelete(req.params.id);
+  res.redirect('/admin/tours?alert=tourDeleted');
+});
+
 // ----- Manage Users
 exports.getAdminUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
@@ -160,7 +171,7 @@ exports.getAdminUsers = catchAsync(async (req, res, next) => {
 
 // ----- Manage / Edit User Details
 exports.getAdminUserDetail = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id).select('+active'); // include the hidden field as active from userModel
+  const user = await User.findById(req.params.id).select('+active');
 
   if (!user) {
     return next(new AppError('No user found with that ID', 404));
@@ -168,9 +179,14 @@ exports.getAdminUserDetail = catchAsync(async (req, res, next) => {
 
   res.status(200).render('admin/edit/userDetail', {
     title: `Manage ${user.name}`,
-    user: req.user, // the logged-in admin
-    selectedUser: user, // the user being viewed
+    user: req.user,
+    selectedUser: user,
   });
+});
+
+exports.deleteAdminUser = catchAsync(async (req, res, next) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.redirect('/admin/users?alert=userDeleted');
 });
 
 // ----- Manage Bookings
