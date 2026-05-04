@@ -14,6 +14,12 @@ exports.alerts = (req, res, next) => {
     res.locals.alert =
       'Booking successful! Please check your email for confirmation. If you are testing the booking and it does not show up immediately, please refresh or try again in a few minutes (Stripe may delay the first event). Thanks!';
   }
+  if (alert === 'userDeleted') {
+    res.locals.alert = 'User has been successfully deleted.';
+  }
+  if (alert === 'tourDeleted') {
+    res.locals.alert = 'Tour has been successfully deleted.';
+  }
   next();
 };
 
@@ -148,7 +154,7 @@ exports.getAdminTourDetail = catchAsync(async (req, res, next) => {
 
 exports.deleteAdminTour = catchAsync(async (req, res, next) => {
   await Tour.findByIdAndDelete(req.params.id);
-  res.redirect('/admin/tours');
+  res.redirect('/admin/tours?alert=tourDeleted');
 });
 
 // ----- Manage Users
@@ -180,7 +186,7 @@ exports.getAdminUserDetail = catchAsync(async (req, res, next) => {
 
 exports.deleteAdminUser = catchAsync(async (req, res, next) => {
   await User.findByIdAndDelete(req.params.id);
-  res.redirect('/admin/users');
+  res.redirect('/admin/users?alert=userDeleted');
 });
 
 // ----- Manage Bookings
