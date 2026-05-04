@@ -79,9 +79,10 @@ exports.login = catchAsync(async (req, res, next) => {
 // #: LOGOUT Sending JWT with a mock 'logged-out' cookie
 // =====================================================
 exports.logout = (req, res) => {
-  res.cookie('jwt', 'theuserhasloggedoutthisisamockcookies', {
-    expires: new Date(Date.now() + 10 * 1000), // Expires in 10 secs
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
+    sameSite: 'strict',
   });
   res.status(200).json({ status: 'success' });
 };
