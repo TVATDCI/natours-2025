@@ -13,7 +13,11 @@ const csrfProtection = csrf({ cookie: true });
 securityMiddleware.use(express.json({ limit: '10kb' }));
 securityMiddleware.use(express.urlencoded({ extended: true, limit: '10kb' }));
 securityMiddleware.use(cookieParser());
-securityMiddleware.use(csrfProtection);
+
+securityMiddleware.use((req, res, next) => {
+  if (req.path.startsWith('/api/')) return next();
+  csrfProtection(req, res, next);
+});
 
 securityMiddleware.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken ? req.csrfToken() : '';
